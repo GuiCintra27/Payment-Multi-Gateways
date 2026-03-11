@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: betalent_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: node ace migration:run --force
+        env:
+          NODE_ENV: test
+          HOST: localhost
+          PORT: 3333
+          APP_KEY: test-key-for-ci-only-not-real
+          LOG_LEVEL: warn
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD: root
+          DB_DATABASE: betalent_test
+          GATEWAY1_URL: http://localhost:3001
+          GATEWAY2_URL: http://localhost:3002
+      - run: npm test
+        env:
+          NODE_ENV: test
+          HOST: localhost
+          PORT: 3333
+          APP_KEY: test-key-for-ci-only-not-real
+          LOG_LEVEL: warn
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD: root
+          DB_DATABASE: betalent_test
+          GATEWAY1_URL: http://localhost:3001
+          GATEWAY2_URL: http://localhost:3002
+
+  smoke:
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose up -d --build
+      - name: Wait for app
+        run: |
+          for i in $(seq 1 60); do
+            curl -fs http://localhost:3333 >/dev/null 2>&1 && exit 0
+            sleep 2
+          done
+          echo "App did not start in time"
+          docker compose logs app
+          exit 1
+      - run: docker compose down

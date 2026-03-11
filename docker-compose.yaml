@@ -1,0 +1,62 @@
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: betalent
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  gateway-mock:
+    image: matheusprotzen/gateways-mock
+    ports:
+      - "3001:3001"
+      - "3002:3002"
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      sh -c "
+        node ace migration:run --force &&
+        node ace db:seed &&
+        node bin/server.js
+      "
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3333
+      APP_KEY: ${APP_KEY:-KDY2MQ8CF71eP_aAO_jncw9sAN4dgi82}
+      LOG_LEVEL: info
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_DATABASE: betalent
+      GATEWAY1_URL: http://gateway-mock:3001
+      GATEWAY2_URL: http://gateway-mock:3002
+      GATEWAY1_EMAIL: dev@betalent.tech
+      GATEWAY1_TOKEN: FEC9BB078BF338F464F96B48089EB498
+      GATEWAY2_AUTH_TOKEN: tk_f2198cc671b5289fa856
+      GATEWAY2_AUTH_SECRET: 3d15e8ed6131446ea7e3456728b1211f
+    ports:
+      - "3333:3333"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      gateway-mock:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
