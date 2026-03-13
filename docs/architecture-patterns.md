@@ -1,279 +1,138 @@
-# Padrões Arquiteturais — Referência do Projeto Payment Gateway
+# Padrões Arquiteturais e Sinais de Senioridade
 
-> Análise do projeto `~/Projects/Mine/payment-gateway` para identificar padrões que elevam a qualidade do teste técnico BeTalent.
+Síntese do que foi extraído do projeto de referência `~/Projects/Mine/payment-gateway` e do que faz sentido aplicar neste teste técnico.
 
----
+## Objetivo
 
-## 📊 Resumo dos Padrões Identificados
+Trazer apenas os padrões que aumentam a percepção de maturidade técnica sem empurrar o projeto para overengineering.
 
-| Categoria | Padrão | Viabilidade no Teste | Prioridade |
-|---|---|---|---|
-| **Versionamento** | Conventional Commits + release-please | ✅ Fácil | 🟢 Alta |
-| **CI/CD** | GitHub Actions com jobs escopados | ✅ Fácil | 🟢 Alta |
-| **Docker** | Compose split por responsabilidade | ✅ Fácil | 🟢 Alta |
-| **Script de Dev** | Comando único `start-dev.sh` | ✅ Moderado | 🟢 Alta |
-| **Logs Estruturados** | JSON structured logging | ✅ Fácil | 🟢 Alta |
-| **Telemetry** | Request ID tracking (correlation) | ✅ Fácil | 🟡 Média |
-| **Métricas** | prom-client + endpoint `/metrics` | ⚠️ Moderado | 🟡 Média |
-| **Observabilidade** | Prometheus + Grafana dashboards | ⚠️ Bônus | 🟡 Média |
-| **Retenção de Logs** | Loki + Promtail | ⚠️ Bônus | 🔵 Baixa |
-| **Outbox Pattern** | Garantia de entrega de eventos | ❌ Overkill | 🔴 Descartado |
-| **Kafka/Filas** | Mensageria assíncrona | ❌ Overkill | 🔴 Descartado |
-| **DLQ** | Dead Letter Queue | ❌ Overkill | 🔴 Descartado |
-| **Chaos Testing** | Scripts de resiliência | ❌ Overkill | 🔴 Descartado |
+## Matriz de adoção
 
----
+| Padrão | Valor | Custo | Estado atual no projeto | Decisão |
+|---|---|---|---|---|
+| Conventional Commits + Release Please | Alto | Baixo | Já adotado | Manter |
+| CI com lint, typecheck, test e smoke | Alto | Baixo | Já adotado em boa parte | Manter e endurecer |
+| Script único de desenvolvimento | Alto | Baixo | Já adotado | Manter |
+| Logs estruturados | Alto | Baixo | Parcialmente adotado | Melhorar |
+| Request ID / correlação | Alto | Baixo | Não adotado | Adotar |
+| Métricas básicas em `/metrics` | Alto | Médio | Não adotado | Adotar se o tempo permitir |
+| Documentação pública por domínio | Alto | Médio | Não adotado | Adotar |
+| Monitoring completo com Prometheus/Grafana | Médio | Médio | Não adotado | Opcional |
+| Logging stack com Loki/Promtail | Médio | Médio/Alto | Não adotado | Opcional |
+| Multi-compose por responsabilidade | Médio | Baixo | Parcial | Opcional |
+| Kafka, outbox, DLQ | Baixo para este escopo | Alto | Não adotado | Não adotar |
 
-## 🟢 Padrões para Importar (Alta Prioridade)
+## O que já foi bem aproveitado
 
-### 1. Conventional Commits + Release Please
+### 1. Automação de release
 
-**O que é:** Versionamento semântico automático baseado em mensagens de commit padronizadas.
+O repositório já tem:
 
-**O que copiar:**
-- `release-please-config.json` + `.release-please-manifest.json`
-- `.github/workflows/release-please.yml`
-- Commitizen (opcional, para forçar padrão no dev local)
+- `release-please-config.json`
+- `.release-please-manifest.json`
+- workflow de release
 
-**Benefício:** CHANGELOG automático, tags semânticas, demonstra maturidade no versionamento.
+Isso já é um bom sinal de organização e disciplina de versionamento.
 
-```json
-// release-please-config.json
-{
-  "packages": {
-    ".": {
-      "release-type": "node",
-      "changelog-path": "CHANGELOG.md",
-      "include-component-in-tag": false
-    }
-  }
-}
-```
+### 2. CI básica
 
----
+O pipeline atual já cobre:
 
-### 2. GitHub Actions CI com Testes Integrados
+- lint
+- typecheck
+- migrations em CI
+- testes
+- smoke com Docker
 
-**O que é:** Pipeline de CI com jobs escopados por tipo de teste.
+Para este teste, isso já passa boa maturidade estrutural.
 
-**O que copiar:**
-- `.github/workflows/ci.yml` com jobs: `lint`, `test`, `smoke`
-- Script `scripts/ci.sh` com escopo parametrizável
+### 3. Script de desenvolvimento
 
-**Adaptação para AdonisJS:**
-```yaml
-# .github/workflows/ci.yml
-jobs:
-  lint-and-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: '20', cache: 'npm' }
-      - run: npm ci
-      - run: npm run lint
-      - run: npm test
+O `scripts/start-dev.sh` do projeto atual já segue um padrão saudável:
 
-  smoke:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: docker compose up -d --build
-      - run: ./scripts/ci.sh smoke
-```
+- valida pré-requisitos
+- sobe só a infra necessária
+- espera serviços
+- roda migrations e seeds
+- sobe o servidor em modo dev
 
----
+## O que falta para elevar o projeto
 
-### 3. Docker Compose Split por Responsabilidade
+### Request ID
 
-**O que é:** Múltiplos docker-compose files separados por contexto.
+No projeto de referência, a correlação entre logs e chamadas é um marcador claro de senioridade. Para este projeto, o recorte ideal é:
 
-**Arquivos no referência:**
-- `docker-compose.yaml` — stack principal (app + banco + mocks)
-- `docker-compose.monitoring.yaml` — Prometheus + Grafana
-- `docker-compose.logging.yaml` — Loki + Promtail + Grafana logs
+- gerar `X-Request-Id` por request
+- incluir o valor nos logs
+- repassar o header para chamadas aos gateways
 
-**Adaptação para o teste:**
-```
-docker-compose.yaml          → MySQL + App + Gateway Mocks (obrigatório)
-docker-compose.monitoring.yaml → Prometheus + Grafana (bônus)
-docker-compose.logging.yaml    → Loki + Promtail (bônus)
-```
+Isso tem alto retorno com custo baixo.
 
----
+### Métricas mínimas
 
-### 4. Script Único de Desenvolvimento (`start-dev.sh`)
+Não precisa replicar uma stack inteira para demonstrar maturidade. Um endpoint `/metrics` já seria suficiente para mostrar intenção operacional.
 
-**O que é:** Script bash robusto que sobe toda a stack com um único comando.
+Métricas sugeridas:
 
-**Padrões do referência (740 linhas):**
-- Verificação de pré-requisitos (`require_cmd`)
-- Resolução automática de portas (`AUTO_PORTS=true`)
-- Healthchecks e `wait_for_port`
-- Cleanup com `trap EXIT`
-- Log colorido (`[INFO]`, `[WARN]`, `[ERROR]`)
-- Toggle de observabilidade (`ENABLE_OBSERVABILITY=true`)
-- Suporte a `LOG_TO_FILE`
+- `purchases_total`
+- `purchase_failures_total`
+- `refunds_total`
+- `gateway_errors_total{gateway=...}`
+- `gateway_charge_attempts_total{gateway=...}`
 
-**Adaptação simplificada para o teste:**
-- Subir Docker Compose
-- Aguardar MySQL healthy
-- Rodar migrations/seeds
-- Subir app com hot-reload
-- Banner final com URLs
+### Smoke funcional
 
----
+Além do smoke atual de subida da aplicação, vale mais para o recrutador um smoke pequeno que prove:
 
-### 5. Logs Estruturados (JSON Structured Logging)
+- app sobe
+- compra pública responde
+- fallback pode ser exercitado
 
-**O que é:** Logs em formato JSON com campos padronizados.
+## Itens opcionais e controlados
 
-**Padrão do referência (Go `slog`):**
-```go
-slog.Error("outbox publish failed", "error", err, "event_id", ev.ID)
-```
+### Observabilidade
 
-**Adaptação para AdonisJS:**
-- Usar logger nativo do AdonisJS (Pino-based — já faz JSON por padrão)
-- Adicionar `request_id` em cada log via middleware
-- Configurar formato de log: JSON em produção, pretty em dev
+Trazer Prometheus/Grafana pode ser positivo, mas só vale a pena se:
 
----
+- a implementação for enxuta
+- o custo de manutenção da doc for baixo
+- o core já estiver testado
 
-## 🟡 Padrões para Importar (Média Prioridade — Bônus)
+### Multi-compose
 
-### 6. Request ID / Correlation ID
+Separar `docker-compose.monitoring.yaml` pode ser elegante, mas não é prioridade absoluta para este teste.
 
-**O que é:** UUID gerado por request e propagado em todos os logs e chamadas.
+## Itens a evitar
 
-**Padrão do referência:**
-- Go: `telemetry/request_id.go` — context-based tracking
-- Kafka: `x-request-id` header propagado nos eventos
+Os seguintes padrões funcionam no projeto de referência, mas seriam desproporcionais aqui:
 
-**Adaptação:**
-- Middleware AdonisJS que gera `X-Request-Id`
-- Injetado no logger context de cada request
-- Enviado como header nas chamadas aos gateways
+- outbox
+- mensageria
+- DLQ
+- antifraude assíncrono
+- replay operacional complexo
 
----
+## Leituras práticas para guiar a evolução
 
-### 7. Métricas com prom-client
+No projeto de referência, os documentos mais úteis para inspirar a evolução deste repositório são:
 
-**O que é:** Expor métricas da aplicação em formato Prometheus.
+- `docs/projects/INDEX.md`
+- `docs/projects/QUICK-START.md`
+- `docs/projects/RUNBOOK.md`
+- `docs/projects/SECURITY.md`
+- `docs/projects/OBSERVABILITY.md`
+- `AGENTS.md`
 
-**Padrão do referência:**
-```typescript
-// MetricsService com prom-client
-private readonly processedCounter = new Counter({
-  name: 'transactions_processed_total',
-  help: 'Total processed transactions.',
-});
-```
+## Decisão arquitetural recomendada
 
-**Métricas úteis para o teste:**
-- `purchases_total` (counter)
-- `purchases_by_gateway` (counter com label `gateway`)
-- `gateway_errors_total` (counter com label `gateway`)
-- `refunds_total` (counter)
-- `http_request_duration_seconds` (histogram)
-- Endpoint `GET /metrics`
+A melhor estratégia para este teste é:
 
----
+1. fechar o core e a cobertura dos fluxos críticos
+2. criar documentação pública clara
+3. adicionar um ou dois bônus de alto retorno
 
-### 8. Stack de Observabilidade (Prometheus + Grafana)
+Os bônus prioritários continuam sendo:
 
-**O que é:** Dashboard visual para monitorar métricas da aplicação.
-
-**O que copiar:**
-- `docker-compose.monitoring.yaml` (Prometheus + Grafana)
-- `monitoring/prometheus.yml` (scrape config)
-- `monitoring/grafana/` (dashboards e provisioning)
-
----
-
-## 🔵 Padrões Bônus (Baixa Prioridade — Se Sobrar Tempo)
-
-### 9. Stack de Logs (Loki + Promtail)
-
-**O que é:** Persistência e busca centralizada de logs.
-
-**O que copiar:**
-- `docker-compose.logging.yaml`
-- `monitoring/loki-config.yml`
-- `monitoring/promtail-config.yml`
-
----
-
-## 🔴 Padrões Descartados (Overkill para Teste Técnico)
-
-| Padrão | Motivo |
-|---|---|
-| **Outbox Pattern** | Projeto não tem processamento assíncrono; chamadas aos gateways são síncronas |
-| **Kafka/Filas** | Sem necessidade de mensageria — os gateways são REST síncronos |
-| **DLQ** | Decorrente da não-necessidade de Kafka |
-| **Deduplicação** | Idempotência é útil, mas DLQ+dedup é overkill |
-| **Chaos Testing** | Excelente padrão, mas fora do escopo do teste |
-
----
-
-## 🏗 Proposta Final de Arquitetura
-
-Combinando os padrões viáveis com os requisitos do teste:
-
-```
-Payment Multi Gateways/
-├── .github/
-│   └── workflows/
-│       ├── ci.yml                    # Lint + Test + Smoke
-│       └── release-please.yml        # Versionamento automático
-├── docker-compose.yaml               # MySQL + App + Gateway Mocks
-├── docker-compose.monitoring.yaml    # (Bônus) Prometheus + Grafana
-├── docker-compose.logging.yaml       # (Bônus) Loki + Promtail
-├── monitoring/                       # (Bônus) Configs Prometheus/Grafana/Loki
-├── scripts/
-│   ├── start-dev.sh                  # Comando único para subir tudo
-│   └── ci.sh                         # Script de CI modular
-├── docs/
-│   ├── requirements.md               # ✅ Já criado
-│   └── architecture-patterns.md      # ✅ Este documento
-├── release-please-config.json
-├── .release-please-manifest.json
-├── CHANGELOG.md
-├── Dockerfile
-└── src/                              # AdonisJS 6
-    ├── app/
-    │   ├── controllers/
-    │   ├── models/
-    │   ├── services/
-    │   │   └── gateway/              # Strategy Pattern
-    │   │       ├── gateway_strategy.ts
-    │   │       ├── gateway1_adapter.ts
-    │   │       ├── gateway2_adapter.ts
-    │   │       └── gateway_factory.ts
-    │   ├── middleware/
-    │   │   ├── auth.ts
-    │   │   ├── role.ts
-    │   │   └── request_id.ts         # Correlation ID
-    │   └── validators/
-    ├── config/
-    ├── database/
-    │   ├── migrations/
-    │   └── seeders/
-    ├── start/
-    │   └── routes.ts
-    └── tests/
-```
-
----
-
-## 📋 Ordem de Implementação Sugerida
-
-1. **Setup base**: AdonisJS 6 + Docker Compose + MySQL + Gateway Mocks
-2. **Versionamento**: Conventional Commits + release-please + CI workflow
-3. **Core funcional**: Migrations, Models, Auth, RBAC, CRUDs
-4. **Gateway Integration**: Strategy Pattern + Factory + Fallback
-5. **Compra e Reembolso**: Lógica de negócio principal
-6. **Testes TDD**: Cobertura completa (unit + integration)
-7. **Script de dev**: `start-dev.sh` com healthchecks
-8. **Bônus**: Request ID, Structured Logging, Métricas, Observabilidade
-9. **Documentação**: README completo + comentários de código
+- request ID
+- métricas básicas
+- documentação pública profissional

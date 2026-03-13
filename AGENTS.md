@@ -1,28 +1,79 @@
 # AGENTS.md - BeTalent Payment Gateway
 
-README para agentes de IA trabalhando neste repositório.
+Guia operacional para agentes de IA trabalhando neste repositório.
 
 ## Visão geral do projeto
 
-API RESTful multi-gateway de pagamentos construída com AdonisJS 6 (TypeScript).
-Processamento de pagamentos com failover automático entre gateways, controle RBAC, e TDD.
+API RESTful multi-gateway de pagamentos construída com AdonisJS 6 e TypeScript para atender ao teste técnico BeTalent.
 
-- **Framework:** AdonisJS 6 (kit API)
-- **Banco:** MySQL 8
-- **ORM:** Lucid
-- **Validação:** VineJS
-- **Auth:** Access Tokens (opaque, stateless)
-- **Testes:** Japa (runner nativo do AdonisJS)
+O projeto implementa:
+
+- compra pública com múltiplos produtos
+- cálculo do total no servidor
+- fallback automático entre gateways por prioridade
+- autenticação com access tokens
+- RBAC por roles
+- persistência de transações e produtos comprados
+
+## Estado atual do repositório
+
+### Já implementado
+
+- Docker Compose com app, MySQL e gateway mocks
+- `scripts/start-dev.sh`
+- CI com lint, typecheck, test e smoke
+- release automation com Release Please
+- migrations e seeders principais
+- auth (`/login`, `/logout`)
+- RBAC
+- CRUD de usuários
+- CRUD de produtos
+- listagem de clientes
+- listagem e detalhe de transações
+- compra pública
+- integração com dois gateways
+- fallback por prioridade
+- refund pelo gateway original
+
+### Implementado, mas ainda incompleto
+
+- testes dos fluxos críticos de compra, fallback e refund
+- testes dos endpoints de transações e gateways
+- alinhamento final de permissões de `transactions`
+- documentação pública em `docs/projects/`
+
+### Ainda não implementado
+
+- `X-Request-Id` e correlação de logs
+- métricas em `/metrics`
+- stack opcional de observabilidade
+- `README.md` profissional na raiz
+
+## Stack
+
+- Framework: AdonisJS 6
+- Linguagem: TypeScript
+- Banco: MySQL 8
+- ORM: Lucid
+- Validação: VineJS
+- Auth: Access Tokens opaque
+- Testes: Japa
 
 ## Comandos de setup
 
-### Dev local (recomendado)
+### Dev local recomendado
 
 ```bash
 ./scripts/start-dev.sh
 ```
 
-Isso sobe: MySQL (Docker), Gateway Mocks (Docker), migrations, seeds, e AdonisJS dev server com hot-reload.
+Isso sobe:
+
+- MySQL via Docker
+- gateway mocks via Docker
+- migrations
+- seeders
+- servidor AdonisJS com hot reload
 
 ### Docker full stack
 
@@ -30,9 +81,7 @@ Isso sobe: MySQL (Docker), Gateway Mocks (Docker), migrations, seeds, e AdonisJS
 docker compose up --build
 ```
 
-Sobe tudo via Docker: MySQL + Gateway Mocks + App (migrations + seeds automáticos).
-
-### Apenas infra (MySQL + Mocks)
+### Infra apenas
 
 ```bash
 docker compose up -d mysql gateway-mock
@@ -47,140 +96,119 @@ docker compose up -d mysql gateway-mock
 
 ## Variáveis de ambiente
 
-Arquivo `.env` (copiar de `.env.example`):
+Arquivo base: `.env.example`
 
-- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_DATABASE` — conexão MySQL
-- `GATEWAY1_URL`, `GATEWAY2_URL` — URLs dos mocks de gateway
-- `GATEWAY1_EMAIL`, `GATEWAY1_TOKEN` — credenciais Gateway 1 (Bearer token)
-- `GATEWAY2_AUTH_TOKEN`, `GATEWAY2_AUTH_SECRET` — credenciais Gateway 2 (headers)
-- `APP_KEY` — chave de criptografia do AdonisJS
-- `LOG_LEVEL` — nível do Pino logger
+Variáveis principais:
 
-## Estilo de código
-
-### TypeScript (AdonisJS)
-
-- Controllers focados em HTTP concerns (parse request, valida, delega, retorna response).
-- Lógica de negócio vive em **Services** (`app/services/`).
-- Validação centralizada em **Validators** (`app/validators/`) com VineJS.
-- Gateway adapters seguem **Strategy Pattern** (`app/services/gateway/`).
-- Usar `ctx.logger` para logs estruturados (Pino JSON).
-- Request ID propagado via middleware em `X-Request-Id`.
-
-### Convenções de naming
-
-- Controllers: `PascalCase` + `_controller.ts` (ex: `users_controller.ts`)
-- Models: `PascalCase` singular (ex: `User`, `Transaction`)
-- Migrations: timestamp prefix + snake_case (automático pelo `node ace make:migration`)
-- Services: `PascalCase` + `_service.ts` (ex: `purchase_service.ts`)
-
-### Commits
-
-Conventional Commits obrigatório:
-
-- `feat:` nova funcionalidade
-- `fix:` correção de bug
-- `docs:` documentação
-- `test:` testes
-- `chore:` manutenção
-- `refactor:` refatoração sem mudar comportamento
+- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_DATABASE`
+- `GATEWAY1_URL`, `GATEWAY2_URL`
+- `GATEWAY1_EMAIL`, `GATEWAY1_TOKEN`
+- `GATEWAY2_AUTH_TOKEN`, `GATEWAY2_AUTH_SECRET`
+- `APP_KEY`
+- `LOG_LEVEL`
 
 ## Notas de arquitetura
 
 ### Fluxo de compra
 
-1. `POST /purchases` recebe dados do cliente + produtos + cartão.
-2. `PurchaseService` calcula o total (server-side).
-3. `GatewayService` tenta cobrar no Gateway de maior prioridade.
-4. Se falhar, tenta os próximos gateways ativos (fallback).
-5. Salva Transaction + TransactionProducts em transação DB.
+1. `POST /purchases` recebe cliente, produtos e cartão.
+2. `PurchaseService` busca os produtos e calcula o total.
+3. `GatewayService` consulta gateways ativos por prioridade.
+4. O adapter do gateway tenta a cobrança.
+5. Em erro, o próximo gateway ativo é tentado.
+6. Ao final, a aplicação salva `transactions` e `transaction_products`.
 
 ### Fluxo de reembolso
 
-1. `POST /transactions/:id/refund` (roles: ADMIN, FINANCE).
-2. Identifica o gateway usado na transação original.
-3. Chama refund no adapter correto.
-4. Atualiza status da transação.
+1. `POST /transactions/:id/refund` recebe o ID da transação.
+2. `RefundService` carrega a transação com o gateway original.
+3. O refund é executado no adapter correspondente.
+4. O status local é atualizado para `refunded`.
 
-### Strategy Pattern (Gateways)
+### Strategy Pattern
 
 ```
-GatewayStrategy (interface)
-├── Gateway1Adapter (Bearer token, schema próprio)
-├── Gateway2Adapter (header auth, schema diferente)
-└── GatewayFactory  (seleciona por prioridade, cria adapter)
+GatewayStrategy
+├── Gateway1Adapter
+├── Gateway2Adapter
+└── GatewayFactory
 ```
 
-### RBAC
+## Regras de negócio e gotchas
 
-Roles: `ADMIN`, `MANAGER`, `FINANCE`, `USER`
+- valores monetários são persistidos em centavos
+- `price_at_time` no pivot `transaction_products` registra o preço do momento da compra
+- nunca persistir número completo do cartão ou CVV
+- `card_last_numbers` deve conter somente os últimos 4 dígitos
+- os gateways possuem contratos e autenticação diferentes
+- o modelo `User` depende de `UserSchema` gerada pelo Lucid; não editar `database/schema.ts` manualmente
 
-| Recurso | ADMIN | MANAGER | FINANCE | Público |
-|---|---|---|---|---|
-| CRUD Usuários | ✅ | ✅ | ❌ | ❌ |
-| CRUD Produtos | ✅ | ✅ | ✅ | ❌ |
-| Listar Clientes | ✅ | ✅ | ✅ | ❌ |
-| Compra | - | - | - | ✅ |
-| Reembolso | ✅ | ❌ | ✅ | ❌ |
-| Transações | ✅ | ✅ | ✅ | ❌ |
-| Gestão Gateways | ✅ | ❌ | ❌ | ❌ |
+## Situações que exigem atenção
 
-## Gotchas críticos
+- a permissão de `transactions` precisa ser confirmada, porque a doc inicial e o código atual divergem
+- o projeto já tem implementação parcial do core; não tratar migrations/models/seeders como trabalho futuro
+- `docs/projects/` ainda não existe, então qualquer mudança relevante precisa também considerar a futura documentação pública
+- request ID é citado em documentos antigos, mas ainda não está implementado
 
-- O modelo `User` usa `UserSchema` gerada automaticamente pelo Lucid — não editar `database/schema.ts` manualmente.
-- Valores monetários são armazenados em **centavos** (integer) para evitar floating point.
-- `price_at_time` no pivot `transaction_products` registra o preço do momento da compra.
-- O campo `card_last_numbers` armazena apenas os 4 últimos dígitos — nunca persistir cartão completo ou CVV.
-- Gateway mocks rodam via imagem Docker `matheusprotzen/gateways-mock`.
-- Auth usa Access Tokens (opaque) — cada request requer header `Authorization: Bearer <token>`.
+## Convenções de código
+
+### TypeScript / AdonisJS
+
+- controllers devem lidar com HTTP concerns
+- regra de negócio deve ficar em `app/services/`
+- validação deve ficar em `app/validators/`
+- adapters de gateway devem ficar em `app/services/gateway/`
+- usar logs estruturados; quando `ctx.logger` estiver disponível, preferi-lo ao logger global
+
+### Naming
+
+- controllers: `*_controller.ts`
+- services: `*_service.ts`
+- models: singular em PascalCase
+- migrations: timestamp + snake_case
+
+### Commits
+
+Usar Conventional Commits:
+
+- `feat:`
+- `fix:`
+- `docs:`
+- `test:`
+- `chore:`
+- `refactor:`
 
 ## Estrutura do projeto
 
 ```
 betalent-payment-gateway/
 ├── app/
-│   ├── controllers/        # HTTP handlers
-│   ├── models/             # Lucid models
-│   ├── services/           # Lógica de negócio
-│   │   └── gateway/        # Strategy Pattern
-│   ├── middleware/          # Auth, RBAC, Request ID
-│   ├── validators/         # VineJS schemas
-│   ├── exceptions/         # Error handlers
-│   └── transformers/       # Response serializers
-├── config/                 # Configs (database, auth, logger, etc.)
+│   ├── controllers/
+│   ├── exceptions/
+│   ├── middleware/
+│   ├── models/
+│   ├── services/
+│   │   └── gateway/
+│   ├── transformers/
+│   └── validators/
+├── config/
 ├── database/
-│   ├── migrations/         # Schema migrations
-│   └── seeders/            # Data seeds
-├── start/
-│   ├── routes.ts           # Definição de rotas
-│   ├── kernel.ts           # Middleware stack
-│   └── env.ts              # Validação de env vars
-├── tests/
-│   ├── unit/               # Testes unitários
-│   └── functional/         # Testes de integração
+│   ├── migrations/
+│   ├── seeders/
+│   ├── schema.ts
+│   └── schema_rules.ts
+├── docs/
+│   ├── local/
+│   └── *.md
 ├── scripts/
-│   ├── start-dev.sh        # Dev setup single command
-│   └── ci.sh               # CI runner modular
-├── docs/                   # Documentação do projeto
-├── .github/workflows/      # CI + Release Please
-├── docker-compose.yaml     # Stack completa
-├── Dockerfile              # Multi-stage build
-└── AGENTS.md               # Este arquivo
+├── start/
+├── tests/
+│   ├── functional/
+│   └── unit/
+└── .github/workflows/
 ```
 
 ## Tarefas comuns
-
-### Criar migration
-
-```bash
-node ace make:migration create_users
-```
-
-### Criar controller
-
-```bash
-node ace make:controller users
-```
 
 ### Rodar migrations
 
@@ -197,9 +225,7 @@ node ace db:seed
 ### Rodar testes
 
 ```bash
-npm test                    # Todos
-node ace test --suite unit  # Só unitários
-node ace test --suite functional  # Só integração
+npm test
 ```
 
 ### Lint
@@ -208,67 +234,39 @@ node ace test --suite functional  # Só integração
 npm run lint
 ```
 
+### Typecheck
+
+```bash
+npm run typecheck
+```
+
 ### Health check
 
 ```bash
 curl http://localhost:3333
 ```
 
-## Fluxo de branches
+## Disciplina de documentação
 
-1. Trabalhar na branch `main` (ou feature branch se necessário).
-2. Commits usando Conventional Commits.
-3. Push para `main` dispara CI (lint + test + smoke) e Release Please.
-4. Release Please cria PR de release com CHANGELOG automático.
+Se o código mudou e a documentação não mudou, o trabalho ainda não está completo.
 
-## Disciplina de planos
+Hoje a documentação está dividida em:
 
-Para toda implementação vinculada a um documento de planejamento:
+- `docs/local/` para status e roadmap
+- `docs/projects/` para documentação pública futura
 
-1. Marcar items do checklist imediatamente após implementação.
-2. Adicionar nota curta de validação descrevendo o que foi testado e o resultado.
-3. Manter o status do plano sincronizado antes de commitar mudanças de código.
+Antes de encerrar uma tarefa:
 
-## Documentação do projeto
+1. atualizar o status em `docs/local/` se o plano mudou
+2. atualizar `AGENTS.md` se o comportamento operacional mudou
+3. criar ou atualizar docs públicos quando `docs/projects/` começar a existir
 
-A documentação pública fica em `docs/projects/` seguindo o padrão:
+## Prioridades atuais
 
-- `INDEX.md` — ponto de entrada com links para todos os docs
-- Um documento por domínio (ARCHITECTURE, DATA-MODEL, FLOWS, etc.)
-- Cada doc responde a uma pergunta específica
-
-### Estrutura de docs
-
-```
-docs/
-├── requirements.md               # Requisitos do teste (já existe)
-├── architecture-patterns.md      # Padrões importados (já existe)
-├── documentation-patterns.md     # Padrões de documentação (já existe)
-└── projects/                     # Documentação pública do projeto
-    ├── INDEX.md                  # Hub central — links p/ todos os docs
-    ├── QUICK-START.md            # Como subir e rodar o projeto
-    ├── ARCHITECTURE.md           # Diagrama e visão geral da arquitetura
-    ├── DATA-MODEL.md             # Tabelas, campos, indexes, relacionamentos
-    ├── FLOWS.md                  # Fluxos de negócio (compra, reembolso)
-    ├── INTEGRATIONS.md           # Contratos de API dos gateways externos
-    ├── INFRA.md                  # Docker Compose, portas, volumes
-    ├── SECURITY.md               # Auth, RBAC, dados sensíveis
-    └── RUNBOOK.md                # Operação, troubleshooting, comandos
-```
-
-### Fluxo de documentação durante implementação
-
-As funcionalidades devem ser documentadas **durante** a implementação, **não depois**.
-
-1. **Antes de implementar:** verificar se o doc relevante já existe.
-2. **Durante a implementação:**
-   - Ao criar migrations → atualizar `DATA-MODEL.md` com tabelas e campos.
-   - Ao criar rotas/controllers → atualizar `INTEGRATIONS.md` com endpoints e payloads.
-   - Ao implementar fluxo de negócio → atualizar `FLOWS.md` com passo a passo.
-   - Ao alterar Docker/infra → atualizar `INFRA.md` e `QUICK-START.md`.
-   - Ao adicionar auth/RBAC → atualizar `SECURITY.md`.
-3. **Após implementar:** revisar docs e garantir que `INDEX.md` tem links atualizados.
-
-### Regra de ouro
-
-> Se o código mudou e a documentação não acompanhou, o trabalho não está completo.
+1. alinhar código, docs e requisito
+2. cobrir compra, fallback e refund com testes
+3. criar documentação pública mínima
+4. adicionar bônus de alto retorno:
+   - `X-Request-Id`
+   - `/metrics`
+   - smoke funcional com gateways mockados

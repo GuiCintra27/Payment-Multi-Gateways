@@ -1,113 +1,114 @@
-# Padrões de Documentação — Referência Payment Gateway
+# Padrões de Documentação e Estado Atual
 
-> Análise da estrutura de documentação do projeto `payment-gateway` para replicar no teste BeTalent.
+Documento de referência para organizar a documentação do projeto com base em dois eixos:
 
----
+- o padrão observado no projeto `~/Projects/Mine/payment-gateway`
+- o estado real do repositório atual
 
-## Estrutura Geral
+## Situação atual
 
-O projeto usa uma hierarquia de 3 camadas:
+Hoje o projeto possui documentação-base útil, mas ainda não possui a camada pública planejada.
+
+### Já existe
+
+- `AGENTS.md`
+- `docs/requirements.md`
+- `docs/architecture-patterns.md`
+- `docs/documentation-patterns.md`
+- `docs/local/handoff-status.md`
+- `docs/local/implementation-roadmap.md`
+
+### Ainda não existe
+
+- `README.md` na raiz
+- `docs/projects/INDEX.md`
+- `docs/projects/QUICK-START.md`
+- `docs/projects/ARCHITECTURE.md`
+- `docs/projects/DATA-MODEL.md`
+- `docs/projects/FLOWS.md`
+- `docs/projects/INTEGRATIONS.md`
+- `docs/projects/INFRA.md`
+- `docs/projects/SECURITY.md`
+- `docs/projects/RUNBOOK.md`
+
+## Padrão recomendado
+
+O projeto de referência usa uma hierarquia simples e profissional:
 
 ```
 docs/
-├── projects/           # Documentação pública (11 docs + INDEX)
-│   ├── INDEX.md        # Ponto de entrada — links para todos os docs
-│   ├── QUICK-START.md  # Como rodar o projeto
-│   ├── ARCHITECTURE.md # Diagrama mermaid + visão geral dos serviços
-│   ├── DATA-MODEL.md   # Tabelas, campos, indexes
-│   ├── FLOWS.md        # Fluxos de negócio passo a passo
-│   ├── INTEGRATIONS.md # Contratos de API + payloads JSON
-│   ├── INFRA.md        # Docker Compose, volumes, redes, portas
-│   ├── SECURITY.md     # Auth, rate limit, dados sensíveis
-│   ├── OBSERVABILITY.md# Métricas, logs, Loki, SLOs
-│   ├── RUNBOOK.md      # Comandos operacionais + troubleshooting
-│   ├── TECHNICAL-REFERENCE.md  # Referência rápida: endpoints, portas, env vars
-│   └── en/             # Espelho em inglês (todos os docs traduzidos)
-├── archive/            # Docs históricos (não são fonte de verdade)
-│   └── local/          # Planos antigos, QA, iterações
-├── local/              # Notas de trabalho ativas (WIP)
-│   ├── README.md       # Regras: só implementação ativa, mover p/ archive ao finalizar
-│   └── private/        # Planos internos
-AGENTS.md               # Na raiz — README para AI coding agents
-README.md               # Na raiz — Visão geral do projeto para humanos
+├── projects/   # documentação pública do sistema
+├── local/      # notas e planos de trabalho ativos
+└── archive/    # histórico, se necessário
 ```
 
-## Padrões Observados
+Esse padrão continua sendo adequado aqui.
 
-### 1. INDEX.md como Hub Central
-- Links organizados por categoria (Começando, Arquitetura, Plataforma)
-- Links cruzados entre docs de serviços individuais
-- Seção de arquivo para docs históricos
+## Responsabilidade por camada
 
-### 2. Template Consistente por Documento
-Cada doc público segue padrão:
-- **Linha 1:** Título em `#`
-- **Linha 3:** Toggle de idioma `[**PT-BR**](./FILE.md) | [EN](./en/FILE.md)`
-- **Corpo:** Seções com `##` e conteúdo focado no domínio
-- **Mermaid** em ARCHITECTURE e FLOWS
-- **Tabelas** em RUNBOOK (troubleshooting matrix)
-- **Exemplos JSON** em INTEGRATIONS
-
-### 3. Separação Clara de Responsabilidades
-| Documento | Responde à pergunta |
+| Camada | Objetivo |
 |---|---|
-| QUICK-START | "Como rodo isso?" |
-| ARCHITECTURE | "Como os pedaços se conectam?" |
-| DATA-MODEL | "Quais tabelas existem e o que cada campo faz?" |
-| FLOWS | "O que acontece quando o usuário faz X?" |
-| INTEGRATIONS | "Como os serviços se comunicam?" |
-| INFRA | "O que roda no Docker e em quais portas?" |
-| SECURITY | "Como auth, dados sensíveis e proteções funcionam?" |
-| OBSERVABILITY | "Como monitoro métricas e logs?" |
-| RUNBOOK | "Como opero, debugo e faço troubleshooting?" |
-| TECHNICAL-REFERENCE | "Referência rápida de endpoints, portas e env vars" |
+| `README.md` | visão executiva do projeto para recrutador e avaliador |
+| `AGENTS.md` | contexto operacional para agentes de IA |
+| `docs/projects/` | documentação pública, estável e navegável |
+| `docs/local/` | status, roadmap e notas de trabalho em andamento |
 
-### 4. Ciclo de Vida da Documentação
-```
-docs/local/     →  Trabalho ativo (WIP)
-docs/projects/  →  Documentação pública atualizada
-docs/archive/   →  Docs finalizados/obsoletos
-```
+## Estrutura pública proposta
 
-### 5. AGENTS.md — Para Agentes AI
-Arquivo na raiz com seções:
-- **Project overview** — o que é o projeto
-- **Setup commands** — como subir (local, docker, infra only)
-- **Endpoints and ports** — referência rápida
-- **Environment files** — onde ficam os .env
-- **Code style** — convenções por linguagem/serviço
-- **Architecture notes** — fluxo macro de dados
-- **Critical gotchas** — armadilhas que o agente precisa saber
-- **Project structure** — árvore simplificada
-- **Common tasks** — comandos frequentes
-- **Branch workflow** — como trabalhar com branches
-- **Plan tracking discipline** — como manter planos sincronizados
-
----
-
-## Adaptação para o BeTalent
-
-### Docs que faremos (por ordem de prioridade)
-
-| Doc | Já temos? | Status |
+| Documento | Pergunta que responde | Prioridade |
 |---|---|---|
-| `docs/requirements.md` | ✅ Sim | Criado |
-| `docs/architecture-patterns.md` | ✅ Sim | Criado |
-| `docs/projects/INDEX.md` | ❌ | A criar |
-| `docs/projects/QUICK-START.md` | ❌ | A criar |
-| `docs/projects/ARCHITECTURE.md` | ❌ | A criar após implementação |
-| `docs/projects/DATA-MODEL.md` | ❌ | A criar após migrations |
-| `docs/projects/FLOWS.md` | ❌ | A criar após lógica de negócio |
-| `docs/projects/INTEGRATIONS.md` | ❌ | A criar (contratos dos gateways) |
-| `docs/projects/INFRA.md` | ❌ | A criar (Docker, portas) |
-| `docs/projects/SECURITY.md` | ❌ | A criar (auth, RBAC, dados sensíveis) |
-| `docs/projects/RUNBOOK.md` | ❌ | A criar (troubleshooting) |
-| `AGENTS.md` | ❌ | A criar agora |
-| `README.md` | ⚠️ Scaffold | A reescrever no final |
+| `INDEX.md` | por onde começo a ler? | Alta |
+| `QUICK-START.md` | como subo e valido o projeto? | Alta |
+| `ARCHITECTURE.md` | como as partes se conectam? | Alta |
+| `DATA-MODEL.md` | quais tabelas e relacionamentos existem? | Alta |
+| `FLOWS.md` | como compra e refund funcionam? | Alta |
+| `INTEGRATIONS.md` | como os gateways externos são consumidos? | Alta |
+| `INFRA.md` | o que sobe no Docker e em quais portas? | Média |
+| `SECURITY.md` | como auth, RBAC e dados sensíveis são tratados? | Média |
+| `RUNBOOK.md` | como operar e resolver problemas comuns? | Média |
+| `OBSERVABILITY.md` | como monitorar métricas e logs? | Baixa, opcional |
 
-### Docs que NÃO faremos (simplificação para teste)
-- `OBSERVABILITY.md` — só se implementarmos o bônus de métricas
-- `TECHNICAL-REFERENCE.md` — integramos no QUICK-START
-- `docs/archive/` — sem necessidade para projeto novo
-- `docs/local/` — nossos planos ficam no diretório de artifacts do agente
-- Tradução EN — não necessário para teste técnico
+## Convenções recomendadas
+
+### Para documentos públicos
+
+- título direto em `#`
+- abertura curta explicando o escopo do documento
+- seções focadas por domínio
+- tabelas para portas, variáveis, endpoints e troubleshooting
+- exemplos JSON em integrações e fluxos
+- links cruzados entre os docs
+
+### Para documentos locais
+
+- manter foco em status, decisões e próximos passos
+- deixar explícito o que já foi feito, o que está parcial e o que falta
+- registrar limitações de validação quando o ambiente impedir execução
+
+## Adaptação do padrão de referência
+
+Itens que valem ser trazidos do projeto de referência:
+
+- `INDEX.md` como hub principal
+- `TECHNICAL-REFERENCE` como referência rápida, se o material ficar grande
+- `RUNBOOK.md` com troubleshooting objetivo
+- `SECURITY.md` enxuto e pragmático
+- `OBSERVABILITY.md` separado, somente se o bônus for implementado
+
+Itens que não precisam ser copiados agora:
+
+- espelho completo em inglês
+- estrutura de `archive/` mais complexa
+- documentação de múltiplos serviços
+
+## Fluxo de atualização
+
+Sempre que o código mudar:
+
+1. revisar se a mudança afeta `README.md`, `AGENTS.md` ou `docs/projects/`
+2. atualizar os documentos de status em `docs/local/` quando houver impacto no plano
+3. só considerar a tarefa concluída depois que a documentação refletir o comportamento real
+
+## Próximo passo documental
+
+O próximo passo de maior valor é criar `docs/projects/INDEX.md` e `docs/projects/QUICK-START.md`, porque eles melhoram imediatamente a leitura do projeto por recrutadores e avaliadores.

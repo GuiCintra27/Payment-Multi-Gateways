@@ -1,35 +1,110 @@
-# Agent Handoff Status
+# Status Atual do Projeto
 
-Esta pasta contém o status da implementação ativa do projeto, deixada pelo agente principal que atingiu seu limite de contexto/iterações e precisou ser descontinuado.
+Snapshot consolidado do estado real do repositório em 2026-03-13, após revisão de código, rotas, migrations, seeders, serviços, testes e documentação.
 
----
+## Resumo executivo
 
-## Objetivo do Projeto
+O projeto já passou da fase de setup. A base de infraestrutura está pronta, o core principal da aplicação foi iniciado e existe código funcional para autenticação, RBAC, CRUDs, compra, fallback entre gateways e reembolso.
 
-API RESTful multi-gateway de pagamentos (Teste Técnico BeTalent - Nível 3).
-Construída com AdonisJS 6 (TypeScript), MySQL 8 e integração com múltiplos gateways mockados, seguindo os princípios de TDD, com controle de acesso RBAC e fallback automático entre gateways (Design Pattern: Strategy).
-O objetivo é entregar um backend de altíssima qualidade (nível Pleno/Sênior), focado em performance, confiabilidade, com arquitetura bem desenhada, deploy simplificado (Docker Compose + Shell Script) e versionamento automatizado (Release Please / Conventional Commits).
+O ponto central agora não é mais "começar a implementação", e sim fechar o que já foi iniciado:
 
-## O que estávamos fazendo
+- alinhar documentação com o estado real do código
+- aumentar a cobertura de testes nos fluxos críticos
+- corrigir inconsistências entre enunciado, docs e implementação atual
+- decidir quais bônus de senioridade valem o custo para o teste
 
-Finalizando a **Fase 1 — Setup & Infraestrutura**. Nós já estrturáramos o projeto base (AdonisJS kit API + MySQL auth) e subimos a stack de infra:
-- `docker-compose.yaml` (MySQL + App + Getaways) e `Dockerfile`
-- Configuração de CI (GitHub Actions) e Automação de Versões (Release Please) com lint/test.
-- Script unificado `scripts/start-dev.sh` que sobe dependências usando Docker e roda o servidor com hot-reload.
-- Setup da documentação do projeto: Padrões `AGENTS.md` definidos, documentação de como realizar fluxos operacionais copiada da arquitetura de base. O Plano de Implementação (`implementation_plan.md`) está detalhado para todas as próximas fases e aprovado pelo usuário, e também inclui um Fluxo de Documentação contínua.
+## Estado por área
 
-## Em qual tarefa estaremos parando (Tarefa Atual)
+| Área | Status | Evidência |
+|---|---|---|
+| Infra local e Docker | Concluído | `docker-compose.yaml`, `Dockerfile`, `scripts/start-dev.sh` |
+| CI e release automation | Concluído | `.github/workflows/ci.yml`, `.github/workflows/release-please.yml` |
+| Banco de dados e modelagem principal | Concluído | migrations de `users`, `gateways`, `clients`, `products`, `transactions`, `transaction_products` |
+| Seeders iniciais | Concluído | `database/seeders/01_admin_seeder.ts`, `02_gateway_seeder.ts` |
+| Auth por access token | Concluído | `app/controllers/auth_controller.ts`, `config/auth.ts` |
+| RBAC | Concluído | `app/middleware/role_middleware.ts`, rotas protegidas em `start/routes.ts` |
+| CRUD de usuários | Concluído | `app/controllers/users_controller.ts` |
+| CRUD de produtos | Concluído | `app/controllers/products_controller.ts` |
+| Clientes e detalhe de compras | Parcialmente concluído | `app/controllers/clients_controller.ts` existe, mas sem testes dedicados |
+| Gestão de gateways | Parcialmente concluído | listagem, toggle e prioridade existem; faltam testes dedicados |
+| Compra pública | Parcialmente concluído | `app/services/purchase_service.ts` e `POST /purchases` existem; faltam testes E2E do fluxo |
+| Multi-gateway com fallback | Parcialmente concluído | adapters e factory existem; faltam testes integrados com mocks |
+| Reembolso | Parcialmente concluído | `app/services/refund_service.ts` e rota existem; faltam testes dedicados |
+| Transações | Parcialmente concluído | listagem e detalhe existem; há divergência de autorização com o requisito |
+| Documentação pública do projeto | Pendente | `docs/projects/` ainda não existe |
+| Bônus de senioridade | Pendente | request ID, métricas e observabilidade ainda não foram trazidos |
 
-A última etapa de configuração concluída foi o refinamento da estrutura de documentação contínua no `AGENTS.md` e a injeção do tracking de relatórios no roadmap (`Fase 6 — Documentação Profissional`).
+## O que já está implementado
 
-A próxima etapa (onde o próximo agente assumirá) é o início da implementação ativa na **Fase 2 — Core Funcional**.
-A prioridade inicial do próximo passo deve ser:
-1. Começar a gerar os arquivos de **Migrations** (`users`, `gateways`, `clients`, `products`, `transactions`, `transaction_products`).
-2. Gerar os **Models** do Lucid ORM e configurar seus respectivos relacionamentos e métodos auxiliares.
-3. Criar os **Seeds** para a conta de Administrador Padrão (`admin`) e o status padrão dos gateways.
+### Infra e setup
 
-> Lembre-se, todos os desenvolvimentos seguintes precisam criar/atualizar testes TDD caso aplique e a documentação respectiva junto à modificação de código (Ex: modificando o banco => reflete no arquivo publico equivalente de DATA-MODEL.md).
+- Stack Docker com MySQL, mocks dos gateways e app.
+- Script local de desenvolvimento com subida de infra, migrations, seeds e servidor HMR.
+- CI com lint, typecheck, migrations e testes.
+- Release Please configurado.
 
-## Motivo
+### Domínio principal
 
-O escopo do trabalho atual estendeu bastante (pesquisa, setup de múltiplos arquivos core infra com bash commands complexos, CI automation, doc standards). Como proteção contra o limite de memória ou falhas, esta thread atingiu sua capacidade operacional e está passando o bastão para um novo agente fresco recomeçar com o plano já devidamente estruturado.
+- Migrations e models para usuários, gateways, clientes, produtos, transações e pivot de produtos por transação.
+- Seed de admin padrão e dos dois gateways.
+- Login e logout com opaque access tokens.
+- Middleware de autorização por role.
+- CRUDs principais de usuários e produtos.
+- Listagem de clientes e transações.
+- Compra pública com:
+  - cálculo do total no servidor
+  - criação automática do cliente por email
+  - fallback entre gateways ativos por prioridade
+  - persistência da transação e pivot `transaction_products`
+- Reembolso baseado no gateway da transação original.
+
+### Testes já presentes
+
+- Funcionais: auth, RBAC, users e products.
+- Unitários: validators de usuário, validator de purchase e `GatewayFactory`.
+
+## Lacunas relevantes
+
+### Cobertura de testes
+
+Ainda faltam testes para os fluxos que mais importam para o teste técnico:
+
+- `POST /purchases`
+- fallback real entre gateways
+- `POST /transactions/:id/refund`
+- listagem/detalhe de transações
+- gestão de gateways
+- integração com os gateway mocks
+
+### Inconsistências entre requisito e código
+
+- A documentação de requisitos indica que `USER` pode consultar transações, mas as rotas atuais permitem apenas `ADMIN`, `MANAGER` e `FINANCE`.
+- O handoff antigo dizia que a implementação estava parando antes das migrations, mas isso não corresponde mais ao estado real do repositório.
+- `docs/documentation-patterns.md` e partes do `AGENTS.md` ainda descreviam itens como futuros, embora parte deles já exista.
+- O documento de requisitos ainda mencionava Jest como preferência, mas o projeto está estruturado com Japa.
+
+### Bônus de senioridade ainda ausentes
+
+- `X-Request-Id` e correlação de logs
+- endpoint `/metrics`
+- compose opcional de observabilidade
+- documentação pública em `docs/projects/`
+- README profissional na raiz
+- smoke test de compra/refund com mocks reais
+
+## Restrições desta análise
+
+Esta revisão foi feita por inspeção estática do repositório.
+
+Não foi possível executar `npm`, `npm test`, `npm run lint` ou `npm run typecheck` no ambiente desta sessão porque `npm` não está disponível no shell atual.
+
+## Próximos passos recomendados
+
+1. Corrigir a documentação-base para refletir o estado real do projeto.
+2. Definir o comportamento esperado das permissões de `transactions` e alinhar código + docs.
+3. Cobrir com testes os fluxos de compra, fallback, refund e gateways.
+4. Criar a documentação pública mínima em `docs/projects/`.
+5. Implementar os bônus de maior retorno para recrutadores:
+   - `X-Request-Id`
+   - métricas básicas
+   - smoke operacional documentado

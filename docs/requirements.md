@@ -1,211 +1,138 @@
-# Análise de Requisitos — Teste Prático Back-end BeTalent
+# Análise de Requisitos e Aderência Atual
 
-## 📋 Visão Geral
+Leitura consolidada do teste técnico BeTalent e comparação com o estado real da aplicação.
 
-Sistema gerenciador de **pagamentos multi-gateway**: uma API RESTful com banco de dados MySQL que se integra a duas APIs de terceiros (gateways de pagamento). A lógica central é: ao realizar uma compra, tenta-se cobrar nos gateways seguindo a **ordem de prioridade**. Se o primeiro falhar, tenta o segundo. Se algum retornar sucesso, não exibe erro.
+## Visão geral
 
-> [!IMPORTANT]
-> O nível escolhido é **Nível 3 (Pleno/Sênior)**, o mais completo.
+O projeto implementa uma API REST multi-gateway de pagamentos com banco MySQL e integração com dois gateways externos mockados. O fluxo central é:
 
----
+1. receber uma compra pública
+2. calcular o valor no back-end
+3. tentar cobrança nos gateways ativos por prioridade
+4. aplicar fallback em caso de falha
+5. persistir a transação e seus produtos
 
-## 🎯 Nível 3 — Requisitos Completos
+O nível-alvo continua sendo o mais completo do teste: múltiplos produtos, autenticação nos gateways, RBAC, Docker Compose e TDD.
 
-| Aspecto | Detalhe |
+## Requisitos principais do teste
+
+| Requisito | Expectativa |
 |---|---|
-| **Cálculo de valor** | Múltiplos produtos × quantidades, calculado no back-end |
-| **Autenticação nos Gateways** | Sim, cada gateway tem sua forma própria de auth |
-| **Roles de Usuário** | `ADMIN`, `MANAGER`, `FINANCE`, `USER` |
-| **TDD** | Obrigatório |
-| **Docker Compose** | MySQL + Aplicação + Mock dos Gateways |
+| Compra pública | `POST /purchases` |
+| Cálculo do total | servidor calcula `sum(price * quantity)` |
+| Gateways | dois gateways com autenticação e schemas diferentes |
+| Fallback | ordem por prioridade com troca automática em falha |
+| Reembolso | operação no gateway da transação original |
+| Roles | `ADMIN`, `MANAGER`, `FINANCE`, `USER` |
+| Persistência | valores em centavos e pivot com produtos comprados |
+| Testes | cobertura real dos fluxos críticos |
+| Infra | Docker Compose com app, banco e mocks |
 
----
+## Stack definida no projeto
 
-## 🔧 Stack Definida
-
-| Requisito | Escolha |
+| Aspecto | Escolha atual |
 |---|---|
-| **Framework** | **AdonisJS 6** (TypeScript nativo, Node.js) |
-| **Banco** | MySQL |
-| **ORM** | **Lucid** (integração nativa com AdonisJS) |
-| **Validação** | **VineJS** (integrado ao AdonisJS 6) |
-| **Autenticação** | **Auth Tokens (opaque)** — padrão do AdonisJS |
-| **Testes** | **Jest** (preferência) · fallback: **Japa** (recomendado pelo Adonis) |
-| **Padrão Gateway** | **Strategy + Factory Pattern** |
-| **Estrutura** | **MVC + Service Layer** |
-| **Respostas** | JSON |
-| **Docker Compose** | MySQL, App, e Mock dos Gateways |
-| **README** | Requisitos, instalação, rotas, informações relevantes |
+| Framework | AdonisJS 6 |
+| Linguagem | TypeScript |
+| Banco | MySQL 8 |
+| ORM | Lucid |
+| Validação | VineJS |
+| Auth | Access Tokens opaque |
+| Testes | Japa |
+| Padrão de gateway | Strategy + Factory |
+| Estrutura | MVC + Service Layer |
 
----
-
-## 🗄 Estrutura de Banco de Dados (mínima)
+## Modelo de dados esperado
 
 ```
 users
-├── id
-├── email
-├── password
-├── role (ADMIN | MANAGER | FINANCE | USER)
-├── created_at
-└── updated_at
-
 gateways
-├── id
-├── name
-├── is_active
-├── priority
-├── created_at
-└── updated_at
-
 clients
-├── id
-├── name
-├── email
-├── created_at
-└── updated_at
-
 products
-├── id
-├── name
-├── amount (em centavos)
-├── created_at
-└── updated_at
-
 transactions
-├── id
-├── client_id (FK → clients)
-├── gateway_id (FK → gateways)
-├── external_id
-├── status
-├── amount (em centavos)
-├── card_last_numbers
-├── created_at
-└── updated_at
-
-transaction_products (Nível 3 — múltiplos produtos por transação)
-├── id
-├── transaction_id (FK → transactions)
-├── product_id (FK → products)
-├── quantity
-├── created_at
-└── updated_at
+transaction_products
 ```
 
-> [!NOTE]
-> A tabela `transaction_products` permite **múltiplos produtos** por transação. O `amount` total da transação é calculado no back-end como `Σ (product.amount × quantity)`.
+Observações de domínio:
 
----
+- valores monetários em centavos
+- `transaction_products` registra quantidade e preço no momento da compra
+- `card_last_numbers` guarda apenas os 4 últimos dígitos
 
-## 🛣 Rotas do Sistema
+## Rotas esperadas
 
-### Rotas Públicas (sem autenticação do usuário)
-| Método | Rota | Descrição |
+### Públicas
+
+- `POST /login`
+- `POST /purchases`
+
+### Autenticadas
+
+- `/users` para `ADMIN`, `MANAGER`
+- `/products` para `ADMIN`, `MANAGER`, `FINANCE`
+- `/clients` para usuários autenticados
+- `/transactions` para perfis autorizados
+- `/transactions/:id/refund` para `ADMIN`, `FINANCE`
+- `/gateways/:id/toggle` e `/gateways/:id/priority` para `ADMIN`
+
+## Estado atual de aderência
+
+| Item | Status | Observação |
 |---|---|---|
-| `POST` | `/login` | Realizar login |
-| `POST` | `/purchases` | Realizar uma compra informando produto(s) |
+| Setup do projeto AdonisJS 6 | Concluído | projeto configurado e versionado |
+| Docker Compose | Concluído | app + MySQL + gateway mocks |
+| Migrations do banco | Concluído | tabelas principais presentes |
+| Seeds iniciais | Concluído | admin e gateways |
+| Auth com API tokens | Concluído | login/logout implementados |
+| Middleware RBAC | Concluído | role middleware aplicado nas rotas |
+| CRUD de usuários | Concluído | controllers + validators + testes |
+| CRUD de produtos | Concluído | controllers + validators + testes |
+| Clientes e detalhe | Parcial | rotas existem, faltam testes dedicados |
+| Integração gateway 1 | Concluído no código | falta validação integrada com mock |
+| Integração gateway 2 | Concluído no código | falta validação integrada com mock |
+| Factory + prioridade | Concluído no código | falta prova integrada do fallback |
+| Fallback automático | Concluído no código | falta teste real do cenário |
+| Compra pública | Parcial | fluxo existe, faltam testes funcionais/integrados |
+| Transações | Parcial | rotas existem, permissão atual diverge do requisito documentado |
+| Reembolso | Parcial | fluxo existe, faltam testes dedicados |
+| Gestão de gateways | Parcial | endpoints existem, faltam testes dedicados |
+| TDD / cobertura dos fluxos críticos | Parcial | base montada, cobertura ainda insuficiente |
+| README detalhado | Pendente | arquivo não existe na raiz |
+| Documentação pública do projeto | Pendente | `docs/projects/` ainda não existe |
 
-### Rotas Privadas (autenticadas, com validação de roles)
-| Método | Rota | Descrição | Roles Permitidas |
-|---|---|---|---|
-| `PATCH` | `/gateways/:id/toggle` | Ativar/desativar gateway | `ADMIN` |
-| `PATCH` | `/gateways/:id/priority` | Alterar prioridade do gateway | `ADMIN` |
-| CRUD | `/users` | CRUD de usuários | `ADMIN`, `MANAGER` |
-| CRUD | `/products` | CRUD de produtos | `ADMIN`, `MANAGER`, `FINANCE` |
-| `GET` | `/clients` | Listar todos os clientes | `ADMIN`, `MANAGER`, `FINANCE`, `USER` |
-| `GET` | `/clients/:id` | Detalhe do cliente + compras | `ADMIN`, `MANAGER`, `FINANCE`, `USER` |
-| `GET` | `/transactions` | Listar todas as compras | `ADMIN`, `MANAGER`, `FINANCE`, `USER` |
-| `GET` | `/transactions/:id` | Detalhes de uma compra | `ADMIN`, `MANAGER`, `FINANCE`, `USER` |
-| `POST` | `/transactions/:id/refund` | Reembolso junto ao gateway | `ADMIN`, `FINANCE` |
+## Diferenças entre docs e implementação atual
 
----
+### Permissões de transações
 
-## 👤 Sistema de Roles (RBAC)
+O documento inicial considerava `USER` com acesso a transações, mas as rotas atuais restringem `transactions` a:
 
-| Role | Permissões |
-|---|---|
-| `ADMIN` | Acesso total: CRUD users, CRUD products, gateways, transactions, refund |
-| `MANAGER` | CRUD users, CRUD products |
-| `FINANCE` | CRUD products, realizar reembolso |
-| `USER` | Listar clientes, ver detalhes, listar/ver transações |
+- `ADMIN`
+- `MANAGER`
+- `FINANCE`
 
-> [!NOTE]
-> Roles inferidas do enunciado: `ADMIN` faz tudo, `MANAGER` gerencia produtos e usuários, `FINANCE` gerencia produtos e faz reembolso, `USER` faz o restante não citado.
+Esse comportamento precisa ser confirmado e então alinhado entre código e documentação.
 
----
+### Test runner
 
-## 🔌 Multi-Gateways (Mocks)
+A referência inicial mencionava Jest como preferência e Japa como fallback. O projeto real está configurado com Japa e deve ser documentado assim.
 
-### Execução
-```bash
-# Com autenticação (Nível 3)
-docker run -p 3001:3001 -p 3002:3002 matheusprotzen/gateways-mock
-```
+### Status do projeto
 
-### Gateway 1 — `http://localhost:3001`
+O projeto já não está mais apenas na fase de setup. Há uma implementação parcial relevante do core e a documentação precisa tratar isso com precisão.
 
-| Aspecto | Detalhe |
-|---|---|
-| **Auth** | `POST /login` com `email` + `token` → Bearer token |
-| **Listar** | `GET /transactions` |
-| **Criar** | `POST /transactions` — `amount`, `name`, `email`, `cardNumber`, `cvv` |
-| **Reembolso** | `POST /transactions/:id/charge_back` |
-| **Erro CVV** | `100` ou `200` → erro de cartão inválido |
+## Critérios de avaliação mais sensíveis no estado atual
 
-### Gateway 2 — `http://localhost:3002`
+Os pontos que mais impactam a percepção do teste hoje são:
 
-| Aspecto | Detalhe |
-|---|---|
-| **Auth** | Headers fixos: `Gateway-Auth-Token` + `Gateway-Auth-Secret` |
-| **Listar** | `GET /transacoes` |
-| **Criar** | `POST /transacoes` — `valor`, `nome`, `email`, `numeroCartao`, `cvv` |
-| **Reembolso** | `POST /transacoes/reembolso` com `{ "id": "..." }` |
-| **Erro CVV** | `200` ou `300` → erro de cartão inválido |
+1. coerência entre documentação, requisito e código
+2. cobertura dos fluxos críticos de compra e refund
+3. demonstração real do fallback entre gateways
+4. clareza de operação local
+5. tratamento de dados sensíveis
 
-> [!IMPORTANT]
-> Os gateways têm **schemas diferentes** (inglês vs português) e **auth diferentes** (Bearer vs headers). A aplicação abstrai isso com **Strategy/Adapter Pattern**.
+## Próxima leitura recomendada
 
----
-
-## 📝 Critérios de Avaliação
-
-1. Lógica de programação
-2. Organização do projeto
-3. Legibilidade do código
-4. Validação necessária dos dados
-5. Forma adequada de utilização dos recursos
-6. Seguimento dos padrões especificados
-7. Tratamento dos dados sensíveis corretamente
-8. Clareza na documentação
-
----
-
-## 📦 Checklist Macro de Implementação
-
-- [ ] Setup do projeto AdonisJS 6 com Docker Compose
-- [ ] Modelagem e migrations do banco de dados (MySQL)
-- [ ] Seeds para dados iniciais (gateways, admin user)
-- [ ] Sistema de autenticação (login/logout com API tokens)
-- [ ] Middleware de autorização (RBAC por roles)
-- [ ] CRUD de Usuários (`ADMIN`, `MANAGER`)
-- [ ] CRUD de Produtos (`ADMIN`, `MANAGER`, `FINANCE`)
-- [ ] Listagem de Clientes e Detalhes
-- [ ] Integração multi-gateway (Strategy Pattern)
-  - [ ] Gateway 1 adapter (auth via Bearer token)
-  - [ ] Gateway 2 adapter (auth via headers fixos)
-  - [ ] Factory para seleção por prioridade
-  - [ ] Fallback automático em caso de erro
-- [ ] Rota de Compra (pública)
-  - [ ] Cálculo do valor: múltiplos produtos × quantidades
-  - [ ] Criação de client se não existir
-  - [ ] Tentativa de cobrança com fallback
-  - [ ] Salvamento da transação + transaction_products
-- [ ] Listagem e Detalhes de Transações
-- [ ] Reembolso de transação (`ADMIN`, `FINANCE`)
-- [ ] Gestão de Gateways (ativar/desativar, alterar prioridade)
-- [ ] Testes (TDD)
-  - [ ] Unit tests (services, validators)
-  - [ ] Integration tests (rotas, database)
-  - [ ] Gateway mock tests
-- [ ] Docker Compose (MySQL + App + Gateway Mocks)
-- [ ] README detalhado
+- `docs/local/handoff-status.md`
+- `docs/local/implementation-roadmap.md`
+- `docs/architecture-patterns.md`
+- `docs/documentation-patterns.md`
