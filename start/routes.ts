@@ -81,6 +81,7 @@ router
         router.get('/:id', [ClientsController, 'show'])
       })
       .prefix('/clients')
+      .use(middleware.role({ roles: ['ADMIN', 'MANAGER', 'FINANCE'] }))
 
     /**
      * Gateways management — ADMIN only
@@ -103,7 +104,7 @@ router
         router.get('/:id', [TransactionsController, 'show'])
       })
       .prefix('/transactions')
-      .use(middleware.role({ roles: ['ADMIN', 'MANAGER', 'FINANCE', 'USER'] }))
+      .use(middleware.role({ roles: ['ADMIN', 'MANAGER', 'FINANCE'] }))
 
     /**
      * Refund — ADMIN, FINANCE

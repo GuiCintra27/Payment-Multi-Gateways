@@ -19,27 +19,27 @@ Header transversal:
 
 ### Autenticados
 
-| Metodo   | Rota                       | Roles                                 |
-| -------- | -------------------------- | ------------------------------------- |
-| `POST`   | `/logout`                  | qualquer autenticado                  |
-| `GET`    | `/users`                   | `ADMIN`, `MANAGER`                    |
-| `POST`   | `/users`                   | `ADMIN`, `MANAGER`                    |
-| `GET`    | `/users/:id`               | `ADMIN`, `MANAGER`                    |
-| `PUT`    | `/users/:id`               | `ADMIN`, `MANAGER`                    |
-| `DELETE` | `/users/:id`               | `ADMIN`, `MANAGER`                    |
-| `GET`    | `/products`                | `ADMIN`, `MANAGER`, `FINANCE`         |
-| `POST`   | `/products`                | `ADMIN`, `MANAGER`, `FINANCE`         |
-| `GET`    | `/products/:id`            | `ADMIN`, `MANAGER`, `FINANCE`         |
-| `PUT`    | `/products/:id`            | `ADMIN`, `MANAGER`, `FINANCE`         |
-| `DELETE` | `/products/:id`            | `ADMIN`, `MANAGER`, `FINANCE`         |
-| `GET`    | `/clients`                 | qualquer autenticado                  |
-| `GET`    | `/clients/:id`             | qualquer autenticado                  |
-| `GET`    | `/gateways`                | `ADMIN`                               |
-| `PATCH`  | `/gateways/:id/toggle`     | `ADMIN`                               |
-| `PATCH`  | `/gateways/:id/priority`   | `ADMIN`                               |
-| `GET`    | `/transactions`            | `ADMIN`, `MANAGER`, `FINANCE`, `USER` |
-| `GET`    | `/transactions/:id`        | `ADMIN`, `MANAGER`, `FINANCE`, `USER` |
-| `POST`   | `/transactions/:id/refund` | `ADMIN`, `FINANCE`                    |
+| Metodo   | Rota                       | Roles                         |
+| -------- | -------------------------- | ----------------------------- |
+| `POST`   | `/logout`                  | qualquer autenticado          |
+| `GET`    | `/users`                   | `ADMIN`, `MANAGER`            |
+| `POST`   | `/users`                   | `ADMIN`, `MANAGER`            |
+| `GET`    | `/users/:id`               | `ADMIN`, `MANAGER`            |
+| `PUT`    | `/users/:id`               | `ADMIN`, `MANAGER`            |
+| `DELETE` | `/users/:id`               | `ADMIN`, `MANAGER`            |
+| `GET`    | `/products`                | `ADMIN`, `MANAGER`, `FINANCE` |
+| `POST`   | `/products`                | `ADMIN`, `MANAGER`, `FINANCE` |
+| `GET`    | `/products/:id`            | `ADMIN`, `MANAGER`, `FINANCE` |
+| `PUT`    | `/products/:id`            | `ADMIN`, `MANAGER`, `FINANCE` |
+| `DELETE` | `/products/:id`            | `ADMIN`, `MANAGER`, `FINANCE` |
+| `GET`    | `/clients`                 | `ADMIN`, `MANAGER`, `FINANCE` |
+| `GET`    | `/clients/:id`             | `ADMIN`, `MANAGER`, `FINANCE` |
+| `GET`    | `/gateways`                | `ADMIN`                       |
+| `PATCH`  | `/gateways/:id/toggle`     | `ADMIN`                       |
+| `PATCH`  | `/gateways/:id/priority`   | `ADMIN`                       |
+| `GET`    | `/transactions`            | `ADMIN`, `MANAGER`, `FINANCE` |
+| `GET`    | `/transactions/:id`        | `ADMIN`, `MANAGER`, `FINANCE` |
+| `POST`   | `/transactions/:id/refund` | `ADMIN`, `FINANCE`            |
 
 ## Login
 
@@ -163,3 +163,4 @@ Comportamento relevante observado no mock:
 - a aplicacao normaliza o resultado para `approved` ou `rejected`
 - a lista de transacoes dos mocks vem encapsulada em `data`
 - `GET /metrics` expõe contadores de compra, refund, tentativas e falhas por gateway
+- respostas operacionais de transacao e gateway omitem credenciais sensiveis do gateway

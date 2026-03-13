@@ -77,8 +77,8 @@ test.group('RBAC', (group) => {
     response.assertStatus(403)
   })
 
-  test('all authenticated roles can access /clients', async ({ client }) => {
-    for (const role of ['ADMIN', 'MANAGER', 'FINANCE', 'USER'] as const) {
+  test('ADMIN, MANAGER and FINANCE can access /clients', async ({ client }) => {
+    for (const role of ['ADMIN', 'MANAGER', 'FINANCE'] as const) {
       const user = await User.create({
         fullName: `${role} User`,
         email: `rbac-clients-${role.toLowerCase()}@test.com`,
@@ -89,5 +89,17 @@ test.group('RBAC', (group) => {
       const response = await client.get('/clients').loginAs(user)
       response.assertStatus(200)
     }
+  })
+
+  test('USER cannot access /clients', async ({ client }) => {
+    const user = await User.create({
+      fullName: 'User',
+      email: 'rbac-user-clients@test.com',
+      password: 'password123',
+      role: 'USER',
+    })
+
+    const response = await client.get('/clients').loginAs(user)
+    response.assertStatus(403)
   })
 })

@@ -1,4 +1,5 @@
 import RefundService from '#services/refund_service'
+import logger from '@adonisjs/core/services/logger'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class RefundsController {
@@ -23,7 +24,19 @@ export default class RefundsController {
         return response.unprocessableEntity({ message })
       }
 
-      return response.internalServerError({ message })
+      logger.error(
+        {
+          error: message,
+          requestId,
+          transactionId: params.id,
+          route: 'POST /transactions/:id/refund',
+        },
+        'Unexpected refund failure'
+      )
+
+      return response.internalServerError({
+        message: 'Unexpected error while processing refund.',
+      })
     }
   }
 }

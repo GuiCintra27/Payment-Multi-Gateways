@@ -5,14 +5,17 @@ import Client from '#models/client'
 import Gateway from '#models/gateway'
 import Transaction from '#models/transaction'
 import GatewayService from '#services/gateway/gateway_service'
+import RefundService from '#services/refund_service'
 import type { RefundOutput } from '#services/gateway/gateway_interface'
 
 const originalRefund = GatewayService.prototype.refund
+const originalExecute = RefundService.prototype.execute
 
 test.group('Refunds', (group) => {
   group.each.setup(() => testUtils.db().withGlobalTransaction())
   group.each.teardown(() => {
     GatewayService.prototype.refund = originalRefund
+    RefundService.prototype.execute = originalExecute
   })
 
   test('POST /transactions/:id/refund refunds an approved transaction', async ({
@@ -160,6 +163,26 @@ test.group('Refunds', (group) => {
     response.assertStatus(404)
     response.assertBodyContains({
       message: 'Transaction not found',
+    })
+  })
+
+  test('POST /transactions/:id/refund hides unexpected internal errors', async ({ client }) => {
+    const finance = await User.create({
+      fullName: 'Finance',
+      email: 'refund-unexpected@test.com',
+      password: 'password123',
+      role: 'FINANCE',
+    })
+
+    RefundService.prototype.execute = async function () {
+      throw new Error('Gateway2 refund failed: 500')
+    }
+
+    const response = await client.post('/transactions/1/refund').loginAs(finance)
+
+    response.assertStatus(500)
+    response.assertBodyContains({
+      message: 'Unexpected error while processing refund.',
     })
   })
 })

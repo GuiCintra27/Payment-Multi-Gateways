@@ -81,7 +81,7 @@ Concluído:
 - fallback por prioridade implementado
 - listagem e detalhe de transações implementados
 - refund implementado
-- permissão de `transactions` alinhada para incluir `USER`
+- acesso de backoffice endurecido para `clients` e `transactions`
 - reorder de prioridade dos gateways ajustado para manter sequência única
 - resposta explícita para compra quando não há gateways ativos
 
@@ -92,7 +92,7 @@ Validação registrada:
 - inspeção manual do contrato real dos gateway mocks via `curl` em portas alternativas
 - validação em ambiente dockerizado com `node:24`, MySQL e gateway mocks reais
 - fallback real validado automaticamente contra os mocks
-- base posteriormente ampliada e consolidada na suíte atual com `61/61` testes passando
+- base posteriormente ampliada e consolidada na suíte atual com `66/66` testes passando
 
 ### F4 - Testes dos fluxos críticos
 
@@ -115,7 +115,7 @@ Concluído:
 - testes reais dos gateways adicionados de forma condicionada por `RUN_REAL_GATEWAY_TESTS`
 - espera ativa dos gateway mocks adicionada aos testes reais para reduzir flakiness fora da CI
 - execução validada dos testes reais com gateway mocks
-- suíte verde com `61/61` testes passando em ambiente dockerizado com `node:24`
+- suíte verde com `66/66` testes passando em ambiente dockerizado com `node:24`
 
 Validação registrada:
 
@@ -170,13 +170,15 @@ Concluído:
 - métricas financeiras e de fallback adicionadas para leitura mais útil do domínio de pagamentos
 - workflows de CI e Release Please alinhados para a branch `master`
 - workflows atualizados para actions oficiais compatíveis com Node 24 e opt-in explícito de runtime Node 24
+- serialização operacional endurecida para não expor `credentials` dos gateways
+- respostas `500` sanitizadas para compra e refund
 
 Validação registrada:
 
 - `npm run lint`
 - `npm run typecheck`
 - `node ace test`
-- suíte verde com `61/61` testes passando
+- suíte verde com `66/66` testes passando
 - smoke operacional executado com sucesso em ambiente isolado com app, MySQL e gateway mocks
 - `docker compose -f docker-compose.yaml -f docker-compose.monitoring.yaml config`
 - Grafana validado via API com datasource `prometheus` e dashboards provisionados
@@ -255,7 +257,7 @@ O projeto pode ser considerado pronto para apresentação quando:
 
 ## Última atualização
 
-- permissões de `transactions` alinhadas para incluir `USER`
+- endurecimento de acesso de `clients` e `transactions` para `ADMIN`, `MANAGER`, `FINANCE`
 - reorder de prioridade de gateways passou a manter sequência única
 - cobertura funcional de `transactions` e `gateways` foi iniciada
 - resultado das fases F1 a F4 consolidado na documentação local
@@ -264,7 +266,7 @@ O projeto pode ser considerado pronto para apresentação quando:
 - prova unitária do fallback do `GatewayService` foi adicionada
 - adapters e CI foram alinhados para o contrato real dos gateway mocks
 - espera ativa dos gateway mocks foi incorporada aos testes reais de integração
-- validação dockerizada com Node 24 passou com `61/61` testes
+- validação dockerizada com Node 24 passou com `66/66` testes
 - Fase 5 concluída com `README.md` e documentação pública em `docs/projects/`
 - `X-Request-Id`, `/metrics`, smoke operacional e observabilidade opcional implementados e validados
 - dashboards provisionados e métricas refinadas para leituras de approval, GMV, refunds e fallback

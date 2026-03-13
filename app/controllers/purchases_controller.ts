@@ -1,5 +1,6 @@
 import PurchaseService from '#services/purchase_service'
 import { purchaseValidator } from '#validators/purchase'
+import logger from '@adonisjs/core/services/logger'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class PurchasesController {
@@ -40,7 +41,14 @@ export default class PurchasesController {
         })
       }
 
-      return response.internalServerError({ message })
+      logger.error(
+        { error: message, requestId, route: 'POST /purchases' },
+        'Unexpected purchase failure'
+      )
+
+      return response.internalServerError({
+        message: 'Unexpected error while processing purchase.',
+      })
     }
   }
 }

@@ -26,8 +26,8 @@ Roles suportadas:
 | Compra     | -     | -       | -       | -    | sim     |
 | Usuarios   | sim   | sim     | nao     | nao  | nao     |
 | Produtos   | sim   | sim     | sim     | nao  | nao     |
-| Clientes   | sim   | sim     | sim     | sim  | nao     |
-| Transacoes | sim   | sim     | sim     | sim  | nao     |
+| Clientes   | sim   | sim     | sim     | nao  | nao     |
+| Transacoes | sim   | sim     | sim     | nao  | nao     |
 | Refund     | sim   | nao     | sim     | nao  | nao     |
 | Gateways   | sim   | nao     | nao     | nao  | nao     |
 
@@ -39,6 +39,7 @@ Regras atuais:
 - nao persistir CVV
 - persistir somente `card_last_numbers`
 - valores monetarios em centavos para evitar erro de ponto flutuante
+- nao expor `credentials` dos gateways nas respostas da API
 
 ## Gateways externos
 

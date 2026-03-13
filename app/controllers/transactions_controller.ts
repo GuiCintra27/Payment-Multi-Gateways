@@ -1,4 +1,5 @@
 import Transaction from '#models/transaction'
+import TransactionTransformer from '#transformers/transaction_transformer'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class TransactionsController {
@@ -6,7 +7,12 @@ export default class TransactionsController {
    * GET /transactions — list all transactions (with client and gateway)
    */
   async index({}: HttpContext) {
-    return Transaction.query().preload('client').preload('gateway').orderBy('created_at', 'desc')
+    const transactions = await Transaction.query()
+      .preload('client')
+      .preload('gateway')
+      .orderBy('created_at', 'desc')
+
+    return transactions.map((transaction) => TransactionTransformer.transform(transaction))
   }
 
   /**
@@ -24,6 +30,6 @@ export default class TransactionsController {
       return response.notFound({ message: 'Transaction not found' })
     }
 
-    return transaction
+    return TransactionTransformer.transform(transaction, { includeProducts: true })
   }
 }

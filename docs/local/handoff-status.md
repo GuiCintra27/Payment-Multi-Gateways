@@ -41,7 +41,7 @@ O ponto central agora não é mais "começar a implementação", e sim fechar o 
 | Compra pública                       | Concluído | `app/services/purchase_service.ts` e `POST /purchases` implementados e cobertos no fluxo principal                       |
 | Multi-gateway com fallback           | Concluído | adapters e factory implementados, alinhados ao contrato real do mock e validados com fallback real                       |
 | Reembolso                            | Concluído | `app/services/refund_service.ts` e rota implementados e cobertos nos cenários principais                                 |
-| Transações                           | Concluído | listagem e detalhe implementados, com autorização alinhada para incluir `USER` e cobertura funcional principal           |
+| Transações                           | Concluído | listagem e detalhe implementados, com acesso endurecido para backoffice e cobertura funcional principal                  |
 | Documentação pública do projeto      | Concluído | `README.md` e `docs/projects/` com hub, quick start, arquitetura, dados, fluxos, integrações, infra, segurança e runbook |
 | Bônus de senioridade                 | Concluído | `X-Request-Id`, `/metrics`, smoke operacional e stack opcional de observabilidade entregues                              |
 
@@ -109,7 +109,10 @@ Concluído neste ciclo:
 - validação real do Grafana via API confirmando datasource `prometheus` e dashboards provisionados
 - automação do GitHub alinhada para executar em `master`
 - workflows atualizados para actions oficiais compatíveis com Node 24 e teste explícito do `release-please` em Node 24
-- suíte verde com `61/61` testes passando
+- endurecimento de acesso de backoffice para remover `USER` de `clients` e `transactions`
+- serialização segura de transações e gateways para não expor `credentials`
+- respostas `500` sanitizadas para compra e refund
+- suíte verde com `66/66` testes passando
 
 Permanece fora do escopo deste ciclo:
 
@@ -153,7 +156,7 @@ Resultados registrados:
 - `npm run typecheck` executado com sucesso
 - `npm run lint` executado com sucesso
 - `node ace test` executado com sucesso
-- suíte verde com `61/61` testes passando
+- suíte verde com `66/66` testes passando
 - smoke operacional executado com sucesso contra ambiente isolado da aplicação
 - `docker compose -f docker-compose.yaml -f docker-compose.monitoring.yaml config` executado com sucesso
 - Grafana validado com datasource `prometheus` e dashboards `payment-overview` e `gateway-reliability`

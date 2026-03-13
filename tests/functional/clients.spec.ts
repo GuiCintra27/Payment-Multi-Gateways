@@ -63,10 +63,10 @@ test.group('Clients', (group) => {
 
   test('GET /clients/:id returns 404 for non-existent client', async ({ client }) => {
     const user = await User.create({
-      fullName: 'User',
+      fullName: 'Finance',
       email: 'clients-missing@test.com',
       password: 'password123',
-      role: 'USER',
+      role: 'FINANCE',
     })
 
     const response = await client.get('/clients/99999').loginAs(user)
@@ -75,5 +75,18 @@ test.group('Clients', (group) => {
     response.assertBodyContains({
       message: 'Client not found',
     })
+  })
+
+  test('USER cannot access /clients/:id', async ({ client }) => {
+    const user = await User.create({
+      fullName: 'User',
+      email: 'clients-user-forbidden@test.com',
+      password: 'password123',
+      role: 'USER',
+    })
+
+    const response = await client.get('/clients/1').loginAs(user)
+
+    response.assertStatus(403)
   })
 })

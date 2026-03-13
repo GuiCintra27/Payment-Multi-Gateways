@@ -1,4 +1,5 @@
 import Client from '#models/client'
+import TransactionTransformer from '#transformers/transaction_transformer'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class ClientsController {
@@ -6,7 +7,15 @@ export default class ClientsController {
    * GET /clients — list all clients with their transactions
    */
   async index({}: HttpContext) {
-    return Client.query().orderBy('id', 'asc')
+    const clients = await Client.query().orderBy('id', 'asc')
+
+    return clients.map((client) => ({
+      id: client.id,
+      name: client.name,
+      email: client.email,
+      createdAt: client.createdAt,
+      updatedAt: client.updatedAt,
+    }))
   }
 
   /**
@@ -24,6 +33,15 @@ export default class ClientsController {
       return response.notFound({ message: 'Client not found' })
     }
 
-    return client
+    return {
+      id: client.id,
+      name: client.name,
+      email: client.email,
+      createdAt: client.createdAt,
+      updatedAt: client.updatedAt,
+      transactions: client.transactions.map((transaction) =>
+        TransactionTransformer.summary(transaction)
+      ),
+    }
   }
 }

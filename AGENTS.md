@@ -158,6 +158,8 @@ GatewayStrategy
 - `scripts/smoke-e2e.sh` é o smoke operacional oficial e deve acompanhar qualquer mudança de fluxo principal
 - `docker-compose.monitoring.yaml` e `docs/projects/OBSERVABILITY.md` são a referência da observabilidade opcional
 - dashboards Grafana provisionados devem continuar coerentes com as métricas expostas em `/metrics`
+- `USER` nao deve acessar `clients` nem `transactions`; backoffice fica restrito a `ADMIN`, `MANAGER`, `FINANCE`
+- respostas da API nunca devem expor `credentials` de gateway
 - testes reais dos gateways podem ser condicionados por `RUN_REAL_GATEWAY_TESTS` para não depender sempre de portas/mocks locais
 
 ## Convenções de código

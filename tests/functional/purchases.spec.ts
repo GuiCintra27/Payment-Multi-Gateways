@@ -5,14 +5,17 @@ import Gateway from '#models/gateway'
 import Client from '#models/client'
 import Transaction from '#models/transaction'
 import GatewayService from '#services/gateway/gateway_service'
+import PurchaseService from '#services/purchase_service'
 import type { ChargeInput, ChargeOutput } from '#services/gateway/gateway_interface'
 
 const originalCharge = GatewayService.prototype.charge
+const originalExecute = PurchaseService.prototype.execute
 
 test.group('Purchases', (group) => {
   group.each.setup(() => testUtils.db().withGlobalTransaction())
   group.each.teardown(() => {
     GatewayService.prototype.charge = originalCharge
+    PurchaseService.prototype.execute = originalExecute
   })
 
   test('POST /purchases creates client, transaction and pivot items', async ({
@@ -192,5 +195,30 @@ test.group('Purchases', (group) => {
     assert.lengthOf(clients, 1)
     assert.equal(clients[0].id, existingClient.id)
     assert.equal(clients[0].name, 'Original Client Name')
+  })
+
+  test('POST /purchases hides unexpected internal errors', async ({ client }) => {
+    PurchaseService.prototype.execute = async function () {
+      throw new Error('Gateway1 auth failed: 401 Unauthorized')
+    }
+
+    const response = await client.post('/purchases').json({
+      client: {
+        name: 'Buyer',
+        email: 'unexpected-purchase@test.com',
+      },
+      products: [{ id: 1, quantity: 1 }],
+      card: {
+        number: '4111111111111111',
+        cvv: '123',
+        holderName: 'BUYER TEST',
+        expirationDate: '12/2030',
+      },
+    })
+
+    response.assertStatus(500)
+    response.assertBodyContains({
+      message: 'Unexpected error while processing purchase.',
+    })
   })
 })

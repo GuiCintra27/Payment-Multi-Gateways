@@ -17,7 +17,7 @@ O projeto implementa compra publica com multiplos produtos, calculo do total no 
 - dashboards Grafana provisionados para visao executiva e confiabilidade por gateway
 - smoke operacional automatizado em `scripts/smoke-e2e.sh`
 - Docker Compose para app, banco e mocks
-- Suite validada com `61/61` testes passando em `node:24`
+- Suite validada com `66/66` testes passando em `node:24`
 
 ## Stack
 

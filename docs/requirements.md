@@ -16,31 +16,31 @@ O nível-alvo continua sendo o mais completo do teste: múltiplos produtos, aute
 
 ## Requisitos principais do teste
 
-| Requisito | Expectativa |
-|---|---|
-| Compra pública | `POST /purchases` |
-| Cálculo do total | servidor calcula `sum(price * quantity)` |
-| Gateways | dois gateways com autenticação e schemas diferentes |
-| Fallback | ordem por prioridade com troca automática em falha |
-| Reembolso | operação no gateway da transação original |
-| Roles | `ADMIN`, `MANAGER`, `FINANCE`, `USER` |
-| Persistência | valores em centavos e pivot com produtos comprados |
-| Testes | cobertura real dos fluxos críticos |
-| Infra | Docker Compose com app, banco e mocks |
+| Requisito        | Expectativa                                         |
+| ---------------- | --------------------------------------------------- |
+| Compra pública   | `POST /purchases`                                   |
+| Cálculo do total | servidor calcula `sum(price * quantity)`            |
+| Gateways         | dois gateways com autenticação e schemas diferentes |
+| Fallback         | ordem por prioridade com troca automática em falha  |
+| Reembolso        | operação no gateway da transação original           |
+| Roles            | `ADMIN`, `MANAGER`, `FINANCE`, `USER`               |
+| Persistência     | valores em centavos e pivot com produtos comprados  |
+| Testes           | cobertura real dos fluxos críticos                  |
+| Infra            | Docker Compose com app, banco e mocks               |
 
 ## Stack definida no projeto
 
-| Aspecto | Escolha atual |
-|---|---|
-| Framework | AdonisJS 6 |
-| Linguagem | TypeScript |
-| Banco | MySQL 8 |
-| ORM | Lucid |
-| Validação | VineJS |
-| Auth | Access Tokens opaque |
-| Testes | Japa |
-| Padrão de gateway | Strategy + Factory |
-| Estrutura | MVC + Service Layer |
+| Aspecto           | Escolha atual        |
+| ----------------- | -------------------- |
+| Framework         | AdonisJS 6           |
+| Linguagem         | TypeScript           |
+| Banco             | MySQL 8              |
+| ORM               | Lucid                |
+| Validação         | VineJS               |
+| Auth              | Access Tokens opaque |
+| Testes            | Japa                 |
+| Padrão de gateway | Strategy + Factory   |
+| Estrutura         | MVC + Service Layer  |
 
 ## Modelo de dados esperado
 
@@ -70,47 +70,47 @@ Observações de domínio:
 
 - `/users` para `ADMIN`, `MANAGER`
 - `/products` para `ADMIN`, `MANAGER`, `FINANCE`
-- `/clients` para usuários autenticados
-- `/transactions` para perfis autorizados
+- `/clients` para `ADMIN`, `MANAGER`, `FINANCE`
+- `/transactions` para `ADMIN`, `MANAGER`, `FINANCE`
 - `/transactions/:id/refund` para `ADMIN`, `FINANCE`
 - `/gateways/:id/toggle` e `/gateways/:id/priority` para `ADMIN`
 
 ## Estado atual de aderência
 
-| Item | Status | Observação |
-|---|---|---|
-| Setup do projeto AdonisJS 6 | Concluído | projeto configurado e versionado |
-| Docker Compose | Concluído | app + MySQL + gateway mocks |
-| Migrations do banco | Concluído | tabelas principais presentes |
-| Seeds iniciais | Concluído | admin e gateways |
-| Auth com API tokens | Concluído | login/logout implementados |
-| Middleware RBAC | Concluído | role middleware aplicado nas rotas |
-| CRUD de usuários | Concluído | controllers + validators + testes |
-| CRUD de produtos | Concluído | controllers + validators + testes |
-| Clientes e detalhe | Parcial | rotas existem, faltam testes dedicados |
-| Integração gateway 1 | Concluído no código | falta validação integrada com mock |
-| Integração gateway 2 | Concluído no código | falta validação integrada com mock |
-| Factory + prioridade | Concluído no código | falta prova integrada do fallback |
-| Fallback automático | Concluído no código | falta teste real do cenário |
-| Compra pública | Parcial | fluxo existe, faltam testes funcionais/integrados |
-| Transações | Parcial | rotas existem e o acesso de `USER` foi alinhado; faltam mais testes do fluxo |
-| Reembolso | Parcial | fluxo existe, faltam testes dedicados |
-| Gestão de gateways | Parcial | endpoints existem, incluindo reorder de prioridade; faltam mais testes e validações de cenário |
-| TDD / cobertura dos fluxos críticos | Parcial | base montada, cobertura ainda insuficiente |
-| README detalhado | Pendente | arquivo não existe na raiz |
-| Documentação pública do projeto | Pendente | `docs/projects/` ainda não existe |
+| Item                                | Status              | Observação                                                                                     |
+| ----------------------------------- | ------------------- | ---------------------------------------------------------------------------------------------- |
+| Setup do projeto AdonisJS 6         | Concluído           | projeto configurado e versionado                                                               |
+| Docker Compose                      | Concluído           | app + MySQL + gateway mocks                                                                    |
+| Migrations do banco                 | Concluído           | tabelas principais presentes                                                                   |
+| Seeds iniciais                      | Concluído           | admin e gateways                                                                               |
+| Auth com API tokens                 | Concluído           | login/logout implementados                                                                     |
+| Middleware RBAC                     | Concluído           | role middleware aplicado nas rotas                                                             |
+| CRUD de usuários                    | Concluído           | controllers + validators + testes                                                              |
+| CRUD de produtos                    | Concluído           | controllers + validators + testes                                                              |
+| Clientes e detalhe                  | Parcial             | rotas existem, faltam testes dedicados                                                         |
+| Integração gateway 1                | Concluído no código | falta validação integrada com mock                                                             |
+| Integração gateway 2                | Concluído no código | falta validação integrada com mock                                                             |
+| Factory + prioridade                | Concluído no código | falta prova integrada do fallback                                                              |
+| Fallback automático                 | Concluído no código | falta teste real do cenário                                                                    |
+| Compra pública                      | Parcial             | fluxo existe, faltam testes funcionais/integrados                                              |
+| Transações                          | Parcial             | rotas existem; faltam mais testes do fluxo                                                     |
+| Reembolso                           | Parcial             | fluxo existe, faltam testes dedicados                                                          |
+| Gestão de gateways                  | Parcial             | endpoints existem, incluindo reorder de prioridade; faltam mais testes e validações de cenário |
+| TDD / cobertura dos fluxos críticos | Parcial             | base montada, cobertura ainda insuficiente                                                     |
+| README detalhado                    | Pendente            | arquivo não existe na raiz                                                                     |
+| Documentação pública do projeto     | Pendente            | `docs/projects/` ainda não existe                                                              |
 
 ## Diferenças entre docs e implementação atual
 
-### Permissões de transações
+### Permissões de backoffice
 
-O documento inicial considerava `USER` com acesso a transações, mas as rotas atuais restringem `transactions` a:
+As rotas de `clients` e `transactions` devem seguir menor privilégio:
 
 - `ADMIN`
 - `MANAGER`
 - `FINANCE`
 
-Esse comportamento precisa ser confirmado e então alinhado entre código e documentação.
+O perfil `USER` nao deve acessar dados operacionais de clientes ou transacoes.
 
 ### Test runner
 

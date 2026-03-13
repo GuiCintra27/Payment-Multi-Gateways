@@ -9,12 +9,12 @@ import Product from '#models/product'
 test.group('Transactions', (group) => {
   group.each.setup(() => testUtils.db().withGlobalTransaction())
 
-  test('USER can list transactions', async ({ client, assert }) => {
+  test('FINANCE can list transactions', async ({ client, assert }) => {
     const user = await User.create({
-      fullName: 'User',
-      email: 'transactions-user@test.com',
+      fullName: 'Finance',
+      email: 'transactions-finance@test.com',
       password: 'password123',
-      role: 'USER',
+      role: 'FINANCE',
     })
 
     const txClient = await Client.create({
@@ -43,6 +43,7 @@ test.group('Transactions', (group) => {
     assert.isArray(response.body())
     assert.lengthOf(response.body(), 1)
     assert.equal(response.body()[0].status, 'approved')
+    assert.notProperty(response.body()[0].gateway, 'credentials')
   })
 
   test('GET /transactions/:id returns products for authorized users', async ({
@@ -50,10 +51,10 @@ test.group('Transactions', (group) => {
     assert,
   }) => {
     const user = await User.create({
-      fullName: 'User',
+      fullName: 'Finance',
       email: 'transactions-show@test.com',
       password: 'password123',
-      role: 'USER',
+      role: 'FINANCE',
     })
 
     const txClient = await Client.create({
@@ -93,14 +94,15 @@ test.group('Transactions', (group) => {
     assert.equal(response.body().id, transaction.id)
     assert.lengthOf(response.body().products, 1)
     assert.equal(response.body().products[0].name, 'Product One')
+    assert.notProperty(response.body().gateway, 'credentials')
   })
 
   test('GET /transactions/:id returns 404 for non-existent transaction', async ({ client }) => {
     const user = await User.create({
-      fullName: 'User',
+      fullName: 'Finance',
       email: 'transactions-missing@test.com',
       password: 'password123',
-      role: 'USER',
+      role: 'FINANCE',
     })
 
     const response = await client.get('/transactions/99999').loginAs(user)
@@ -109,5 +111,18 @@ test.group('Transactions', (group) => {
     response.assertBodyContains({
       message: 'Transaction not found',
     })
+  })
+
+  test('USER cannot access transactions', async ({ client }) => {
+    const user = await User.create({
+      fullName: 'User',
+      email: 'transactions-user-forbidden@test.com',
+      password: 'password123',
+      role: 'USER',
+    })
+
+    const response = await client.get('/transactions').loginAs(user)
+
+    response.assertStatus(403)
   })
 })
