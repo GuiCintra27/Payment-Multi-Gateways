@@ -10,16 +10,15 @@ import type { ChargeInput, ChargeOutput } from '#services/gateway/gateway_interf
 const originalCharge = GatewayService.prototype.charge
 
 test.group('Purchases', (group) => {
-  group.each.setup(() => {
-    const cleanup = testUtils.db().withGlobalTransaction()
-
-    return () => {
-      GatewayService.prototype.charge = originalCharge
-      return cleanup()
-    }
+  group.each.setup(() => testUtils.db().withGlobalTransaction())
+  group.each.teardown(() => {
+    GatewayService.prototype.charge = originalCharge
   })
 
-  test('POST /purchases creates client, transaction and pivot items', async ({ client, assert }) => {
+  test('POST /purchases creates client, transaction and pivot items', async ({
+    client,
+    assert,
+  }) => {
     const gateway = await Gateway.create({
       name: 'gateway1',
       isActive: true,

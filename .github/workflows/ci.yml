@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: ["main"]
+    branches: ['main']
   pull_request:
 
 jobs:
@@ -21,17 +21,35 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
+      gateway-mock:
+        image: matheusprotzen/gateways-mock
+        ports:
+          - 3001:3001
+          - 3002:3002
 
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '24'
+          cache: 'npm'
       - run: npm ci
+      - name: Wait for gateway mocks
+        run: |
+          for i in $(seq 1 30); do
+            curl -fsS -X POST http://localhost:3001/login \
+              -H 'Content-Type: application/json' \
+              -d '{"email":"dev@betalent.tech","token":"FEC9BB078BF338F464F96B48089EB498"}' >/dev/null 2>&1 && \
+            curl -fsS http://localhost:3002/transacoes \
+              -H 'Gateway-Auth-Token: tk_f2198cc671b5289fa856' \
+              -H 'Gateway-Auth-Secret: 3d15e8ed6131446ea7e3456728b1211f' >/dev/null 2>&1 && exit 0
+            sleep 2
+          done
+          echo "Gateway mocks did not start in time"
+          exit 1
       - run: npm run lint
       - run: npm run typecheck
-      - run: node ace migration:run --force
+      - run: node ace migration:fresh --force
         env:
           NODE_ENV: test
           HOST: localhost
@@ -45,6 +63,11 @@ jobs:
           DB_DATABASE: betalent_test
           GATEWAY1_URL: http://localhost:3001
           GATEWAY2_URL: http://localhost:3002
+          GATEWAY1_EMAIL: dev@betalent.tech
+          GATEWAY1_TOKEN: FEC9BB078BF338F464F96B48089EB498
+          GATEWAY2_AUTH_TOKEN: tk_f2198cc671b5289fa856
+          GATEWAY2_AUTH_SECRET: 3d15e8ed6131446ea7e3456728b1211f
+          RUN_REAL_GATEWAY_TESTS: 'true'
       - run: npm test
         env:
           NODE_ENV: test
@@ -59,6 +82,11 @@ jobs:
           DB_DATABASE: betalent_test
           GATEWAY1_URL: http://localhost:3001
           GATEWAY2_URL: http://localhost:3002
+          GATEWAY1_EMAIL: dev@betalent.tech
+          GATEWAY1_TOKEN: FEC9BB078BF338F464F96B48089EB498
+          GATEWAY2_AUTH_TOKEN: tk_f2198cc671b5289fa856
+          GATEWAY2_AUTH_SECRET: 3d15e8ed6131446ea7e3456728b1211f
+          RUN_REAL_GATEWAY_TESTS: 'true'
 
   smoke:
     runs-on: ubuntu-latest

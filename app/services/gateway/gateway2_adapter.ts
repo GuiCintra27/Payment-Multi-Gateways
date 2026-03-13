@@ -13,6 +13,11 @@ interface Gateway2Credentials {
   authSecret: string
 }
 
+interface Gateway2ErrorResponse {
+  statusCode?: number
+  erros?: Array<{ message?: string }>
+}
+
 /**
  * Gateway 2 Adapter
  *
@@ -58,11 +63,26 @@ export default class Gateway2Adapter implements GatewayStrategy {
       throw new Error(`Gateway2 charge failed: ${response.status}`)
     }
 
-    const result = (await response.json()) as { id: string; statusTransacao: string }
+    const result = (await response.json()) as
+      | { id?: string; statusTransacao?: string }
+      | Gateway2ErrorResponse
+
+    if (
+      'statusCode' in result &&
+      typeof result.statusCode === 'number' &&
+      result.statusCode >= 400
+    ) {
+      const message = result.erros?.[0]?.message ?? `Gateway2 charge failed: ${result.statusCode}`
+      throw new Error(message)
+    }
+
+    if (!('id' in result) || !result.id) {
+      throw new Error('Gateway2 charge returned no transaction id')
+    }
 
     return {
       externalId: String(result.id),
-      status: result.statusTransacao === 'aprovada' ? 'approved' : 'rejected',
+      status: result.statusTransacao === 'rejeitada' ? 'rejected' : 'approved',
     }
   }
 
@@ -95,6 +115,7 @@ export default class Gateway2Adapter implements GatewayStrategy {
       throw new Error(`Gateway2 list failed: ${response.status}`)
     }
 
-    return (await response.json()) as ExternalTransaction[]
+    const result = (await response.json()) as { data?: ExternalTransaction[] }
+    return result.data ?? []
   }
 }

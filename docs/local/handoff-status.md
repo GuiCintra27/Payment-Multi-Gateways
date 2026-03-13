@@ -15,35 +15,35 @@ O ponto central agora não é mais "começar a implementação", e sim fechar o 
 
 ## Status por fase
 
-| Fase | Situação atual | Resultado resumido |
-|---|---|---|
-| F1 | Concluída | setup, Docker, CI e release automation entregues |
-| F2 | Concluída | modelagem principal, seeders, auth e RBAC entregues |
-| F3 | Parcialmente concluída | core funcional existe e foi refinado com alinhamento de `transactions` e reorder de gateways |
-| F4 | Parcialmente iniciada | suíte de testes cresceu; o principal gap agora é fallback real com gateway mocks |
-| F5 | Pendente | documentação pública `docs/projects/` ainda não criada |
-| F6 | Pendente | bônus de senioridade ainda não implementados |
+| Fase | Situação atual         | Resultado resumido                                                                           |
+| ---- | ---------------------- | -------------------------------------------------------------------------------------------- |
+| F1   | Concluída              | setup, Docker, CI e release automation entregues                                             |
+| F2   | Concluída              | modelagem principal, seeders, auth e RBAC entregues                                          |
+| F3   | Concluída              | core funcional foi refinado e validado com compra, fallback real, transações e refund        |
+| F4   | Parcialmente concluída | suíte cobre os fluxos críticos principais; faltam cenários adicionais e endurecimento         |
+| F5   | Pendente               | documentação pública `docs/projects/` ainda não criada                                       |
+| F6   | Pendente               | bônus de senioridade ainda não implementados                                                 |
 
 ## Estado por área
 
-| Área | Status | Evidência |
-|---|---|---|
-| Infra local e Docker | Concluído | `docker-compose.yaml`, `Dockerfile`, `scripts/start-dev.sh` |
-| CI e release automation | Concluído | `.github/workflows/ci.yml`, `.github/workflows/release-please.yml` |
-| Banco de dados e modelagem principal | Concluído | migrations de `users`, `gateways`, `clients`, `products`, `transactions`, `transaction_products` |
-| Seeders iniciais | Concluído | `database/seeders/01_admin_seeder.ts`, `02_gateway_seeder.ts` |
-| Auth por access token | Concluído | `app/controllers/auth_controller.ts`, `config/auth.ts` |
-| RBAC | Concluído | `app/middleware/role_middleware.ts`, rotas protegidas em `start/routes.ts` |
-| CRUD de usuários | Concluído | `app/controllers/users_controller.ts` |
-| CRUD de produtos | Concluído | `app/controllers/products_controller.ts` |
-| Clientes e detalhe de compras | Parcialmente concluído | `app/controllers/clients_controller.ts` existe, mas sem testes dedicados |
-| Gestão de gateways | Parcialmente concluído | listagem, toggle e reorder de prioridade existem; cobertura ainda parcial |
-| Compra pública | Parcialmente concluído | `app/services/purchase_service.ts` e `POST /purchases` existem; faltam testes E2E do fluxo |
-| Multi-gateway com fallback | Parcialmente concluído | adapters e factory existem; faltam testes integrados com mocks |
-| Reembolso | Parcialmente concluído | `app/services/refund_service.ts` e rota existem; faltam testes dedicados |
-| Transações | Parcialmente concluído | listagem e detalhe existem; autorização foi alinhada para incluir `USER`, mas a cobertura ainda está evoluindo |
-| Documentação pública do projeto | Pendente | `docs/projects/` ainda não existe |
-| Bônus de senioridade | Pendente | request ID, métricas e observabilidade ainda não foram trazidos |
+| Área                                 | Status                 | Evidência                                                                                                                          |
+| ------------------------------------ | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Infra local e Docker                 | Concluído              | `docker-compose.yaml`, `Dockerfile`, `scripts/start-dev.sh`                                                                        |
+| CI e release automation              | Concluído              | `.github/workflows/ci.yml`, `.github/workflows/release-please.yml`                                                                 |
+| Banco de dados e modelagem principal | Concluído              | migrations de `users`, `gateways`, `clients`, `products`, `transactions`, `transaction_products`                                   |
+| Seeders iniciais                     | Concluído              | `database/seeders/01_admin_seeder.ts`, `02_gateway_seeder.ts`                                                                      |
+| Auth por access token                | Concluído              | `app/controllers/auth_controller.ts`, `config/auth.ts`                                                                             |
+| RBAC                                 | Concluído              | `app/middleware/role_middleware.ts`, rotas protegidas em `start/routes.ts`                                                         |
+| CRUD de usuários                     | Concluído              | `app/controllers/users_controller.ts`                                                                                              |
+| CRUD de produtos                     | Concluído              | `app/controllers/products_controller.ts`                                                                                           |
+| Clientes e detalhe de compras        | Parcialmente concluído | `app/controllers/clients_controller.ts` existe, mas sem testes dedicados                                                           |
+| Gestão de gateways                   | Parcialmente concluído | listagem, toggle e reorder de prioridade existem; cobertura principal passou, mas ainda cabe ampliar cenários                      |
+| Compra pública                       | Concluído              | `app/services/purchase_service.ts` e `POST /purchases` implementados e cobertos no fluxo principal                                 |
+| Multi-gateway com fallback           | Concluído              | adapters e factory implementados, alinhados ao contrato real do mock e validados com fallback real                                 |
+| Reembolso                            | Concluído              | `app/services/refund_service.ts` e rota implementados e cobertos nos cenários principais                                            |
+| Transações                           | Concluído              | listagem e detalhe implementados, com autorização alinhada para incluir `USER` e cobertura funcional principal                     |
+| Documentação pública do projeto      | Pendente               | `docs/projects/` ainda não existe                                                                                                  |
+| Bônus de senioridade                 | Pendente               | request ID, métricas e observabilidade ainda não foram trazidos                                                                    |
 
 ## O que já está implementado
 
@@ -72,7 +72,7 @@ O ponto central agora não é mais "começar a implementação", e sim fechar o 
 ### Testes já presentes
 
 - Funcionais: auth, RBAC, users, products, gateways, transactions, purchases e refunds.
-- Unitários: validators de usuário, validator de purchase, `GatewayFactory` e fallback do `GatewayService`.
+- Unitários: validators de usuário, validator de purchase, `GatewayFactory`, fallback isolado do `GatewayService` e integração real dos gateways condicionada por ambiente.
 
 ## Resultado do último incremento
 
@@ -84,11 +84,16 @@ Concluído neste ciclo:
 - testes funcionais iniciais para `gateways` e `transactions`
 - testes funcionais iniciais para `purchases` e `refunds`
 - teste unitário inicial provando fallback do `GatewayService`
+- adapters alinhados ao contrato real do mock
+- teste de integração real dos gateways adicionado e CI configurado para subir os mocks
+- validação completa em ambiente dockerizado com Node 24, MySQL e gateway mocks reais
+- `lint`, `typecheck` e `test` executados com sucesso nesse ambiente
+- suíte verde com `47/47` testes passando
 
 Continua pendente após este ciclo:
 
-- prova integrada do fallback com gateway mocks
 - documentação pública em `docs/projects/`
+- cenários adicionais para fortalecer `purchases`, `refunds`, `gateways` e `transactions`
 
 ## Lacunas relevantes
 
@@ -96,12 +101,11 @@ Continua pendente após este ciclo:
 
 Ainda faltam testes para os fluxos que mais importam para o teste técnico:
 
-- fallback real entre gateways
 - cenários mais completos de `POST /purchases`
 - cenários mais completos de `POST /transactions/:id/refund`
 - listagem/detalhe de transações em cenários mais amplos
 - cenários mais completos de gestão de gateways
-- integração com os gateway mocks
+- smoke operacional separado do teste automatizado
 
 ### Inconsistências entre requisito e código
 
@@ -118,18 +122,27 @@ Ainda faltam testes para os fluxos que mais importam para o teste técnico:
 - README profissional na raiz
 - smoke test de compra/refund com mocks reais
 
-## Restrições desta análise
+## Validação executada nesta sessão
 
-Esta revisão foi feita por inspeção estática do repositório.
+Foi executado um ambiente dockerizado de validação com:
 
-Não foi possível executar `npm`, `npm test`, `npm run lint` ou `npm run typecheck` no ambiente desta sessão porque `npm` não está disponível no shell atual.
+- `node:24`
+- MySQL 8
+- gateway mocks reais `matheusprotzen/gateways-mock`
+
+Resultados registrados:
+
+- `node ace migration:fresh --force` executado com sucesso
+- `npm run typecheck` executado com sucesso
+- `npm run lint` executado com sucesso
+- `node ace test` executado com sucesso
+- suíte verde com `47/47` testes passando
 
 ## Próximos passos recomendados
 
-1. Cobrir com testes os fluxos de compra, fallback, refund e gateways.
-2. Provar o fallback com integração real contra os gateway mocks.
-3. Criar a documentação pública mínima em `docs/projects/`.
-4. Implementar os bônus de maior retorno para recrutadores:
+1. Criar a documentação pública mínima em `docs/projects/`.
+2. Ampliar cenários de teste para `purchases`, `refunds`, `gateways` e `transactions`.
+3. Implementar os bônus de maior retorno para recrutadores:
    - `X-Request-Id`
    - métricas básicas
    - smoke operacional documentado

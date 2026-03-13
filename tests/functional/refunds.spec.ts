@@ -10,16 +10,15 @@ import type { RefundOutput } from '#services/gateway/gateway_interface'
 const originalRefund = GatewayService.prototype.refund
 
 test.group('Refunds', (group) => {
-  group.each.setup(() => {
-    const cleanup = testUtils.db().withGlobalTransaction()
-
-    return () => {
-      GatewayService.prototype.refund = originalRefund
-      return cleanup()
-    }
+  group.each.setup(() => testUtils.db().withGlobalTransaction())
+  group.each.teardown(() => {
+    GatewayService.prototype.refund = originalRefund
   })
 
-  test('POST /transactions/:id/refund refunds an approved transaction', async ({ client, assert }) => {
+  test('POST /transactions/:id/refund refunds an approved transaction', async ({
+    client,
+    assert,
+  }) => {
     const finance = await User.create({
       fullName: 'Finance',
       email: 'refund-finance@test.com',
@@ -56,9 +55,7 @@ test.group('Refunds', (group) => {
       return { success: true }
     }
 
-    const response = await client
-      .post(`/transactions/${transaction.id}/refund`)
-      .loginAs(finance)
+    const response = await client.post(`/transactions/${transaction.id}/refund`).loginAs(finance)
 
     response.assertStatus(200)
     assert.equal(response.body().transaction.status, 'refunded')
@@ -96,9 +93,7 @@ test.group('Refunds', (group) => {
       cardLastNumbers: '1234',
     })
 
-    const response = await client
-      .post(`/transactions/${transaction.id}/refund`)
-      .loginAs(finance)
+    const response = await client.post(`/transactions/${transaction.id}/refund`).loginAs(finance)
 
     response.assertStatus(422)
     response.assertBodyContains({

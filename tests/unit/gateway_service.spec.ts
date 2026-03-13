@@ -14,13 +14,9 @@ import type {
 const originalCreate = GatewayFactory.create
 
 test.group('GatewayService', (group) => {
-  group.each.setup(() => {
-    const cleanup = testUtils.db().withGlobalTransaction()
-
-    return () => {
-      GatewayFactory.create = originalCreate
-      return cleanup()
-    }
+  group.each.setup(() => testUtils.db().withGlobalTransaction())
+  group.each.teardown(() => {
+    GatewayFactory.create = originalCreate
   })
 
   test('falls back to the next active gateway when the first one fails', async ({ assert }) => {

@@ -86,11 +86,15 @@ export default class Gateway1Adapter implements GatewayStrategy {
       throw new Error(`Gateway1 charge failed: ${response.status}`)
     }
 
-    const result = (await response.json()) as { id: string; status: string }
+    const result = (await response.json()) as { id?: string; status?: string }
+
+    if (!result.id) {
+      throw new Error('Gateway1 charge returned no transaction id')
+    }
 
     return {
       externalId: String(result.id),
-      status: result.status === 'approved' ? 'approved' : 'rejected',
+      status: result.status === 'rejected' ? 'rejected' : 'approved',
     }
   }
 
@@ -126,6 +130,7 @@ export default class Gateway1Adapter implements GatewayStrategy {
       throw new Error(`Gateway1 list failed: ${response.status}`)
     }
 
-    return (await response.json()) as ExternalTransaction[]
+    const result = (await response.json()) as { data?: ExternalTransaction[] }
+    return result.data ?? []
   }
 }

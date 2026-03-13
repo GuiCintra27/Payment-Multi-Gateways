@@ -24,14 +24,14 @@ Se esses quatro itens não estiverem alinhados, o ganho percebido de qualquer b�
 
 ## Fases revisadas
 
-| Fase | Objetivo | Status |
-|---|---|---|
-| F1 | Setup, Docker, CI e automação de release | Concluída |
-| F2 | Modelagem, migrations, models, seeders, auth e RBAC | Concluída |
-| F3 | Core funcional de compras, gateways, transações e refund | Parcialmente concluída |
-| F4 | Testes dos fluxos críticos | Pendente em boa parte |
-| F5 | Documentação pública do projeto | Pendente |
-| F6 | Bônus de senioridade de alto retorno | Pendente |
+| Fase | Objetivo                                                 | Status                 |
+| ---- | -------------------------------------------------------- | ---------------------- |
+| F1   | Setup, Docker, CI e automação de release                 | Concluída              |
+| F2   | Modelagem, migrations, models, seeders, auth e RBAC      | Concluída              |
+| F3   | Core funcional de compras, gateways, transações e refund | Concluída              |
+| F4   | Testes dos fluxos críticos                               | Parcialmente concluída |
+| F5   | Documentação pública do projeto                          | Pendente               |
+| F6   | Bônus de senioridade de alto retorno                     | Pendente               |
 
 ## Resultado por fase
 
@@ -71,12 +71,13 @@ Validação registrada:
 
 ### F3 - Core funcional de compras, gateways, transações e refund
 
-Status: parcialmente concluída
+Status: concluída
 
 Concluído:
 
 - fluxo principal de compra implementado
 - adapters dos dois gateways implementados
+- adapters alinhados ao contrato real do mock
 - fallback por prioridade implementado
 - listagem e detalhe de transações implementados
 - refund implementado
@@ -84,27 +85,18 @@ Concluído:
 - reorder de prioridade dos gateways ajustado para manter sequência única
 - resposta explícita para compra quando não há gateways ativos
 
-Parcial:
-
-- compra pública com cobertura funcional inicial
-- fallback ainda sem prova integrada com os mocks reais
-- refund com cobertura funcional inicial
-- gestão de gateways com cobertura inicial, mas ainda não completa
-
-Pendente:
-
-- testes de integração do fallback real entre gateways
-- testes do fluxo completo de refund
-- revisão final dos contratos de erro dos adapters
-
 Validação registrada:
 
 - revisão estática do código
 - criação de cobertura funcional inicial para `transactions` e `gateways`
+- inspeção manual do contrato real dos gateway mocks via `curl` em portas alternativas
+- validação em ambiente dockerizado com `node:24`, MySQL e gateway mocks reais
+- fallback real validado automaticamente contra os mocks
+- `47/47` testes passando
 
 ### F4 - Testes dos fluxos críticos
 
-Status: parcialmente iniciada, ainda pendente em boa parte
+Status: parcialmente concluída
 
 Concluído:
 
@@ -117,26 +109,32 @@ Concluído:
 - testes funcionais iniciais de purchases
 - testes funcionais iniciais de refunds
 - testes unitários de validators, `GatewayFactory` e `GatewayService`
+- testes reais dos gateways adicionados de forma condicionada por `RUN_REAL_GATEWAY_TESTS`
+- execução validada dos testes reais com gateway mocks
+- suíte verde com `47/47` testes passando em ambiente dockerizado com `node:24`
 
 Pendente:
 
-- fallback real entre gateways
-- integração com os gateway mocks
 - cenários mais completos de purchase e refund
+- cenários mais completos de gateways e transactions
+- smoke operacional separado do teste automatizado
 
 Validação registrada:
 
-- apenas por inspeção de arquivos de teste nesta sessão
-- sem execução local por indisponibilidade de `node` e `npm`
+- `node ace migration:fresh --force`
+- `npm run lint`
+- `npm run typecheck`
+- `node ace test`
+- fallback real exercitado contra os mocks
 
 ## Backlog por prioridade
 
 ### Prioridade 1: fechar o core já iniciado
 
-- Adicionar testes de integração para fallback real entre gateways.
-- Revisar contratos e tratamento de erro dos adapters.
+- Criar `docs/projects/` e `README.md` para consolidar a apresentação do projeto.
 - ampliar cenários funcionais de `POST /purchases` e `POST /transactions/:id/refund`
 - ampliar testes dos endpoints de gateways e transações já iniciados
+- implementar `X-Request-Id` e correlação mínima de logs
 
 ### Prioridade 2: documentação pública mínima
 
@@ -179,15 +177,15 @@ Itens descartados para este teste:
 
 ## Matriz de senioridade aplicável
 
-| Item | Valor para recrutador | Custo | Decisão atual |
-|---|---|---|---|
-| Request ID + logs correlacionados | Alto | Baixo | Recomendado |
-| Métricas básicas (`/metrics`) | Alto | Médio | Recomendado |
-| Observabilidade completa com Grafana/Loki | Médio | Médio/Alto | Opcional |
-| Smoke test real com gateways mockados | Alto | Médio | Recomendado |
-| README e docs públicos profissionais | Alto | Médio | Recomendado |
-| Multi-compose split por responsabilidade | Médio | Baixo | Opcional |
-| Kafka, outbox, DLQ | Baixo para este teste | Alto | Não adotar |
+| Item                                      | Valor para recrutador | Custo      | Decisão atual |
+| ----------------------------------------- | --------------------- | ---------- | ------------- |
+| Request ID + logs correlacionados         | Alto                  | Baixo      | Recomendado   |
+| Métricas básicas (`/metrics`)             | Alto                  | Médio      | Recomendado   |
+| Observabilidade completa com Grafana/Loki | Médio                 | Médio/Alto | Opcional      |
+| Smoke test real com gateways mockados     | Alto                  | Médio      | Recomendado   |
+| README e docs públicos profissionais      | Alto                  | Médio      | Recomendado   |
+| Multi-compose split por responsabilidade  | Médio                 | Baixo      | Opcional      |
+| Kafka, outbox, DLQ                        | Baixo para este teste | Alto       | Não adotar    |
 
 ## Critério de pronto
 
@@ -208,3 +206,5 @@ O projeto pode ser considerado pronto para apresentação quando:
 - resultado das fases F1 a F4 consolidado na documentação local
 - cobertura funcional de `purchases` e `refunds` foi iniciada
 - prova unitária do fallback do `GatewayService` foi adicionada
+- adapters e CI foram alinhados para o contrato real dos gateway mocks
+- validação dockerizada com Node 24 passou com `47/47` testes

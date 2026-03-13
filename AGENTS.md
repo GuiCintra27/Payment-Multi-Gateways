@@ -52,6 +52,7 @@ O projeto implementa:
 
 - Framework: AdonisJS 6
 - Linguagem: TypeScript
+- Runtime Node.js: 24+
 - Banco: MySQL 8
 - ORM: Lucid
 - Validação: VineJS
@@ -106,6 +107,10 @@ Variáveis principais:
 - `APP_KEY`
 - `LOG_LEVEL`
 
+Variável útil para testes reais de integração com os mocks:
+
+- `RUN_REAL_GATEWAY_TESTS=true` habilita testes que exercitam os mocks reais
+
 ## Notas de arquitetura
 
 ### Fluxo de compra
@@ -147,6 +152,7 @@ GatewayStrategy
 - o projeto já tem implementação parcial do core; não tratar migrations/models/seeders como trabalho futuro
 - `docs/projects/` ainda não existe, então qualquer mudança relevante precisa também considerar a futura documentação pública
 - request ID é citado em documentos antigos, mas ainda não está implementado
+- testes reais dos gateways podem ser condicionados por `RUN_REAL_GATEWAY_TESTS` para não depender sempre de portas/mocks locais
 
 ## Convenções de código
 
