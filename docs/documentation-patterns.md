@@ -7,20 +7,17 @@ Documento de referência para organizar a documentação do projeto com base em 
 
 ## Situação atual
 
-Hoje o projeto possui documentação-base útil, mas ainda não possui a camada pública planejada.
+Hoje o projeto já possui documentação-base e uma camada pública mínima em `README.md` e `docs/projects/`.
 
 ### Já existe
 
+- `README.md`
 - `AGENTS.md`
 - `docs/requirements.md`
 - `docs/architecture-patterns.md`
 - `docs/documentation-patterns.md`
 - `docs/local/handoff-status.md`
 - `docs/local/implementation-roadmap.md`
-
-### Ainda não existe
-
-- `README.md` na raiz
 - `docs/projects/INDEX.md`
 - `docs/projects/QUICK-START.md`
 - `docs/projects/ARCHITECTURE.md`
@@ -30,6 +27,10 @@ Hoje o projeto possui documentação-base útil, mas ainda não possui a camada 
 - `docs/projects/INFRA.md`
 - `docs/projects/SECURITY.md`
 - `docs/projects/RUNBOOK.md`
+
+### Ainda não existe
+
+- `docs/projects/OBSERVABILITY.md`
 
 ## Padrão recomendado
 
@@ -46,27 +47,27 @@ Esse padrão continua sendo adequado aqui.
 
 ## Responsabilidade por camada
 
-| Camada | Objetivo |
-|---|---|
-| `README.md` | visão executiva do projeto para recrutador e avaliador |
-| `AGENTS.md` | contexto operacional para agentes de IA |
-| `docs/projects/` | documentação pública, estável e navegável |
-| `docs/local/` | status, roadmap e notas de trabalho em andamento |
+| Camada           | Objetivo                                               |
+| ---------------- | ------------------------------------------------------ |
+| `README.md`      | visão executiva do projeto para recrutador e avaliador |
+| `AGENTS.md`      | contexto operacional para agentes de IA                |
+| `docs/projects/` | documentação pública, estável e navegável              |
+| `docs/local/`    | status, roadmap e notas de trabalho em andamento       |
 
-## Estrutura pública proposta
+## Estrutura pública adotada
 
-| Documento | Pergunta que responde | Prioridade |
-|---|---|---|
-| `INDEX.md` | por onde começo a ler? | Alta |
-| `QUICK-START.md` | como subo e valido o projeto? | Alta |
-| `ARCHITECTURE.md` | como as partes se conectam? | Alta |
-| `DATA-MODEL.md` | quais tabelas e relacionamentos existem? | Alta |
-| `FLOWS.md` | como compra e refund funcionam? | Alta |
-| `INTEGRATIONS.md` | como os gateways externos são consumidos? | Alta |
-| `INFRA.md` | o que sobe no Docker e em quais portas? | Média |
-| `SECURITY.md` | como auth, RBAC e dados sensíveis são tratados? | Média |
-| `RUNBOOK.md` | como operar e resolver problemas comuns? | Média |
-| `OBSERVABILITY.md` | como monitorar métricas e logs? | Baixa, opcional |
+| Documento          | Pergunta que responde                           | Prioridade      |
+| ------------------ | ----------------------------------------------- | --------------- |
+| `INDEX.md`         | por onde começo a ler?                          | Alta            |
+| `QUICK-START.md`   | como subo e valido o projeto?                   | Alta            |
+| `ARCHITECTURE.md`  | como as partes se conectam?                     | Alta            |
+| `DATA-MODEL.md`    | quais tabelas e relacionamentos existem?        | Alta            |
+| `FLOWS.md`         | como compra e refund funcionam?                 | Alta            |
+| `INTEGRATIONS.md`  | como os gateways externos são consumidos?       | Alta            |
+| `INFRA.md`         | o que sobe no Docker e em quais portas?         | Média           |
+| `SECURITY.md`      | como auth, RBAC e dados sensíveis são tratados? | Média           |
+| `RUNBOOK.md`       | como operar e resolver problemas comuns?        | Média           |
+| `OBSERVABILITY.md` | como monitorar métricas e logs?                 | Baixa, opcional |
 
 ## Convenções recomendadas
 
@@ -111,4 +112,4 @@ Sempre que o código mudar:
 
 ## Próximo passo documental
 
-O próximo passo de maior valor é criar `docs/projects/INDEX.md` e `docs/projects/QUICK-START.md`, porque eles melhoram imediatamente a leitura do projeto por recrutadores e avaliadores.
+O próximo passo documental de maior valor é manter `docs/projects/` sincronizado com os próximos bônus restantes, especialmente métricas e smoke operacional.

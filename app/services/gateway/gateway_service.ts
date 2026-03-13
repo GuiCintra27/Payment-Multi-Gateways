@@ -32,7 +32,12 @@ export default class GatewayService {
         const result = await adapter.createTransaction(data)
 
         logger.info(
-          { gateway: gw.name, externalId: result.externalId, status: result.status },
+          {
+            gateway: gw.name,
+            externalId: result.externalId,
+            status: result.status,
+            requestId: data.requestId,
+          },
           'Charge completed'
         )
 
@@ -41,11 +46,14 @@ export default class GatewayService {
         const message = error instanceof Error ? error.message : String(error)
         errors.push({ gateway: gw.name, error: message })
 
-        logger.warn({ gateway: gw.name, error: message }, 'Gateway charge failed, trying next')
+        logger.warn(
+          { gateway: gw.name, error: message, requestId: data.requestId },
+          'Gateway charge failed, trying next'
+        )
       }
     }
 
-    logger.error({ errors }, 'All gateways failed')
+    logger.error({ errors, requestId: data.requestId }, 'All gateways failed')
     throw new Error(
       `All gateways failed: ${errors.map((e) => `${e.gateway}: ${e.error}`).join('; ')}`
     )
@@ -54,14 +62,17 @@ export default class GatewayService {
   /**
    * Refund a transaction on the specific gateway it was originally charged on.
    */
-  async refund(gateway: Gateway, externalId: string): Promise<RefundOutput> {
+  async refund(gateway: Gateway, externalId: string, requestId?: string): Promise<RefundOutput> {
     const adapter = GatewayFactory.create(gateway)
 
-    logger.info({ gateway: gateway.name, externalId }, 'Attempting refund')
+    logger.info({ gateway: gateway.name, externalId, requestId }, 'Attempting refund')
 
-    const result = await adapter.refundTransaction(externalId)
+    const result = await adapter.refundTransaction(externalId, requestId)
 
-    logger.info({ gateway: gateway.name, externalId, success: result.success }, 'Refund completed')
+    logger.info(
+      { gateway: gateway.name, externalId, success: result.success, requestId },
+      'Refund completed'
+    )
 
     return result
   }

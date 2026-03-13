@@ -33,6 +33,7 @@ test.group('Purchases', (group) => {
     ): Promise<{ result: ChargeOutput; gateway: Gateway }> {
       assert.equal(data.amount, 6000)
       assert.equal(data.email, 'buyer@test.com')
+      assert.equal(data.requestId, 'req-purchase-1')
 
       return {
         result: {
@@ -43,24 +44,28 @@ test.group('Purchases', (group) => {
       }
     }
 
-    const response = await client.post('/purchases').json({
-      client: {
-        name: 'Buyer',
-        email: 'buyer@test.com',
-      },
-      products: [
-        { id: product1.id, quantity: 2 },
-        { id: product2.id, quantity: 1 },
-      ],
-      card: {
-        number: '4111111111111111',
-        cvv: '123',
-        holderName: 'BUYER TEST',
-        expirationDate: '12/2030',
-      },
-    })
+    const response = await client
+      .post('/purchases')
+      .header('X-Request-Id', 'req-purchase-1')
+      .json({
+        client: {
+          name: 'Buyer',
+          email: 'buyer@test.com',
+        },
+        products: [
+          { id: product1.id, quantity: 2 },
+          { id: product2.id, quantity: 1 },
+        ],
+        card: {
+          number: '4111111111111111',
+          cvv: '123',
+          holderName: 'BUYER TEST',
+          expirationDate: '12/2030',
+        },
+      })
 
     response.assertStatus(201)
+    response.assertHeader('X-Request-Id', 'req-purchase-1')
     assert.equal(response.body().totalAmount, 6000)
     assert.equal(response.body().transaction.status, 'approved')
     assert.equal(response.body().transaction.cardLastNumbers, '1111')
@@ -89,7 +94,10 @@ test.group('Purchases', (group) => {
     assert.equal(savedProduct2?.$extras.pivot_price_at_time, 3000)
   })
 
-  test('POST /purchases returns 503 when no active gateways are available', async ({ client }) => {
+  test('POST /purchases returns 503 when no active gateways are available', async ({
+    client,
+    assert,
+  }) => {
     const product = await Product.create({ name: 'Product One', amount: 1500 })
 
     const response = await client.post('/purchases').json({
@@ -107,6 +115,7 @@ test.group('Purchases', (group) => {
     })
 
     response.assertStatus(503)
+    assert.isString(response.header('X-Request-Id'))
     response.assertBodyContains({
       message: 'Payment processing is temporarily unavailable.',
     })

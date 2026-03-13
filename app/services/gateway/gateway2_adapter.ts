@@ -44,10 +44,14 @@ export default class Gateway2Adapter implements GatewayStrategy {
     }
   }
 
+  private createHeaders(requestId?: string): Record<string, string> {
+    return requestId ? { ...this.headers, 'X-Request-Id': requestId } : this.headers
+  }
+
   async createTransaction(data: ChargeInput): Promise<ChargeOutput> {
     const response = await fetch(`${this.credentials.url}/transacoes`, {
       method: 'POST',
-      headers: this.headers,
+      headers: this.createHeaders(data.requestId),
       body: JSON.stringify({
         valor: data.amount,
         nome: data.name,
@@ -86,10 +90,10 @@ export default class Gateway2Adapter implements GatewayStrategy {
     }
   }
 
-  async refundTransaction(externalId: string): Promise<RefundOutput> {
+  async refundTransaction(externalId: string, requestId?: string): Promise<RefundOutput> {
     const response = await fetch(`${this.credentials.url}/transacoes/reembolso`, {
       method: 'POST',
-      headers: this.headers,
+      headers: this.createHeaders(requestId),
       body: JSON.stringify({ id: externalId }),
     })
 
@@ -108,7 +112,7 @@ export default class Gateway2Adapter implements GatewayStrategy {
   async listTransactions(): Promise<ExternalTransaction[]> {
     const response = await fetch(`${this.credentials.url}/transacoes`, {
       method: 'GET',
-      headers: this.headers,
+      headers: this.createHeaders(),
     })
 
     if (!response.ok) {

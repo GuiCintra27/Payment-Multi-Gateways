@@ -30,8 +30,8 @@ Se esses quatro itens não estiverem alinhados, o ganho percebido de qualquer b�
 | F2   | Modelagem, migrations, models, seeders, auth e RBAC      | Concluída              |
 | F3   | Core funcional de compras, gateways, transações e refund | Concluída              |
 | F4   | Testes dos fluxos críticos                               | Parcialmente concluída |
-| F5   | Documentação pública do projeto                          | Pendente               |
-| F6   | Bônus de senioridade de alto retorno                     | Pendente               |
+| F5   | Documentação pública do projeto                          | Concluída              |
+| F6   | Bônus de senioridade de alto retorno                     | Parcialmente concluída |
 
 ## Resultado por fase
 
@@ -92,7 +92,7 @@ Validação registrada:
 - inspeção manual do contrato real dos gateway mocks via `curl` em portas alternativas
 - validação em ambiente dockerizado com `node:24`, MySQL e gateway mocks reais
 - fallback real validado automaticamente contra os mocks
-- `47/47` testes passando
+- `49/49` testes passando
 
 ### F4 - Testes dos fluxos críticos
 
@@ -111,7 +111,7 @@ Concluído:
 - testes unitários de validators, `GatewayFactory` e `GatewayService`
 - testes reais dos gateways adicionados de forma condicionada por `RUN_REAL_GATEWAY_TESTS`
 - execução validada dos testes reais com gateway mocks
-- suíte verde com `47/47` testes passando em ambiente dockerizado com `node:24`
+- suíte verde com `49/49` testes passando em ambiente dockerizado com `node:24`
 
 Pendente:
 
@@ -127,37 +127,73 @@ Validação registrada:
 - `node ace test`
 - fallback real exercitado contra os mocks
 
+### F5 - Documentação pública do projeto
+
+Status: concluída
+
+Concluído:
+
+- `README.md` na raiz com visão executiva
+- `docs/projects/INDEX.md`
+- `docs/projects/QUICK-START.md`
+- `docs/projects/ARCHITECTURE.md`
+- `docs/projects/DATA-MODEL.md`
+- `docs/projects/FLOWS.md`
+- `docs/projects/INTEGRATIONS.md`
+- `docs/projects/INFRA.md`
+- `docs/projects/SECURITY.md`
+- `docs/projects/RUNBOOK.md`
+
+Validação registrada:
+
+- revisão manual dos documentos criados contra o código atual
+- links cruzados e estrutura pública mínima estabelecidos
+- documentação alinhada ao estado real já validado da aplicação
+
+### F6 - Bônus de senioridade de alto retorno
+
+Status: parcialmente concluída
+
+Concluído:
+
+- middleware global de `X-Request-Id`
+- eco do header na resposta HTTP
+- propagação do `X-Request-Id` para cobrança e refund nos gateways
+- logs principais de compra, fallback e refund enriquecidos com `requestId`
+- testes funcionais de `X-Request-Id`
+
+Pendente:
+
+- métricas básicas em `/metrics`
+- smoke operacional dedicado
+- observabilidade opcional ampliada
+
+Validação registrada:
+
+- `npm run lint`
+- `npm run typecheck`
+- `node ace test`
+- suíte verde com `49/49` testes passando
+
 ## Backlog por prioridade
 
-### Prioridade 1: fechar o core já iniciado
+### Prioridade 1: reforçar senioridade com baixo custo
 
-- Criar `docs/projects/` e `README.md` para consolidar a apresentação do projeto.
 - ampliar cenários funcionais de `POST /purchases` e `POST /transactions/:id/refund`
 - ampliar testes dos endpoints de gateways e transações já iniciados
-- implementar `X-Request-Id` e correlação mínima de logs
+- implementar métricas básicas em `/metrics`
+- documentar smoke operacional fim a fim
 
-### Prioridade 2: documentação pública mínima
+### Prioridade 2: documentação operacional e evidências
 
-Criar `docs/projects/` com, no mínimo:
-
-- `INDEX.md`
-- `QUICK-START.md`
-- `ARCHITECTURE.md`
-- `DATA-MODEL.md`
-- `FLOWS.md`
-- `INTEGRATIONS.md`
-- `INFRA.md`
-- `SECURITY.md`
-- `RUNBOOK.md`
-
-Também criar `README.md` na raiz com visão executiva e links para os docs.
+- documentar smoke operacional fim a fim
+- manter `docs/projects/` sincronizado com qualquer mudança relevante
+- adicionar documentação de observabilidade somente se o bônus for implementado
 
 ### Prioridade 3: bônus que mostram senioridade sem extrapolar o escopo
 
 Itens recomendados:
 
-- `X-Request-Id` em middleware e logs
-- propagação do request ID para chamadas aos gateways
 - endpoint `/metrics` com métricas mínimas de compra, refund e erro por gateway
 - smoke test operacional documentado
 - compose opcional de observabilidade, apenas se a implementação for leve
@@ -207,4 +243,6 @@ O projeto pode ser considerado pronto para apresentação quando:
 - cobertura funcional de `purchases` e `refunds` foi iniciada
 - prova unitária do fallback do `GatewayService` foi adicionada
 - adapters e CI foram alinhados para o contrato real dos gateway mocks
-- validação dockerizada com Node 24 passou com `47/47` testes
+- validação dockerizada com Node 24 passou com `49/49` testes
+- Fase 5 concluída com `README.md` e documentação pública em `docs/projects/`
+- `X-Request-Id` implementado e validado; suíte passou com `49/49` testes

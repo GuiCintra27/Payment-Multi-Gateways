@@ -21,6 +21,7 @@ interface PurchaseInput {
     holderName: string
     expirationDate: string
   }
+  requestId?: string
 }
 
 export default class PurchaseService {
@@ -61,6 +62,7 @@ export default class PurchaseService {
       email: input.client.email,
       cardNumber: input.card.number,
       cvv: input.card.cvv,
+      requestId: input.requestId,
     }
 
     const { result, gateway } = await this.gatewayService.charge(chargeData)
@@ -100,6 +102,7 @@ export default class PurchaseService {
         gateway: gateway.name,
         status: transaction.status,
         amount: totalAmount,
+        requestId: input.requestId,
       },
       'Purchase completed'
     )

@@ -48,16 +48,22 @@ test.group('Refunds', (group) => {
 
     GatewayService.prototype.refund = async function (
       receivedGateway,
-      externalId
+      externalId,
+      requestId
     ): Promise<RefundOutput> {
       assert.equal(receivedGateway.id, gateway.id)
+      assert.equal(requestId, 'req-refund-1')
       refundCalledWith = externalId
       return { success: true }
     }
 
-    const response = await client.post(`/transactions/${transaction.id}/refund`).loginAs(finance)
+    const response = await client
+      .post(`/transactions/${transaction.id}/refund`)
+      .header('X-Request-Id', 'req-refund-1')
+      .loginAs(finance)
 
     response.assertStatus(200)
+    response.assertHeader('X-Request-Id', 'req-refund-1')
     assert.equal(response.body().transaction.status, 'refunded')
     assert.equal(refundCalledWith, 'refund-external-1')
 
@@ -67,6 +73,7 @@ test.group('Refunds', (group) => {
 
   test('POST /transactions/:id/refund returns 422 for non-approved transactions', async ({
     client,
+    assert,
   }) => {
     const finance = await User.create({
       fullName: 'Finance',
@@ -96,6 +103,7 @@ test.group('Refunds', (group) => {
     const response = await client.post(`/transactions/${transaction.id}/refund`).loginAs(finance)
 
     response.assertStatus(422)
+    assert.isString(response.header('X-Request-Id'))
     response.assertBodyContains({
       message: 'Cannot refund transaction with status: rejected',
     })

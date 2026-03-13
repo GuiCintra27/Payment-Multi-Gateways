@@ -8,6 +8,7 @@ export default class PurchasesController {
    */
   async store({ request, response }: HttpContext) {
     const data = await request.validateUsing(purchaseValidator)
+    const requestId = request.header('x-request-id')
 
     const purchaseService = new PurchaseService()
 
@@ -16,6 +17,7 @@ export default class PurchasesController {
         client: data.client,
         products: data.products,
         card: data.card,
+        requestId,
       })
 
       return response.created(result)

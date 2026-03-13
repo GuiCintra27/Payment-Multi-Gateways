@@ -11,6 +11,7 @@ export interface ChargeInput {
   email: string
   cardNumber: string
   cvv: string
+  requestId?: string
 }
 
 export interface ChargeOutput {
@@ -40,7 +41,7 @@ export interface GatewayStrategy {
   /**
    * Refund a previously approved transaction
    */
-  refundTransaction(externalId: string): Promise<RefundOutput>
+  refundTransaction(externalId: string, requestId?: string): Promise<RefundOutput>
 
   /**
    * List all transactions from the gateway

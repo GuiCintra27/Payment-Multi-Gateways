@@ -5,11 +5,12 @@ export default class RefundsController {
   /**
    * POST /transactions/:id/refund — refund a transaction (ADMIN, FINANCE)
    */
-  async store({ params, response }: HttpContext) {
+  async store({ params, request, response }: HttpContext) {
     const refundService = new RefundService()
+    const requestId = request.header('x-request-id')
 
     try {
-      const result = await refundService.execute(params.id)
+      const result = await refundService.execute(params.id, requestId)
       return result
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Refund failed'

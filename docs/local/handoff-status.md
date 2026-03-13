@@ -15,35 +15,35 @@ O ponto central agora não é mais "começar a implementação", e sim fechar o 
 
 ## Status por fase
 
-| Fase | Situação atual         | Resultado resumido                                                                           |
-| ---- | ---------------------- | -------------------------------------------------------------------------------------------- |
-| F1   | Concluída              | setup, Docker, CI e release automation entregues                                             |
-| F2   | Concluída              | modelagem principal, seeders, auth e RBAC entregues                                          |
-| F3   | Concluída              | core funcional foi refinado e validado com compra, fallback real, transações e refund        |
-| F4   | Parcialmente concluída | suíte cobre os fluxos críticos principais; faltam cenários adicionais e endurecimento         |
-| F5   | Pendente               | documentação pública `docs/projects/` ainda não criada                                       |
-| F6   | Pendente               | bônus de senioridade ainda não implementados                                                 |
+| Fase | Situação atual         | Resultado resumido                                                                      |
+| ---- | ---------------------- | --------------------------------------------------------------------------------------- |
+| F1   | Concluída              | setup, Docker, CI e release automation entregues                                        |
+| F2   | Concluída              | modelagem principal, seeders, auth e RBAC entregues                                     |
+| F3   | Concluída              | core funcional foi refinado e validado com compra, fallback real, transações e refund   |
+| F4   | Parcialmente concluída | suíte cobre os fluxos críticos principais; faltam cenários adicionais e endurecimento   |
+| F5   | Concluída              | `README.md` e a camada pública em `docs/projects/` foram criados e alinhados ao código  |
+| F6   | Parcialmente concluída | `X-Request-Id` foi implementado; métricas e smoke operacional dedicado seguem pendentes |
 
 ## Estado por área
 
-| Área                                 | Status                 | Evidência                                                                                                                          |
-| ------------------------------------ | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Infra local e Docker                 | Concluído              | `docker-compose.yaml`, `Dockerfile`, `scripts/start-dev.sh`                                                                        |
-| CI e release automation              | Concluído              | `.github/workflows/ci.yml`, `.github/workflows/release-please.yml`                                                                 |
-| Banco de dados e modelagem principal | Concluído              | migrations de `users`, `gateways`, `clients`, `products`, `transactions`, `transaction_products`                                   |
-| Seeders iniciais                     | Concluído              | `database/seeders/01_admin_seeder.ts`, `02_gateway_seeder.ts`                                                                      |
-| Auth por access token                | Concluído              | `app/controllers/auth_controller.ts`, `config/auth.ts`                                                                             |
-| RBAC                                 | Concluído              | `app/middleware/role_middleware.ts`, rotas protegidas em `start/routes.ts`                                                         |
-| CRUD de usuários                     | Concluído              | `app/controllers/users_controller.ts`                                                                                              |
-| CRUD de produtos                     | Concluído              | `app/controllers/products_controller.ts`                                                                                           |
-| Clientes e detalhe de compras        | Parcialmente concluído | `app/controllers/clients_controller.ts` existe, mas sem testes dedicados                                                           |
-| Gestão de gateways                   | Parcialmente concluído | listagem, toggle e reorder de prioridade existem; cobertura principal passou, mas ainda cabe ampliar cenários                      |
-| Compra pública                       | Concluído              | `app/services/purchase_service.ts` e `POST /purchases` implementados e cobertos no fluxo principal                                 |
-| Multi-gateway com fallback           | Concluído              | adapters e factory implementados, alinhados ao contrato real do mock e validados com fallback real                                 |
-| Reembolso                            | Concluído              | `app/services/refund_service.ts` e rota implementados e cobertos nos cenários principais                                            |
-| Transações                           | Concluído              | listagem e detalhe implementados, com autorização alinhada para incluir `USER` e cobertura funcional principal                     |
-| Documentação pública do projeto      | Pendente               | `docs/projects/` ainda não existe                                                                                                  |
-| Bônus de senioridade                 | Pendente               | request ID, métricas e observabilidade ainda não foram trazidos                                                                    |
+| Área                                 | Status                 | Evidência                                                                                                                |
+| ------------------------------------ | ---------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Infra local e Docker                 | Concluído              | `docker-compose.yaml`, `Dockerfile`, `scripts/start-dev.sh`                                                              |
+| CI e release automation              | Concluído              | `.github/workflows/ci.yml`, `.github/workflows/release-please.yml`                                                       |
+| Banco de dados e modelagem principal | Concluído              | migrations de `users`, `gateways`, `clients`, `products`, `transactions`, `transaction_products`                         |
+| Seeders iniciais                     | Concluído              | `database/seeders/01_admin_seeder.ts`, `02_gateway_seeder.ts`                                                            |
+| Auth por access token                | Concluído              | `app/controllers/auth_controller.ts`, `config/auth.ts`                                                                   |
+| RBAC                                 | Concluído              | `app/middleware/role_middleware.ts`, rotas protegidas em `start/routes.ts`                                               |
+| CRUD de usuários                     | Concluído              | `app/controllers/users_controller.ts`                                                                                    |
+| CRUD de produtos                     | Concluído              | `app/controllers/products_controller.ts`                                                                                 |
+| Clientes e detalhe de compras        | Parcialmente concluído | `app/controllers/clients_controller.ts` existe, mas sem testes dedicados                                                 |
+| Gestão de gateways                   | Parcialmente concluído | listagem, toggle e reorder de prioridade existem; cobertura principal passou, mas ainda cabe ampliar cenários            |
+| Compra pública                       | Concluído              | `app/services/purchase_service.ts` e `POST /purchases` implementados e cobertos no fluxo principal                       |
+| Multi-gateway com fallback           | Concluído              | adapters e factory implementados, alinhados ao contrato real do mock e validados com fallback real                       |
+| Reembolso                            | Concluído              | `app/services/refund_service.ts` e rota implementados e cobertos nos cenários principais                                 |
+| Transações                           | Concluído              | listagem e detalhe implementados, com autorização alinhada para incluir `USER` e cobertura funcional principal           |
+| Documentação pública do projeto      | Concluído              | `README.md` e `docs/projects/` com hub, quick start, arquitetura, dados, fluxos, integrações, infra, segurança e runbook |
+| Bônus de senioridade                 | Parcialmente concluído | `X-Request-Id` implementado; métricas, smoke dedicado e observabilidade ampliada seguem pendentes                        |
 
 ## O que já está implementado
 
@@ -88,12 +88,18 @@ Concluído neste ciclo:
 - teste de integração real dos gateways adicionado e CI configurado para subir os mocks
 - validação completa em ambiente dockerizado com Node 24, MySQL e gateway mocks reais
 - `lint`, `typecheck` e `test` executados com sucesso nesse ambiente
-- suíte verde com `47/47` testes passando
+- `README.md` criado na raiz
+- camada pública criada em `docs/projects/`
+- documentação pública alinhada ao comportamento real da aplicação
+- middleware global de `X-Request-Id` implementado
+- propagação de `X-Request-Id` para cobrança e refund nos gateways
+- testes funcionais de `X-Request-Id` adicionados
+- suíte verde com `49/49` testes passando
 
 Continua pendente após este ciclo:
 
-- documentação pública em `docs/projects/`
 - cenários adicionais para fortalecer `purchases`, `refunds`, `gateways` e `transactions`
+- bônus de senioridade remanescentes, como métricas e smoke operacional dedicado
 
 ## Lacunas relevantes
 
@@ -115,11 +121,8 @@ Ainda faltam testes para os fluxos que mais importam para o teste técnico:
 
 ### Bônus de senioridade ainda ausentes
 
-- `X-Request-Id` e correlação de logs
 - endpoint `/metrics`
 - compose opcional de observabilidade
-- documentação pública em `docs/projects/`
-- README profissional na raiz
 - smoke test de compra/refund com mocks reais
 
 ## Validação executada nesta sessão
@@ -136,13 +139,11 @@ Resultados registrados:
 - `npm run typecheck` executado com sucesso
 - `npm run lint` executado com sucesso
 - `node ace test` executado com sucesso
-- suíte verde com `47/47` testes passando
+- suíte verde com `49/49` testes passando
 
 ## Próximos passos recomendados
 
-1. Criar a documentação pública mínima em `docs/projects/`.
-2. Ampliar cenários de teste para `purchases`, `refunds`, `gateways` e `transactions`.
-3. Implementar os bônus de maior retorno para recrutadores:
-   - `X-Request-Id`
+1. Ampliar cenários de teste para `purchases`, `refunds`, `gateways` e `transactions`.
+2. Implementar os bônus de maior retorno para recrutadores:
    - métricas básicas
    - smoke operacional documentado

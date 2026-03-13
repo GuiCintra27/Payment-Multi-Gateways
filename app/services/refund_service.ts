@@ -5,7 +5,7 @@ import logger from '@adonisjs/core/services/logger'
 export default class RefundService {
   private gatewayService = new GatewayService()
 
-  async execute(transactionId: number) {
+  async execute(transactionId: number, requestId?: string) {
     // 1. Find transaction with gateway
     const transaction = await Transaction.query()
       .where('id', transactionId)
@@ -31,7 +31,7 @@ export default class RefundService {
     }
 
     // 3. Call refund on the original gateway
-    await this.gatewayService.refund(transaction.gateway, transaction.externalId)
+    await this.gatewayService.refund(transaction.gateway, transaction.externalId, requestId)
 
     // 4. Update status
     transaction.status = 'refunded'
@@ -42,6 +42,7 @@ export default class RefundService {
         transactionId: transaction.id,
         gateway: transaction.gateway.name,
         externalId: transaction.externalId,
+        requestId,
       },
       'Refund completed'
     )

@@ -40,13 +40,12 @@ O projeto implementa:
 - testes dos fluxos críticos de compra, fallback e refund
 - aprofundamento dos testes dos endpoints de transações e gateways
 - documentação pública em `docs/projects/`
+- bônus de senioridade de observabilidade leve
 
 ### Ainda não implementado
 
-- `X-Request-Id` e correlação de logs
 - métricas em `/metrics`
 - stack opcional de observabilidade
-- `README.md` profissional na raiz
 
 ## Stack
 
@@ -150,8 +149,8 @@ GatewayStrategy
 ## Situações que exigem atenção
 
 - o projeto já tem implementação parcial do core; não tratar migrations/models/seeders como trabalho futuro
-- `docs/projects/` ainda não existe, então qualquer mudança relevante precisa também considerar a futura documentação pública
-- request ID é citado em documentos antigos, mas ainda não está implementado
+- `docs/projects/` já existe e precisa ser mantido sincronizado com o código
+- `X-Request-Id` já está implementado e deve ser preservado em mudanças de fluxo HTTP e gateway
 - testes reais dos gateways podem ser condicionados por `RUN_REAL_GATEWAY_TESTS` para não depender sempre de portas/mocks locais
 
 ## Convenções de código
