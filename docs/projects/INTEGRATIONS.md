@@ -13,6 +13,7 @@ Header transversal:
 | Metodo | Rota         | Descricao           |
 | ------ | ------------ | ------------------- |
 | `GET`  | `/`          | health check        |
+| `GET`  | `/metrics`   | metricas Prometheus |
 | `POST` | `/login`     | autentica usuario   |
 | `POST` | `/purchases` | cria compra publica |
 
@@ -161,3 +162,4 @@ Comportamento relevante observado no mock:
 - os dois gateways possuem schemas e autenticacoes diferentes
 - a aplicacao normaliza o resultado para `approved` ou `rejected`
 - a lista de transacoes dos mocks vem encapsulada em `data`
+- `GET /metrics` expõe contadores de compra, refund, tentativas e falhas por gateway

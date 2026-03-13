@@ -2,6 +2,7 @@ import Product from '#models/product'
 import Client from '#models/client'
 import Transaction from '#models/transaction'
 import GatewayService from '#services/gateway/gateway_service'
+import metrics from '#services/metrics_service'
 import type { ChargeInput } from '#services/gateway/gateway_interface'
 import db from '@adonisjs/lucid/services/db'
 import logger from '@adonisjs/core/services/logger'
@@ -106,6 +107,7 @@ export default class PurchaseService {
       },
       'Purchase completed'
     )
+    metrics.recordPurchase(transaction.status)
 
     // 6. Return summary
     await transaction.load('client')

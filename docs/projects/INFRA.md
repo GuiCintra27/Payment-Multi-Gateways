@@ -12,6 +12,11 @@ Servicos definidos em `docker-compose.yaml`:
 | `gateway-mock` | mocks dos dois gateways | `3001`, `3002` |
 | `app`          | API AdonisJS            | `3333`         |
 
+Endpoints operacionais da app:
+
+- `/` para health check
+- `/metrics` para metricas Prometheus
+
 ## Comportamento do container da app
 
 Ao subir a stack completa, o servico `app` executa:

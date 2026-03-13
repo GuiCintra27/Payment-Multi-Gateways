@@ -63,6 +63,12 @@ Resposta esperada:
 }
 ```
 
+### Metrics
+
+```bash
+curl http://localhost:3333/metrics
+```
+
 ### Rodar testes
 
 ```bash

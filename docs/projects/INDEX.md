@@ -35,6 +35,7 @@ Esta API recebe compras publicas, calcula o total no servidor, tenta cobrar no g
 - Testes dos fluxos principais: validados
 - Documentacao publica minima: concluida
 - Observabilidade leve: `X-Request-Id` implementado
+- Observabilidade leve: `/metrics` implementado
 - Observabilidade avancada: nao implementada
 
 ## Documentos locais

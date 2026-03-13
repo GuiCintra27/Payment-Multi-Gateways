@@ -1,6 +1,7 @@
 import Gateway from '#models/gateway'
 import GatewayFactory from './gateway_factory.js'
 import type { ChargeInput, ChargeOutput, RefundOutput } from './gateway_interface.js'
+import metrics from '#services/metrics_service'
 import logger from '@adonisjs/core/services/logger'
 
 /**
@@ -21,15 +22,19 @@ export default class GatewayService {
     const gateways = await Gateway.query().where('is_active', true).orderBy('priority', 'asc')
 
     if (gateways.length === 0) {
+      metrics.recordNoActiveGateways()
       throw new Error('No active gateways available')
     }
 
     const errors: Array<{ gateway: string; error: string }> = []
 
     for (const gw of gateways) {
+      metrics.recordGatewayChargeAttempt(gw.name)
+
       try {
         const adapter = GatewayFactory.create(gw)
         const result = await adapter.createTransaction(data)
+        metrics.recordGatewayChargeSuccess(gw.name)
 
         logger.info(
           {
@@ -45,6 +50,7 @@ export default class GatewayService {
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error)
         errors.push({ gateway: gw.name, error: message })
+        metrics.recordGatewayChargeFailure(gw.name)
 
         logger.warn(
           { gateway: gw.name, error: message, requestId: data.requestId },
@@ -53,6 +59,7 @@ export default class GatewayService {
       }
     }
 
+    metrics.recordAllGatewaysFailed()
     logger.error({ errors, requestId: data.requestId }, 'All gateways failed')
     throw new Error(
       `All gateways failed: ${errors.map((e) => `${e.gateway}: ${e.error}`).join('; ')}`
@@ -64,16 +71,23 @@ export default class GatewayService {
    */
   async refund(gateway: Gateway, externalId: string, requestId?: string): Promise<RefundOutput> {
     const adapter = GatewayFactory.create(gateway)
+    metrics.recordGatewayRefundAttempt(gateway.name)
 
     logger.info({ gateway: gateway.name, externalId, requestId }, 'Attempting refund')
 
-    const result = await adapter.refundTransaction(externalId, requestId)
+    try {
+      const result = await adapter.refundTransaction(externalId, requestId)
+      metrics.recordGatewayRefundSuccess(gateway.name)
 
-    logger.info(
-      { gateway: gateway.name, externalId, success: result.success, requestId },
-      'Refund completed'
-    )
+      logger.info(
+        { gateway: gateway.name, externalId, success: result.success, requestId },
+        'Refund completed'
+      )
 
-    return result
+      return result
+    } catch (error) {
+      metrics.recordGatewayRefundFailure(gateway.name)
+      throw error
+    }
   }
 }

@@ -161,10 +161,12 @@ Concluído:
 - propagação do `X-Request-Id` para cobrança e refund nos gateways
 - logs principais de compra, fallback e refund enriquecidos com `requestId`
 - testes funcionais de `X-Request-Id`
+- endpoint `/metrics` em formato Prometheus
+- métricas de compra, refund, tentativas e falhas por gateway
+- testes funcionais de métricas
 
 Pendente:
 
-- métricas básicas em `/metrics`
 - smoke operacional dedicado
 - observabilidade opcional ampliada
 
@@ -173,7 +175,7 @@ Validação registrada:
 - `npm run lint`
 - `npm run typecheck`
 - `node ace test`
-- suíte verde com `49/49` testes passando
+- suíte verde com `52/52` testes passando
 
 ## Backlog por prioridade
 
@@ -181,7 +183,6 @@ Validação registrada:
 
 - ampliar cenários funcionais de `POST /purchases` e `POST /transactions/:id/refund`
 - ampliar testes dos endpoints de gateways e transações já iniciados
-- implementar métricas básicas em `/metrics`
 - documentar smoke operacional fim a fim
 
 ### Prioridade 2: documentação operacional e evidências
@@ -194,7 +195,6 @@ Validação registrada:
 
 Itens recomendados:
 
-- endpoint `/metrics` com métricas mínimas de compra, refund e erro por gateway
 - smoke test operacional documentado
 - compose opcional de observabilidade, apenas se a implementação for leve
 
@@ -243,6 +243,6 @@ O projeto pode ser considerado pronto para apresentação quando:
 - cobertura funcional de `purchases` e `refunds` foi iniciada
 - prova unitária do fallback do `GatewayService` foi adicionada
 - adapters e CI foram alinhados para o contrato real dos gateway mocks
-- validação dockerizada com Node 24 passou com `49/49` testes
+- validação dockerizada com Node 24 passou com `52/52` testes
 - Fase 5 concluída com `README.md` e documentação pública em `docs/projects/`
-- `X-Request-Id` implementado e validado; suíte passou com `49/49` testes
+- `X-Request-Id` e `/metrics` implementados e validados; suíte passou com `52/52` testes

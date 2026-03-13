@@ -88,6 +88,14 @@ curl -i http://localhost:3333 -H 'X-Request-Id: req-manual-1'
 
 O header deve voltar na resposta com o mesmo valor.
 
+### Validar `/metrics`
+
+```bash
+curl http://localhost:3333/metrics
+```
+
+Voce deve ver contadores no formato Prometheus, incluindo metricas de compra, refund e gateway.
+
 ## Smoke manual sugerido
 
 1. autenticar um admin

@@ -13,8 +13,9 @@ O projeto implementa compra publica com multiplos produtos, calculo do total no 
 - Access Tokens opaque para autenticacao
 - RBAC com `ADMIN`, `MANAGER`, `FINANCE` e `USER`
 - `X-Request-Id` com propagacao basica para os gateways
+- `/metrics` em formato Prometheus para compra, refund e erros de gateway
 - Docker Compose para app, banco e mocks
-- Suite validada com `49/49` testes passando em `node:24`
+- Suite validada com `52/52` testes passando em `node:24`
 
 ## Stack
 
@@ -60,4 +61,4 @@ docker compose up --build
 
 ## Estado atual
 
-O core funcional, a documentacao publica e a base principal de testes ja estao implementados e validados. Os proximos incrementos naturais sao metricas em `/metrics`, smoke operacional dedicado e ampliacao de cenarios de teste.
+O core funcional, a documentacao publica e a base principal de testes ja estao implementados e validados. Os proximos incrementos naturais sao smoke operacional dedicado e ampliacao de cenarios de teste.

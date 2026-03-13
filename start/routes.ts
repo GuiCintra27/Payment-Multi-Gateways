@@ -18,6 +18,7 @@ const GatewaysController = () => import('#controllers/gateways_controller')
 const TransactionsController = () => import('#controllers/transactions_controller')
 const PurchasesController = () => import('#controllers/purchases_controller')
 const RefundsController = () => import('#controllers/refunds_controller')
+const MetricsController = () => import('#controllers/metrics_controller')
 
 /**
  * Health check
@@ -25,6 +26,7 @@ const RefundsController = () => import('#controllers/refunds_controller')
 router.get('/', () => {
   return { status: 'ok', timestamp: new Date().toISOString() }
 })
+router.get('/metrics', [MetricsController, 'index'])
 
 /**
  * Auth routes (public)

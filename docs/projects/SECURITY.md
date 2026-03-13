@@ -58,5 +58,4 @@ Cada gateway usa um mecanismo diferente:
 
 Ainda nao implementado:
 
-- endpoint `/metrics`
 - rate limiting

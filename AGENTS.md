@@ -44,7 +44,6 @@ O projeto implementa:
 
 ### Ainda não implementado
 
-- métricas em `/metrics`
 - stack opcional de observabilidade
 
 ## Stack
@@ -151,6 +150,7 @@ GatewayStrategy
 - o projeto já tem implementação parcial do core; não tratar migrations/models/seeders como trabalho futuro
 - `docs/projects/` já existe e precisa ser mantido sincronizado com o código
 - `X-Request-Id` já está implementado e deve ser preservado em mudanças de fluxo HTTP e gateway
+- `/metrics` já está implementado em formato Prometheus e deve ser atualizado se os fluxos instrumentados mudarem
 - testes reais dos gateways podem ser condicionados por `RUN_REAL_GATEWAY_TESTS` para não depender sempre de portas/mocks locais
 
 ## Convenções de código

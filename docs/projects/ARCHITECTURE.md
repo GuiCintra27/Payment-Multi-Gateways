@@ -60,6 +60,7 @@ GatewayService
 - controllers finos e regra de negocio em services
 - `X-Request-Id` gerado ou reaproveitado no middleware global
 - `X-Request-Id` propagado para cobranca e refund nos gateways
+- metricas em memoria expostas em `/metrics` no formato Prometheus
 
 ## Componentes centrais
 
@@ -89,5 +90,4 @@ GatewayService
 
 Itens ainda nao implementados:
 
-- metricas em `/metrics`
 - observabilidade dedicada

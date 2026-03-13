@@ -1,5 +1,6 @@
 import Transaction from '#models/transaction'
 import GatewayService from '#services/gateway/gateway_service'
+import metrics from '#services/metrics_service'
 import logger from '@adonisjs/core/services/logger'
 
 export default class RefundService {
@@ -36,6 +37,7 @@ export default class RefundService {
     // 4. Update status
     transaction.status = 'refunded'
     await transaction.save()
+    metrics.recordRefundSuccess()
 
     logger.info(
       {
