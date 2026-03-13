@@ -259,6 +259,20 @@ Antes de encerrar uma tarefa:
 2. atualizar `AGENTS.md` se o comportamento operacional mudou
 3. criar ou atualizar docs públicos quando `docs/projects/` começar a existir
 
+### Regra obrigatória ao concluir uma fase
+
+Sempre que uma fase for concluída, o agente deve:
+
+1. atualizar a documentação da fase em `docs/local/`
+2. registrar claramente o resultado da fase:
+   - o que foi concluído
+   - o que ficou parcial
+   - o que permanece pendente
+   - como a fase foi validada
+3. ajustar o roadmap para refletir a nova fase ativa
+
+Uma fase não deve ser considerada concluída se o código tiver avançado, mas o status documental da fase não tiver sido atualizado.
+
 ## Prioridades atuais
 
 1. alinhar código, docs e requisito

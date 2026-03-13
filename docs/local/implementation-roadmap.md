@@ -33,19 +33,110 @@ Se esses quatro itens não estiverem alinhados, o ganho percebido de qualquer b�
 | F5 | Documentação pública do projeto | Pendente |
 | F6 | Bônus de senioridade de alto retorno | Pendente |
 
+## Resultado por fase
+
+### F1 - Setup, Docker, CI e automação de release
+
+Status: concluída
+
+Concluído:
+
+- `docker-compose.yaml` com app, MySQL e gateway mocks
+- `Dockerfile`
+- `scripts/start-dev.sh`
+- workflow de CI
+- Release Please
+
+Validação registrada:
+
+- revisão estrutural do repositório
+- rotas, compose, scripts e workflows presentes no código
+
+### F2 - Modelagem, migrations, models, seeders, auth e RBAC
+
+Status: concluída
+
+Concluído:
+
+- migrations principais
+- models principais
+- seeders de admin e gateways
+- login/logout com access token
+- middleware RBAC
+- CRUDs de usuários e produtos
+
+Validação registrada:
+
+- revisão estática de migrations, models, rotas, controllers e validators
+
+### F3 - Core funcional de compras, gateways, transações e refund
+
+Status: parcialmente concluída
+
+Concluído:
+
+- fluxo principal de compra implementado
+- adapters dos dois gateways implementados
+- fallback por prioridade implementado
+- listagem e detalhe de transações implementados
+- refund implementado
+- permissão de `transactions` alinhada para incluir `USER`
+- reorder de prioridade dos gateways ajustado para manter sequência única
+- resposta explícita para compra quando não há gateways ativos
+
+Parcial:
+
+- compra pública com cobertura funcional inicial
+- fallback ainda sem prova integrada com os mocks reais
+- refund com cobertura funcional inicial
+- gestão de gateways com cobertura inicial, mas ainda não completa
+
+Pendente:
+
+- testes de integração do fallback real entre gateways
+- testes do fluxo completo de refund
+- revisão final dos contratos de erro dos adapters
+
+Validação registrada:
+
+- revisão estática do código
+- criação de cobertura funcional inicial para `transactions` e `gateways`
+
+### F4 - Testes dos fluxos críticos
+
+Status: parcialmente iniciada, ainda pendente em boa parte
+
+Concluído:
+
+- testes funcionais de auth
+- testes funcionais de RBAC
+- testes funcionais de users
+- testes funcionais de products
+- testes funcionais iniciais de transactions
+- testes funcionais iniciais de gateways
+- testes funcionais iniciais de purchases
+- testes funcionais iniciais de refunds
+- testes unitários de validators, `GatewayFactory` e `GatewayService`
+
+Pendente:
+
+- fallback real entre gateways
+- integração com os gateway mocks
+- cenários mais completos de purchase e refund
+
+Validação registrada:
+
+- apenas por inspeção de arquivos de teste nesta sessão
+- sem execução local por indisponibilidade de `node` e `npm`
+
 ## Backlog por prioridade
 
 ### Prioridade 1: fechar o core já iniciado
 
-- Validar e alinhar as permissões de `transactions` com o requisito final desejado.
-- Adicionar testes funcionais para:
-  - `POST /purchases`
-  - `GET /transactions`
-  - `GET /transactions/:id`
-  - `POST /transactions/:id/refund`
-  - endpoints de gateways
 - Adicionar testes de integração para fallback real entre gateways.
 - Revisar contratos e tratamento de erro dos adapters.
+- ampliar cenários funcionais de `POST /purchases` e `POST /transactions/:id/refund`
+- ampliar testes dos endpoints de gateways e transações já iniciados
 
 ### Prioridade 2: documentação pública mínima
 
@@ -114,3 +205,6 @@ O projeto pode ser considerado pronto para apresentação quando:
 - permissões de `transactions` alinhadas para incluir `USER`
 - reorder de prioridade de gateways passou a manter sequência única
 - cobertura funcional de `transactions` e `gateways` foi iniciada
+- resultado das fases F1 a F4 consolidado na documentação local
+- cobertura funcional de `purchases` e `refunds` foi iniciada
+- prova unitária do fallback do `GatewayService` foi adicionada

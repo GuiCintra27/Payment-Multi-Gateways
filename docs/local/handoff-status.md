@@ -13,6 +13,17 @@ O ponto central agora não é mais "começar a implementação", e sim fechar o 
 - corrigir inconsistências entre enunciado, docs e implementação atual
 - decidir quais bônus de senioridade valem o custo para o teste
 
+## Status por fase
+
+| Fase | Situação atual | Resultado resumido |
+|---|---|---|
+| F1 | Concluída | setup, Docker, CI e release automation entregues |
+| F2 | Concluída | modelagem principal, seeders, auth e RBAC entregues |
+| F3 | Parcialmente concluída | core funcional existe e foi refinado com alinhamento de `transactions` e reorder de gateways |
+| F4 | Parcialmente iniciada | suíte de testes cresceu; o principal gap agora é fallback real com gateway mocks |
+| F5 | Pendente | documentação pública `docs/projects/` ainda não criada |
+| F6 | Pendente | bônus de senioridade ainda não implementados |
+
 ## Estado por área
 
 | Área | Status | Evidência |
@@ -60,8 +71,24 @@ O ponto central agora não é mais "começar a implementação", e sim fechar o 
 
 ### Testes já presentes
 
-- Funcionais: auth, RBAC, users, products, gateways e transactions.
-- Unitários: validators de usuário, validator de purchase e `GatewayFactory`.
+- Funcionais: auth, RBAC, users, products, gateways, transactions, purchases e refunds.
+- Unitários: validators de usuário, validator de purchase, `GatewayFactory` e fallback do `GatewayService`.
+
+## Resultado do último incremento
+
+Concluído neste ciclo:
+
+- acesso de `USER` às rotas de transações alinhado com o requisito
+- prioridade de gateways passou a ser reordenada de forma sequencial e consistente
+- resposta de compra sem gateways ativos foi tratada de forma explícita
+- testes funcionais iniciais para `gateways` e `transactions`
+- testes funcionais iniciais para `purchases` e `refunds`
+- teste unitário inicial provando fallback do `GatewayService`
+
+Continua pendente após este ciclo:
+
+- prova integrada do fallback com gateway mocks
+- documentação pública em `docs/projects/`
 
 ## Lacunas relevantes
 
@@ -69,10 +96,10 @@ O ponto central agora não é mais "começar a implementação", e sim fechar o 
 
 Ainda faltam testes para os fluxos que mais importam para o teste técnico:
 
-- `POST /purchases`
 - fallback real entre gateways
-- `POST /transactions/:id/refund`
-- listagem/detalhe de transações
+- cenários mais completos de `POST /purchases`
+- cenários mais completos de `POST /transactions/:id/refund`
+- listagem/detalhe de transações em cenários mais amplos
 - cenários mais completos de gestão de gateways
 - integração com os gateway mocks
 
@@ -99,11 +126,10 @@ Não foi possível executar `npm`, `npm test`, `npm run lint` ou `npm run typech
 
 ## Próximos passos recomendados
 
-1. Corrigir a documentação-base para refletir o estado real do projeto.
-2. Definir o comportamento esperado das permissões de `transactions` e alinhar código + docs.
-3. Cobrir com testes os fluxos de compra, fallback, refund e gateways.
-4. Criar a documentação pública mínima em `docs/projects/`.
-5. Implementar os bônus de maior retorno para recrutadores:
+1. Cobrir com testes os fluxos de compra, fallback, refund e gateways.
+2. Provar o fallback com integração real contra os gateway mocks.
+3. Criar a documentação pública mínima em `docs/projects/`.
+4. Implementar os bônus de maior retorno para recrutadores:
    - `X-Request-Id`
    - métricas básicas
    - smoke operacional documentado
