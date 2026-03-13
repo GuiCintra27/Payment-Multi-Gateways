@@ -14,6 +14,7 @@ O projeto implementa compra publica com multiplos produtos, calculo do total no 
 - RBAC com `ADMIN`, `MANAGER`, `FINANCE` e `USER`
 - `X-Request-Id` com propagacao basica para os gateways
 - `/metrics` em formato Prometheus para compra, refund e erros de gateway
+- smoke operacional automatizado em `scripts/smoke-e2e.sh`
 - Docker Compose para app, banco e mocks
 - Suite validada com `52/52` testes passando em `node:24`
 
@@ -40,6 +41,12 @@ O projeto implementa compra publica com multiplos produtos, calculo do total no 
 docker compose up --build
 ```
 
+### Smoke operacional
+
+```bash
+./scripts/smoke-e2e.sh
+```
+
 ## Endpoints e portas
 
 - API: `http://localhost:3333`
@@ -61,4 +68,4 @@ docker compose up --build
 
 ## Estado atual
 
-O core funcional, a documentacao publica e a base principal de testes ja estao implementados e validados. Os proximos incrementos naturais sao smoke operacional dedicado e ampliacao de cenarios de teste.
+O core funcional, a documentacao publica, a instrumentacao operacional leve e a base principal de testes ja estao implementados e validados. Os proximos incrementos naturais sao ampliar cenarios de teste e, se houver tempo, adicionar observabilidade opcional.

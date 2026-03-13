@@ -45,6 +45,7 @@ O workflow principal:
 - roda `npm test`
 
 Depois disso, um job de smoke sobe a stack via Docker Compose.
+Esse job executa `./scripts/smoke-e2e.sh` para validar login, produto, compra, transacao, refund e metricas.
 
 ## Variaveis principais
 

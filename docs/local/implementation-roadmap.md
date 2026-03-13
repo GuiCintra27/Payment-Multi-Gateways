@@ -31,7 +31,7 @@ Se esses quatro itens não estiverem alinhados, o ganho percebido de qualquer b�
 | F3   | Core funcional de compras, gateways, transações e refund | Concluída              |
 | F4   | Testes dos fluxos críticos                               | Parcialmente concluída |
 | F5   | Documentação pública do projeto                          | Concluída              |
-| F6   | Bônus de senioridade de alto retorno                     | Parcialmente concluída |
+| F6   | Bônus de senioridade de alto retorno                     | Concluída              |
 
 ## Resultado por fase
 
@@ -92,7 +92,7 @@ Validação registrada:
 - inspeção manual do contrato real dos gateway mocks via `curl` em portas alternativas
 - validação em ambiente dockerizado com `node:24`, MySQL e gateway mocks reais
 - fallback real validado automaticamente contra os mocks
-- `49/49` testes passando
+- `52/52` testes passando
 
 ### F4 - Testes dos fluxos críticos
 
@@ -111,13 +111,12 @@ Concluído:
 - testes unitários de validators, `GatewayFactory` e `GatewayService`
 - testes reais dos gateways adicionados de forma condicionada por `RUN_REAL_GATEWAY_TESTS`
 - execução validada dos testes reais com gateway mocks
-- suíte verde com `49/49` testes passando em ambiente dockerizado com `node:24`
+- suíte verde com `52/52` testes passando em ambiente dockerizado com `node:24`
 
 Pendente:
 
 - cenários mais completos de purchase e refund
 - cenários mais completos de gateways e transactions
-- smoke operacional separado do teste automatizado
 
 Validação registrada:
 
@@ -164,11 +163,8 @@ Concluído:
 - endpoint `/metrics` em formato Prometheus
 - métricas de compra, refund, tentativas e falhas por gateway
 - testes funcionais de métricas
-
-Pendente:
-
-- smoke operacional dedicado
-- observabilidade opcional ampliada
+- smoke operacional automatizado em `scripts/smoke-e2e.sh`
+- workflow de smoke da CI passou a executar o fluxo fim a fim
 
 Validação registrada:
 
@@ -176,6 +172,7 @@ Validação registrada:
 - `npm run typecheck`
 - `node ace test`
 - suíte verde com `52/52` testes passando
+- smoke operacional executado com sucesso em ambiente isolado com app, MySQL e gateway mocks
 
 ## Backlog por prioridade
 
@@ -183,11 +180,10 @@ Validação registrada:
 
 - ampliar cenários funcionais de `POST /purchases` e `POST /transactions/:id/refund`
 - ampliar testes dos endpoints de gateways e transações já iniciados
-- documentar smoke operacional fim a fim
+- manter o smoke operacional alinhado a qualquer mudança de fluxo principal
 
 ### Prioridade 2: documentação operacional e evidências
 
-- documentar smoke operacional fim a fim
 - manter `docs/projects/` sincronizado com qualquer mudança relevante
 - adicionar documentação de observabilidade somente se o bônus for implementado
 
@@ -195,7 +191,6 @@ Validação registrada:
 
 Itens recomendados:
 
-- smoke test operacional documentado
 - compose opcional de observabilidade, apenas se a implementação for leve
 
 Itens opcionais, somente se houver tempo:
@@ -245,4 +240,4 @@ O projeto pode ser considerado pronto para apresentação quando:
 - adapters e CI foram alinhados para o contrato real dos gateway mocks
 - validação dockerizada com Node 24 passou com `52/52` testes
 - Fase 5 concluída com `README.md` e documentação pública em `docs/projects/`
-- `X-Request-Id` e `/metrics` implementados e validados; suíte passou com `52/52` testes
+- `X-Request-Id`, `/metrics` e smoke operacional implementados e validados

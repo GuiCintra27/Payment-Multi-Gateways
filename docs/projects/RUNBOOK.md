@@ -96,6 +96,14 @@ curl http://localhost:3333/metrics
 
 Voce deve ver contadores no formato Prometheus, incluindo metricas de compra, refund e gateway.
 
+### Rodar smoke automatizado
+
+Com a aplicacao de pe:
+
+```bash
+./scripts/smoke-e2e.sh
+```
+
 ## Smoke manual sugerido
 
 1. autenticar um admin

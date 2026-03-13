@@ -38,6 +38,7 @@ run_smoke() {
   log "Running smoke test (docker compose)"
   (cd "$ROOT_DIR" && docker compose up -d --build)
   wait_for "http://localhost:3333" "app health" 60 2
+  (cd "$ROOT_DIR" && ./scripts/smoke-e2e.sh)
   log "Smoke OK"
 }
 

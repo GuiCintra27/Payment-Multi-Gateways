@@ -103,4 +103,6 @@ jobs:
           echo "App did not start in time"
           docker compose logs app
           exit 1
-      - run: docker compose down
+      - run: chmod +x ./scripts/smoke-e2e.sh && ./scripts/smoke-e2e.sh
+      - if: always()
+        run: docker compose down

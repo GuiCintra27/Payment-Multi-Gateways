@@ -8,18 +8,7 @@ import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
 export class AuthAccessTokenSchema extends BaseModel {
-  static $columns = [
-    'abilities',
-    'createdAt',
-    'expiresAt',
-    'hash',
-    'id',
-    'lastUsedAt',
-    'name',
-    'tokenableId',
-    'type',
-    'updatedAt',
-  ] as const
+  static $columns = ['abilities', 'createdAt', 'expiresAt', 'hash', 'id', 'lastUsedAt', 'name', 'tokenableId', 'type', 'updatedAt'] as const
   $columns = AuthAccessTokenSchema.$columns
   @column()
   declare abilities: string
@@ -59,15 +48,7 @@ export class ClientSchema extends BaseModel {
 }
 
 export class GatewaySchema extends BaseModel {
-  static $columns = [
-    'createdAt',
-    'credentials',
-    'id',
-    'isActive',
-    'name',
-    'priority',
-    'updatedAt',
-  ] as const
+  static $columns = ['createdAt', 'credentials', 'id', 'isActive', 'name', 'priority', 'updatedAt'] as const
   $columns = GatewaySchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -101,15 +82,7 @@ export class ProductSchema extends BaseModel {
 }
 
 export class TransactionProductSchema extends BaseModel {
-  static $columns = [
-    'createdAt',
-    'id',
-    'priceAtTime',
-    'productId',
-    'quantity',
-    'transactionId',
-    'updatedAt',
-  ] as const
+  static $columns = ['createdAt', 'id', 'priceAtTime', 'productId', 'quantity', 'transactionId', 'updatedAt'] as const
   $columns = TransactionProductSchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -128,17 +101,7 @@ export class TransactionProductSchema extends BaseModel {
 }
 
 export class TransactionSchema extends BaseModel {
-  static $columns = [
-    'amount',
-    'cardLastNumbers',
-    'clientId',
-    'createdAt',
-    'externalId',
-    'gatewayId',
-    'id',
-    'status',
-    'updatedAt',
-  ] as const
+  static $columns = ['amount', 'cardLastNumbers', 'clientId', 'createdAt', 'externalId', 'gatewayId', 'id', 'status', 'updatedAt'] as const
   $columns = TransactionSchema.$columns
   @column()
   declare amount: number
@@ -161,15 +124,7 @@ export class TransactionSchema extends BaseModel {
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = [
-    'createdAt',
-    'email',
-    'fullName',
-    'id',
-    'password',
-    'role',
-    'updatedAt',
-  ] as const
+  static $columns = ['createdAt', 'email', 'fullName', 'id', 'password', 'role', 'updatedAt'] as const
   $columns = UserSchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

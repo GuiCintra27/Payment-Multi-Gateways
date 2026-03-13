@@ -40,7 +40,6 @@ O projeto implementa:
 - testes dos fluxos críticos de compra, fallback e refund
 - aprofundamento dos testes dos endpoints de transações e gateways
 - documentação pública em `docs/projects/`
-- bônus de senioridade de observabilidade leve
 
 ### Ainda não implementado
 
@@ -151,6 +150,7 @@ GatewayStrategy
 - `docs/projects/` já existe e precisa ser mantido sincronizado com o código
 - `X-Request-Id` já está implementado e deve ser preservado em mudanças de fluxo HTTP e gateway
 - `/metrics` já está implementado em formato Prometheus e deve ser atualizado se os fluxos instrumentados mudarem
+- `scripts/smoke-e2e.sh` é o smoke operacional oficial e deve acompanhar qualquer mudança de fluxo principal
 - testes reais dos gateways podem ser condicionados por `RUN_REAL_GATEWAY_TESTS` para não depender sempre de portas/mocks locais
 
 ## Convenções de código

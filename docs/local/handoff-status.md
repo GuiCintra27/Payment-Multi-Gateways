@@ -15,14 +15,14 @@ O ponto central agora não é mais "começar a implementação", e sim fechar o 
 
 ## Status por fase
 
-| Fase | Situação atual         | Resultado resumido                                                                         |
-| ---- | ---------------------- | ------------------------------------------------------------------------------------------ |
-| F1   | Concluída              | setup, Docker, CI e release automation entregues                                           |
-| F2   | Concluída              | modelagem principal, seeders, auth e RBAC entregues                                        |
-| F3   | Concluída              | core funcional foi refinado e validado com compra, fallback real, transações e refund      |
-| F4   | Parcialmente concluída | suíte cobre os fluxos críticos principais; faltam cenários adicionais e endurecimento      |
-| F5   | Concluída              | `README.md` e a camada pública em `docs/projects/` foram criados e alinhados ao código     |
-| F6   | Parcialmente concluída | `X-Request-Id` e `/metrics` foram implementados; smoke operacional dedicado segue pendente |
+| Fase | Situação atual         | Resultado resumido                                                                          |
+| ---- | ---------------------- | ------------------------------------------------------------------------------------------- |
+| F1   | Concluída              | setup, Docker, CI e release automation entregues                                            |
+| F2   | Concluída              | modelagem principal, seeders, auth e RBAC entregues                                         |
+| F3   | Concluída              | core funcional foi refinado e validado com compra, fallback real, transações e refund       |
+| F4   | Parcialmente concluída | suíte cobre os fluxos críticos principais; faltam cenários adicionais e endurecimento       |
+| F5   | Concluída              | `README.md` e a camada pública em `docs/projects/` foram criados e alinhados ao código      |
+| F6   | Concluída              | `X-Request-Id`, `/metrics` e smoke operacional automatizado foram implementados e validados |
 
 ## Estado por área
 
@@ -43,7 +43,7 @@ O ponto central agora não é mais "começar a implementação", e sim fechar o 
 | Reembolso                            | Concluído              | `app/services/refund_service.ts` e rota implementados e cobertos nos cenários principais                                 |
 | Transações                           | Concluído              | listagem e detalhe implementados, com autorização alinhada para incluir `USER` e cobertura funcional principal           |
 | Documentação pública do projeto      | Concluído              | `README.md` e `docs/projects/` com hub, quick start, arquitetura, dados, fluxos, integrações, infra, segurança e runbook |
-| Bônus de senioridade                 | Parcialmente concluído | `X-Request-Id` e `/metrics` implementados; smoke dedicado e observabilidade ampliada seguem pendentes                    |
+| Bônus de senioridade                 | Concluído              | `X-Request-Id`, `/metrics` e smoke operacional entregues; observabilidade ampliada permanece opcional                    |
 
 ## O que já está implementado
 
@@ -97,12 +97,14 @@ Concluído neste ciclo:
 - endpoint público `/metrics` implementado em formato Prometheus
 - métricas de compra, refund, tentativas e falhas por gateway instrumentadas
 - testes funcionais de métricas adicionados
+- `scripts/smoke-e2e.sh` implementado para login, produto, compra, transação, refund e métricas
+- job `smoke` da CI passou a executar o smoke operacional
 - suíte verde com `52/52` testes passando
 
 Continua pendente após este ciclo:
 
 - cenários adicionais para fortalecer `purchases`, `refunds`, `gateways` e `transactions`
-- bônus de senioridade remanescentes, como smoke operacional dedicado
+- observabilidade opcional ampliada, se houver tempo
 
 ## Lacunas relevantes
 
@@ -114,7 +116,6 @@ Ainda faltam testes para os fluxos que mais importam para o teste técnico:
 - cenários mais completos de `POST /transactions/:id/refund`
 - listagem/detalhe de transações em cenários mais amplos
 - cenários mais completos de gestão de gateways
-- smoke operacional separado do teste automatizado
 
 ### Inconsistências entre requisito e código
 
@@ -125,7 +126,6 @@ Ainda faltam testes para os fluxos que mais importam para o teste técnico:
 ### Bônus de senioridade ainda ausentes
 
 - compose opcional de observabilidade
-- smoke test de compra/refund com mocks reais
 
 ## Validação executada nesta sessão
 
@@ -142,9 +142,9 @@ Resultados registrados:
 - `npm run lint` executado com sucesso
 - `node ace test` executado com sucesso
 - suíte verde com `52/52` testes passando
+- smoke operacional executado com sucesso contra ambiente isolado da aplicação
 
 ## Próximos passos recomendados
 
 1. Ampliar cenários de teste para `purchases`, `refunds`, `gateways` e `transactions`.
-2. Implementar os bônus de maior retorno para recrutadores:
-   - smoke operacional documentado
+2. Opcionalmente adicionar observabilidade ampliada se sobrar tempo.

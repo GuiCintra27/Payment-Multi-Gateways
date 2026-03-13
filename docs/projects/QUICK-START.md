@@ -82,6 +82,14 @@ npm run lint
 npm run typecheck
 ```
 
+### Smoke operacional
+
+Com a app ja rodando:
+
+```bash
+./scripts/smoke-e2e.sh
+```
+
 ## Credenciais e portas padrao
 
 | Recurso        | URL/porta               |
