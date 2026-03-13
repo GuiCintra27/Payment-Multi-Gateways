@@ -102,13 +102,25 @@ curl http://localhost:3333/metrics
 
 Voce deve ver contadores no formato Prometheus, incluindo metricas de compra, refund e gateway.
 
+### Validar Loki
+
+```bash
+curl -sS http://localhost:3100/ready
+```
+
+### Validar Tempo
+
+```bash
+curl -sS http://localhost:3200/ready
+```
+
 ### Validar dashboards do Grafana
 
 1. suba a stack com `docker compose -f docker-compose.yaml -f docker-compose.monitoring.yaml up -d --build`
 2. abra `http://localhost:3005`
 3. entre com `admin` / `admin`, salvo override por variavel
 4. abra a pasta `Payment Gateway`
-5. valide os dashboards `Payment Gateway Overview` e `Gateway Reliability`
+5. valide os dashboards `Payment Gateway Overview`, `Gateway Reliability` e `Payment Incident Triage`
 
 ### Rodar smoke automatizado
 
@@ -116,6 +128,14 @@ Com a aplicacao de pe:
 
 ```bash
 ./scripts/smoke-e2e.sh
+```
+
+### Rodar smoke de observabilidade
+
+Valida logs + traces correlacionados em cenarios de compra, fallback, refund e falha controlada:
+
+```bash
+./scripts/smoke-observability.sh
 ```
 
 ## Smoke manual sugerido
@@ -128,4 +148,11 @@ Com a aplicacao de pe:
 
 ## Logs
 
-O projeto usa logs estruturados com Pino e agora carrega `requestId` nos logs principais de compra, fallback e refund.
+O projeto usa logs estruturados com Pino e carrega os campos operacionais principais:
+
+- `requestId`
+- `route`
+- `gateway`
+- `transactionId`
+- `status`
+- `trace_id` (quando tracing ativo)

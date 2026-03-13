@@ -1,4 +1,7 @@
-# Padrões de Documentação e Estado Atual
+# Arquivado - Padroes de Documentacao e Estado Atual
+
+> Documento historico de planejamento. Nao e a fonte de verdade do estado atual.
+> Links e status internos podem estar desatualizados.
 
 Documento de referência para organizar a documentação do projeto com base em dois eixos:
 

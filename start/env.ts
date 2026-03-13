@@ -35,4 +35,10 @@ export default await Env.create(new URL('../', import.meta.url), {
   GATEWAY1_TOKEN: Env.schema.string.optional(),
   GATEWAY2_AUTH_TOKEN: Env.schema.string.optional(),
   GATEWAY2_AUTH_SECRET: Env.schema.string.optional(),
+
+  // Telemetry
+  OTEL_TRACING_ENABLED: Env.schema.boolean.optional(),
+  OTEL_DIAGNOSTICS_ENABLED: Env.schema.boolean.optional(),
+  OTEL_SERVICE_NAME: Env.schema.string.optional(),
+  OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: Env.schema.string.optional(),
 })

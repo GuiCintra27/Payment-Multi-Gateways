@@ -41,12 +41,14 @@ O projeto implementa:
 - cobertura funcional de clientes, gateways e transações
 - documentação pública em `docs/projects/`
 - `X-Request-Id`, `/metrics` e smoke operacional
-- stack opcional de observabilidade com Prometheus, Grafana e dashboards provisionados
+- stack opcional de observabilidade com Prometheus, Grafana, Loki, Promtail e Tempo
+- tracing leve com OpenTelemetry e correlação por `requestId` + `trace_id`
+- smoke opcional de observabilidade em `scripts/smoke-observability.sh`
 
 ### Ainda não implementado
 
 - alertas operacionais
-- stack de logs/tracing mais completa
+- pipeline enterprise de logs/tracing (retenção longa, multi-tenant, SIEM)
 
 ## Stack
 
@@ -106,6 +108,8 @@ Variáveis principais:
 - `GATEWAY2_AUTH_TOKEN`, `GATEWAY2_AUTH_SECRET`
 - `APP_KEY`
 - `LOG_LEVEL`
+- `OTEL_TRACING_ENABLED`, `OTEL_DIAGNOSTICS_ENABLED`
+- `OTEL_SERVICE_NAME`, `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT`
 
 Variável útil para testes reais de integração com os mocks:
 
@@ -156,8 +160,9 @@ GatewayStrategy
 - `X-Request-Id` já está implementado e deve ser preservado em mudanças de fluxo HTTP e gateway
 - `/metrics` já está implementado em formato Prometheus e deve ser atualizado se os fluxos instrumentados mudarem
 - `scripts/smoke-e2e.sh` é o smoke operacional oficial e deve acompanhar qualquer mudança de fluxo principal
+- `scripts/smoke-observability.sh` valida logs/traces e deve acompanhar mudanças de instrumentação
 - `docker-compose.monitoring.yaml` e `docs/projects/OBSERVABILITY.md` são a referência da observabilidade opcional
-- dashboards Grafana provisionados devem continuar coerentes com as métricas expostas em `/metrics`
+- dashboards Grafana provisionados devem continuar coerentes com métricas, logs e traces expostos
 - `USER` nao deve acessar `clients` nem `transactions`; backoffice fica restrito a `ADMIN`, `MANAGER`, `FINANCE`
 - respostas da API nunca devem expor `credentials` de gateway
 - testes reais dos gateways podem ser condicionados por `RUN_REAL_GATEWAY_TESTS` para não depender sempre de portas/mocks locais
@@ -265,13 +270,15 @@ Se o código mudou e a documentação não mudou, o trabalho ainda não está co
 Hoje a documentação está dividida em:
 
 - `docs/local/` para status e roadmap
-- `docs/projects/` para documentação pública futura
+- `docs/projects/` para documentação pública ativa
+- `docs/archive/` para histórico (não é fonte de verdade)
 
 Antes de encerrar uma tarefa:
 
 1. atualizar o status em `docs/local/` se o plano mudou
 2. atualizar `AGENTS.md` se o comportamento operacional mudou
-3. criar ou atualizar docs públicos quando `docs/projects/` começar a existir
+3. criar ou atualizar docs públicos em `docs/projects/`
+4. mover documentos desatualizados para `docs/archive/` quando fizer sentido
 
 ### Regra obrigatória ao concluir uma fase
 

@@ -1,4 +1,7 @@
-# Análise de Requisitos e Aderência Atual
+# Arquivado - Analise de Requisitos e Aderencia
+
+> Documento historico de planejamento. Nao e a fonte de verdade do estado atual.
+> Links e status internos podem estar desatualizados.
 
 Leitura consolidada do teste técnico BeTalent e comparação com o estado real da aplicação.
 

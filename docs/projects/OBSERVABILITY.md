@@ -1,156 +1,169 @@
 # Observability
 
-Stack opcional de observabilidade para demonstracao operacional do projeto.
+Stack opcional de observabilidade avancada para demonstracao operacional, sem alterar endpoints de negocio.
 
 ## Objetivo
 
-Esta camada nao e necessaria para o funcionamento da API. Ela existe para demonstrar maturidade operacional com baixo acoplamento ao core.
+Esta camada existe para elevar maturidade tecnica percebida com baixo acoplamento ao core de pagamentos.
 
-O escopo atual inclui:
+Escopo implementado:
 
-- endpoint `/metrics` em formato Prometheus
-- Prometheus para coleta
-- Grafana para visualizacao
-- dashboards provisionados automaticamente para operacao e demonstracao
+- metricas Prometheus em `/metrics`
+- logs centralizados com Loki + Promtail
+- tracing distribuido leve com OpenTelemetry + Tempo
+- correlacao por `requestId` e `trace_id`
+- Grafana com datasources e dashboards provisionados
+- smoke opcional de observabilidade (`scripts/smoke-observability.sh`)
 
 ## Como subir
-
-Suba a stack principal junto com a stack de observabilidade:
 
 ```bash
 docker compose -f docker-compose.yaml -f docker-compose.monitoring.yaml up -d --build
 ```
 
-## Portas padrao
+## Componentes e portas padrao
 
-| Servico    | URL padrao              |
-| ---------- | ----------------------- |
-| Prometheus | `http://localhost:9090` |
-| Grafana    | `http://localhost:3005` |
+| Servico      | URL padrao              |
+| ------------ | ----------------------- |
+| Prometheus   | `http://localhost:9090` |
+| Grafana      | `http://localhost:3005` |
+| Loki         | `http://localhost:3100` |
+| Tempo        | `http://localhost:3200` |
+| OTLP HTTP    | `http://localhost:4318` |
 
-Portas podem ser sobrescritas com:
+Variaveis de porta suportadas:
 
 - `PROMETHEUS_PORT`
 - `GRAFANA_PORT`
+- `LOKI_PORT`
+- `TEMPO_PORT`
+- `OTLP_HTTP_PORT`
 
-## Credenciais do Grafana
+## Tracing da aplicacao
 
-Padrao:
+A aplicacao suporta tracing por variaveis de ambiente:
 
-- usuario: `admin`
-- senha: `admin`
+- `OTEL_TRACING_ENABLED` (default recomendado: `false` fora da stack de observabilidade)
+- `OTEL_SERVICE_NAME`
+- `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT`
+- `OTEL_DIAGNOSTICS_ENABLED`
 
-Podem ser sobrescritas com:
-
-- `GRAFANA_ADMIN_USER`
-- `GRAFANA_ADMIN_PASSWORD`
-
-## Fonte de dados
-
-O Grafana provisiona automaticamente uma datasource `Prometheus` apontando para:
+No overlay de observabilidade, o tracing ja sobe apontando para:
 
 ```text
-http://prometheus:9090
+http://tempo:4318/v1/traces
 ```
 
-Tambem provisiona automaticamente uma pasta `Payment Gateway` com dois dashboards:
+## Logs estruturados
+
+Fluxos criticos (compra, fallback e refund) foram padronizados para incluir:
+
+- `requestId`
+- `route`
+- `gateway`
+- `transactionId`
+- `status`
+- `trace_id` (quando houver span ativo)
+
+Regras de seguranca aplicadas:
+
+- nao logar PAN completo
+- nao logar CVV
+- nao expor credenciais de gateway
+
+## Grafana provisionado
+
+Datasources provisionadas automaticamente:
+
+- `Prometheus` (`uid: prometheus`)
+- `Loki` (`uid: loki`)
+- `Tempo` (`uid: tempo`)
+
+Correlacao habilitada:
+
+- Loki -> Tempo por `trace_id` (derived field)
+- Tempo -> Loki para logs por trace
+
+Dashboards provisionados na pasta `Payment Gateway`:
 
 - `Payment Gateway Overview`
 - `Gateway Reliability`
+- `Payment Incident Triage`
 
-## Metricas disponiveis
+## Consultas uteis
 
-Exemplos de metricas expostas:
-
-- `app_purchases_total`
-- `app_purchase_amount_cents_total`
-- `app_refunds_total`
-- `app_refund_amount_cents_total`
-- `app_gateway_charge_attempts_total`
-- `app_gateway_charge_success_total`
-- `app_gateway_charge_failures_total`
-- `app_gateway_refund_attempts_total`
-- `app_gateway_refund_success_total`
-- `app_gateway_refund_failures_total`
-- `app_gateway_fallback_activated_total`
-- `app_gateway_fallback_recovered_total`
-- `app_gateway_no_active_total`
-- `app_gateway_all_failed_total`
-
-## Dashboards provisionados
-
-### Payment Gateway Overview
-
-Leitura executiva e de negocio:
-
-- taxa de aprovacao
-- GMV aprovado
-- taxa de refund
-- taxa de recuperacao por fallback
-- compras por status final
-- volume financeiro aprovado e reembolsado por gateway
-- distribuicao de sucesso por gateway
-- incidentes de fallback, indisponibilidade e exaustao total
-
-### Gateway Reliability
-
-Leitura operacional por integracao:
-
-- taxa de sucesso de charge por gateway
-- taxa de falha de charge por gateway
-- taxa de sucesso de refund por gateway
-- tentativas de charge por gateway
-- falhas de charge por gateway
-- GMV aprovado por gateway
-- eficiencia do fallback ao longo do tempo
-
-## Consultas uteis no Prometheus
-
-Total de compras aprovadas:
+### Prometheus
 
 ```promql
-app_purchases_total{status="approved"}
+sum(increase(app_gateway_fallback_activated_total[1h]))
 ```
-
-Falhas por gateway:
 
 ```promql
-app_gateway_charge_failures_total
+sum(increase(app_gateway_all_failed_total[1h]))
 ```
 
-Refunds com sucesso:
+### Loki (LogQL)
 
-```promql
-app_refunds_total{status="success"}
+Logs de erro por request:
+
+```logql
+{service="app"} | json | requestId="obs-smoke-123-fallback" | status="error"
 ```
 
-Volume aprovado por gateway:
+Fallbacks:
 
-```promql
-sum by (gateway) (increase(app_purchase_amount_cents_total{status="approved"}[1h])) / 100
+```logql
+{service="app"} |= "Gateway charge failed, trying next"
 ```
 
-Taxa de recuperacao por fallback:
+### Tempo API
 
-```promql
-sum(increase(app_gateway_fallback_recovered_total[1h]))
-/
-clamp_min(sum(increase(app_gateway_fallback_activated_total[1h])), 1)
+Consulta de trace por id:
+
+```bash
+curl http://localhost:3200/api/traces/<trace_id>
 ```
+
+## Smoke de observabilidade
+
+Script dedicado:
+
+```bash
+./scripts/smoke-observability.sh
+```
+
+Cenarios cobertos:
+
+- validacao das datasources provisionadas no Grafana (`Prometheus`, `Loki`, `Tempo`)
+- compra aprovada com fallback real (`gateway1` falha -> `gateway2` recupera)
+- refund da transacao fallback
+- falha controlada sem gateways ativos (`503`)
+- validacao de logs no Loki e traces no Tempo
+
+Workflow GitHub Actions opcional e manual:
+
+- `.github/workflows/observability-smoke.yml`
+- gatilho: `workflow_dispatch`
+- nao bloqueia a CI principal
+
+## Troubleshooting rapido
+
+Se Loki/Tempo nao responderem:
+
+```bash
+docker compose -f docker-compose.yaml -f docker-compose.monitoring.yaml logs -f loki promtail tempo
+```
+
+Se o Grafana nao mostrar traces:
+
+1. validar datasource `Tempo` provisionada
+2. confirmar `OTEL_TRACING_ENABLED=true` no container `app` da stack de observabilidade
+3. gerar trafego novo (purchase/refund) e consultar Explore novamente
 
 ## Limites atuais
 
-- nao ha alertas configurados
-- nao ha Loki/Promtail
-- nao ha traces distribuídos
-- as metricas sao mantidas em memoria da aplicacao
+- sem alertas operacionais configurados
+- sem pipeline enterprise de logs/tracing (ex.: retention de longo prazo, multi-tenant, SIEM)
+- metricas da aplicacao mantidas em memoria
 
-## Quando usar
-
-Esta stack vale para:
-
-- demonstracao tecnica
-- troubleshooting local
-- inspecao rapida de comportamento da API
-
-Nao substitui uma observabilidade de producao completa.
+Esta stack e focada em demonstracao tecnica e troubleshooting local.

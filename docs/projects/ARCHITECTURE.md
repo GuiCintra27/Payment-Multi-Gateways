@@ -61,6 +61,8 @@ GatewayService
 - `X-Request-Id` gerado ou reaproveitado no middleware global
 - `X-Request-Id` propagado para cobranca e refund nos gateways
 - metricas em memoria expostas em `/metrics` no formato Prometheus
+- spans manuais com OpenTelemetry em compra, orquestracao/fallback e refund
+- contexto de logs padronizado com `requestId` e `trace_id`
 
 ## Componentes centrais
 
@@ -90,4 +92,5 @@ GatewayService
 
 Itens ainda nao implementados:
 
-- observabilidade dedicada
+- alertas operacionais
+- pipeline enterprise de logs/tracing

@@ -1,4 +1,5 @@
 import PurchaseService from '#services/purchase_service'
+import { observabilityLogContext } from '#services/observability_log_context'
 import { purchaseValidator } from '#validators/purchase'
 import logger from '@adonisjs/core/services/logger'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -10,6 +11,7 @@ export default class PurchasesController {
   async store({ request, response }: HttpContext) {
     const data = await request.validateUsing(purchaseValidator)
     const requestId = request.header('x-request-id')
+    const route = 'POST /purchases'
 
     const purchaseService = new PurchaseService()
 
@@ -19,6 +21,7 @@ export default class PurchasesController {
         products: data.products,
         card: data.card,
         requestId,
+        route,
       })
 
       return response.created(result)
@@ -42,7 +45,14 @@ export default class PurchasesController {
       }
 
       logger.error(
-        { error: message, requestId, route: 'POST /purchases' },
+        observabilityLogContext(
+          {
+            requestId,
+            route,
+            status: 'error',
+          },
+          { error: message }
+        ),
         'Unexpected purchase failure'
       )
 

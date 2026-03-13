@@ -1,4 +1,7 @@
-# Padrões Arquiteturais e Sinais de Senioridade
+# Arquivado - Padroes Arquiteturais e Sinais de Senioridade
+
+> Documento historico de planejamento. Nao e a fonte de verdade do estado atual.
+> Links e status internos podem estar desatualizados.
 
 Síntese do que foi extraído do projeto de referência `~/Projects/Mine/payment-gateway` e do que faz sentido aplicar neste teste técnico.
 

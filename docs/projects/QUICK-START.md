@@ -1,4 +1,4 @@
-# Quick Start
+# Inicio rapido
 
 Como subir e validar o projeto rapidamente.
 
@@ -20,7 +20,7 @@ Variaveis principais:
 - `GATEWAY1_EMAIL`, `GATEWAY1_TOKEN`
 - `GATEWAY2_AUTH_TOKEN`, `GATEWAY2_AUTH_SECRET`
 
-## Opcao 1: desenvolvimento local
+## Opcao 1: desenvolvimento local (recomendada)
 
 ```bash
 ./scripts/start-dev.sh
@@ -56,7 +56,14 @@ E a stack de observabilidade sobe com:
 
 - Prometheus em `http://localhost:9090`
 - Grafana em `http://localhost:3005`
+- Loki em `http://localhost:3100`
+- Tempo em `http://localhost:3200`
 - dashboards provisionados automaticamente na pasta `Payment Gateway`
+
+## Credenciais seed
+
+- email: `admin@betalent.tech`
+- senha: `admin123`
 
 ## Validacao rapida
 
@@ -102,6 +109,14 @@ Com a app ja rodando:
 ./scripts/smoke-e2e.sh
 ```
 
+### Smoke de observabilidade opcional
+
+Com a stack de observabilidade ativa:
+
+```bash
+./scripts/smoke-observability.sh
+```
+
 ## Credenciais e portas padrao
 
 | Recurso        | URL/porta               |
@@ -112,7 +127,11 @@ Com a app ja rodando:
 | MySQL          | `localhost:3306`        |
 | Prometheus     | `http://localhost:9090` |
 | Grafana        | `http://localhost:3005` |
+| Loki           | `http://localhost:3100` |
+| Tempo          | `http://localhost:3200` |
 
-## Usuario seed
+## Proximos docs recomendados
 
-O projeto sobe com um usuario admin via seeder. Se precisar revisar ou alterar, verifique `database/seeders/01_admin_seeder.ts`.
+- [Referencia tecnica](./TECHNICAL-REFERENCE.md)
+- [Infra](./INFRA.md)
+- [Runbook](./RUNBOOK.md)

@@ -19,17 +19,23 @@ Endpoints operacionais da app:
 
 Stack opcional de observabilidade em `docker-compose.monitoring.yaml`:
 
-| Servico      | Funcao             | Porta padrao |
-| ------------ | ------------------ | ------------ |
-| `prometheus` | coleta de metricas | `9090`       |
-| `grafana`    | visualizacao       | `3005`       |
+| Servico      | Funcao                            | Porta padrao |
+| ------------ | --------------------------------- | ------------ |
+| `prometheus` | coleta de metricas                | `9090`       |
+| `grafana`    | visualizacao e correlacao         | `3005`       |
+| `loki`       | armazenamento e consulta de logs  | `3100`       |
+| `promtail`   | coleta de logs dos containers     | interna (`9080`) |
+| `tempo`      | armazenamento e consulta de trace | `3200`       |
 
 Provisionamento automatico do Grafana:
 
 - datasource `Prometheus`
+- datasource `Loki`
+- datasource `Tempo`
 - pasta `Payment Gateway`
 - dashboard `Payment Gateway Overview`
 - dashboard `Gateway Reliability`
+- dashboard `Payment Incident Triage`
 
 ## Comportamento do container da app
 
@@ -44,6 +50,10 @@ node bin/server.js
 ## Persistencia
 
 - volume `mysql_data` para dados do MySQL
+- volume `prometheus_data` para metricas
+- volume `grafana_data` para estado do Grafana
+- volume `loki_data` para logs
+- volume `tempo_data` para traces
 
 ## CI
 
@@ -61,6 +71,12 @@ O workflow principal:
 Depois disso, um job de smoke sobe a stack via Docker Compose.
 Esse job executa `./scripts/smoke-e2e.sh` para validar login, produto, compra, transacao, refund e metricas.
 
+Smoke de observabilidade:
+
+- workflow manual `observability-smoke.yml`
+- executa `./scripts/smoke-observability.sh`
+- nao bloqueia CI principal
+
 ## Variaveis principais
 
 | Variavel                 | Uso                             |
@@ -70,6 +86,9 @@ Esse job executa `./scripts/smoke-e2e.sh` para validar login, produto, compra, t
 | `DB_*`                   | conexao com MySQL               |
 | `GATEWAY1_*`             | integracao com gateway 1        |
 | `GATEWAY2_*`             | integracao com gateway 2        |
+| `OTEL_TRACING_ENABLED`   | liga/desliga tracing OTEL       |
+| `OTEL_SERVICE_NAME`      | nome do servico OTEL            |
+| `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` | endpoint OTLP HTTP de traces |
 | `RUN_REAL_GATEWAY_TESTS` | habilita testes reais com mocks |
 
 ## Ambientes praticos

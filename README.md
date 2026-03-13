@@ -1,73 +1,91 @@
 # BeTalent Payment Gateway
 
-API REST multi-gateway de pagamentos construída com AdonisJS 6, TypeScript e MySQL para atender ao teste técnico da BeTalent.
+API REST multi-gateway de pagamentos para o teste tecnico BeTalent, implementada com AdonisJS 6, TypeScript e MySQL.
 
-O projeto implementa compra publica com multiplos produtos, calculo do total no servidor, fallback automatico entre gateways por prioridade, RBAC, reembolso e cobertura automatizada dos fluxos principais.
+## Visao geral
 
-## Destaques
+O projeto cobre fluxo de compra publica com multiplos produtos, calculo de total no servidor, fallback automatico por prioridade entre gateways e refund no gateway original da transacao.
 
-- AdonisJS 6 com TypeScript
-- MySQL 8 com Lucid ORM
-- Dois gateways com autenticacao e contratos distintos
-- Fallback automatico por prioridade
-- Access Tokens opaque para autenticacao
-- RBAC com `ADMIN`, `MANAGER`, `FINANCE` e `USER`
-- `X-Request-Id` com propagacao basica para os gateways
-- `/metrics` em formato Prometheus para compra, refund e erros de gateway
-- dashboards Grafana provisionados para visao executiva e confiabilidade por gateway
-- smoke operacional automatizado em `scripts/smoke-e2e.sh`
-- Docker Compose para app, banco e mocks
-- Suite validada com `66/66` testes passando em `node:24`
+Tambem inclui camada de operacao com:
 
-## Stack
+- `X-Request-Id` end-to-end;
+- metricas em `/metrics`;
+- stack opcional de logs e traces (Loki/Promtail/Tempo);
+- smoke funcional e smoke de observabilidade.
 
-- Runtime: Node.js 24+
-- Framework: AdonisJS 6
-- Banco: MySQL 8
-- ORM: Lucid
-- Validacao: VineJS
-- Testes: Japa
+## Tecnologias
 
-## Subir localmente
+- Node.js 24+
+- AdonisJS 6
+- TypeScript
+- MySQL 8 + Lucid ORM
+- VineJS
+- Japa
+- Prometheus + Grafana (opcional)
+- Loki + Tempo (opcional)
 
-### Opcao recomendada
+## Inicio rapido
+
+Opcao recomendada:
 
 ```bash
 ./scripts/start-dev.sh
 ```
 
-### Stack completa via Docker
+Stack completa via Docker:
 
 ```bash
 docker compose up --build
 ```
 
-### Smoke operacional
+Com observabilidade opcional:
 
 ```bash
-./scripts/smoke-e2e.sh
+docker compose -f docker-compose.yaml -f docker-compose.monitoring.yaml up -d --build
 ```
 
-## Endpoints e portas
+## O que este projeto demonstra
 
-- API: `http://localhost:3333`
-- Gateway Mock 1: `http://localhost:3001`
-- Gateway Mock 2: `http://localhost:3002`
-- MySQL: `localhost:3306`
+- modelagem e persistencia para dominio de pagamentos;
+- Strategy + Factory para adapters de gateway com contratos distintos;
+- fallback resiliente entre gateways ativos;
+- RBAC por perfis de backoffice;
+- logs estruturados e correlacao por `requestId` e `trace_id`;
+- validacao automatizada de fluxos criticos.
 
-## Documentacao
+## Mapa de documentacao
 
-- [Hub de documentacao](docs/projects/INDEX.md)
-- [Quick start](docs/projects/QUICK-START.md)
-- [Arquitetura](docs/projects/ARCHITECTURE.md)
-- [Modelo de dados](docs/projects/DATA-MODEL.md)
-- [Fluxos](docs/projects/FLOWS.md)
-- [Integracoes](docs/projects/INTEGRATIONS.md)
-- [Infra](docs/projects/INFRA.md)
-- [Seguranca](docs/projects/SECURITY.md)
-- [Runbook](docs/projects/RUNBOOK.md)
-- [Observability](docs/projects/OBSERVABILITY.md)
+Comece aqui:
+
+- `docs/projects/INDEX.md`
+
+Documentacao principal:
+
+- `docs/projects/QUICK-START.md`
+- `docs/projects/TECHNICAL-REFERENCE.md`
+- `docs/projects/ARCHITECTURE.md`
+- `docs/projects/FLOWS.md`
+- `docs/projects/INTEGRATIONS.md`
+- `docs/projects/DATA-MODEL.md`
+- `docs/projects/SECURITY.md`
+- `docs/projects/INFRA.md`
+- `docs/projects/OBSERVABILITY.md`
+- `docs/projects/RUNBOOK.md`
+
+## Operacao e validacao
+
+Validacoes principais:
+
+```bash
+npm run lint
+npm run typecheck
+npm test
+./scripts/smoke-e2e.sh
+./scripts/smoke-observability.sh
+```
 
 ## Estado atual
 
-O core funcional, a documentacao publica, a instrumentacao operacional leve, a observabilidade opcional com dashboards provisionados e a base principal de testes ja estao implementados e validados. Os proximos incrementos naturais sao apenas refinamentos opcionais, como alertas, logs centralizados ou tracing.
+Projeto pronto para entrega tecnica no escopo do teste.
+
+Pontos extras pendentes apenas como opcional: alertas operacionais e evolucao enterprise da pipeline de observabilidade.

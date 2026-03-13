@@ -5,6 +5,7 @@ import type {
   RefundOutput,
   ExternalTransaction,
 } from './gateway_interface.js'
+import { observabilityLogContext } from '#services/observability_log_context'
 import logger from '@adonisjs/core/services/logger'
 
 interface Gateway1Credentials {
@@ -86,7 +87,21 @@ export default class Gateway1Adapter implements GatewayStrategy {
 
     if (!response.ok) {
       const errorBody = await response.text()
-      logger.warn({ gateway: this.name, status: response.status, body: errorBody }, 'Charge failed')
+      logger.warn(
+        observabilityLogContext(
+          {
+            requestId: data.requestId,
+            route: data.route ?? 'POST /purchases',
+            gateway: this.name,
+            status: 'error',
+          },
+          {
+            httpStatus: response.status,
+            errorSnippet: errorBody.slice(0, 200),
+          }
+        ),
+        'Charge failed'
+      )
       throw new Error(`Gateway1 charge failed: ${response.status}`)
     }
 
@@ -113,7 +128,19 @@ export default class Gateway1Adapter implements GatewayStrategy {
     if (!response.ok) {
       const errorBody = await response.text()
       logger.warn(
-        { gateway: this.name, externalId, status: response.status, body: errorBody },
+        observabilityLogContext(
+          {
+            requestId,
+            route: 'POST /transactions/:id/refund',
+            gateway: this.name,
+            status: 'error',
+          },
+          {
+            externalId,
+            httpStatus: response.status,
+            errorSnippet: errorBody.slice(0, 200),
+          }
+        ),
         'Refund failed'
       )
       throw new Error(`Gateway1 refund failed: ${response.status}`)

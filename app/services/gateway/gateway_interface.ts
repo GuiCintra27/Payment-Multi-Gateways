@@ -12,6 +12,7 @@ export interface ChargeInput {
   cardNumber: string
   cvv: string
   requestId?: string
+  route?: string
 }
 
 export interface ChargeOutput {
