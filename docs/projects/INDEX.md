@@ -12,6 +12,7 @@ Hub principal da documentacao publica do projeto.
 6. [SECURITY.md](./SECURITY.md)
 7. [INFRA.md](./INFRA.md)
 8. [RUNBOOK.md](./RUNBOOK.md)
+9. [OBSERVABILITY.md](./OBSERVABILITY.md)
 
 ## Resumo do sistema
 
@@ -37,7 +38,7 @@ Esta API recebe compras publicas, calcula o total no servidor, tenta cobrar no g
 - Observabilidade leve: `X-Request-Id` implementado
 - Observabilidade leve: `/metrics` implementado
 - Operação: smoke automatizado implementado
-- Observabilidade avancada: nao implementada
+- Observabilidade avancada: opcional via compose dedicado
 
 ## Documentos locais
 

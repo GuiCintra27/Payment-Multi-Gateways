@@ -17,6 +17,13 @@ Endpoints operacionais da app:
 - `/` para health check
 - `/metrics` para metricas Prometheus
 
+Stack opcional de observabilidade em `docker-compose.monitoring.yaml`:
+
+| Servico      | Funcao             | Porta padrao |
+| ------------ | ------------------ | ------------ |
+| `prometheus` | coleta de metricas | `9090`       |
+| `grafana`    | visualizacao       | `3005`       |
+
 ## Comportamento do container da app
 
 Ao subir a stack completa, o servico `app` executa:
@@ -68,6 +75,12 @@ Esse job executa `./scripts/smoke-e2e.sh` para validar login, produto, compra, t
 ### Full Docker
 
 - tudo em containers
+
+### Full Docker com observabilidade
+
+```bash
+docker compose -f docker-compose.yaml -f docker-compose.monitoring.yaml up -d --build
+```
 
 ### Validacao de CI local
 

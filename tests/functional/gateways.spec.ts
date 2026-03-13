@@ -75,4 +75,69 @@ test.group('Gateways Management', (group) => {
       ]
     )
   })
+
+  test('toggle returns 404 for non-existent gateway', async ({ client }) => {
+    const admin = await User.create({
+      fullName: 'Admin',
+      email: 'gateway-missing@test.com',
+      password: 'password123',
+      role: 'ADMIN',
+    })
+
+    const response = await client.patch('/gateways/99999/toggle').loginAs(admin).json({
+      isActive: false,
+    })
+
+    response.assertStatus(404)
+    response.assertBodyContains({
+      message: 'Gateway not found',
+    })
+  })
+
+  test('priority update moves gateway to the end when priority is above the list size', async ({
+    client,
+    assert,
+  }) => {
+    const admin = await User.create({
+      fullName: 'Admin',
+      email: 'gateway-priority-end@test.com',
+      password: 'password123',
+      role: 'ADMIN',
+    })
+
+    const gateway1 = await Gateway.create({
+      name: 'gateway-end-1',
+      isActive: true,
+      priority: 1,
+      credentials: '{}',
+    })
+    const gateway2 = await Gateway.create({
+      name: 'gateway-end-2',
+      isActive: true,
+      priority: 2,
+      credentials: '{}',
+    })
+    const gateway3 = await Gateway.create({
+      name: 'gateway-end-3',
+      isActive: true,
+      priority: 3,
+      credentials: '{}',
+    })
+
+    const response = await client.patch(`/gateways/${gateway1.id}/priority`).loginAs(admin).json({
+      priority: 99,
+    })
+
+    response.assertStatus(200)
+
+    const orderedGateways = await Gateway.query().orderBy('priority', 'asc')
+    assert.deepEqual(
+      orderedGateways.map((gateway) => ({ id: gateway.id, priority: gateway.priority })),
+      [
+        { id: gateway2.id, priority: 1 },
+        { id: gateway3.id, priority: 2 },
+        { id: gateway1.id, priority: 3 },
+      ]
+    )
+  })
 })

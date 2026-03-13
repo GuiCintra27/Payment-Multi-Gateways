@@ -17,9 +17,10 @@ test.group('Products CRUD', (group) => {
     await Product.create({ name: 'Test Product', amount: 5000 })
 
     const response = await client.get('/products').loginAs(admin)
+    const body = response.body() as Array<{ id: number; name: string; amount: number }>
     response.assertStatus(200)
-    assert.isArray(response.body())
-    assert.isAbove(response.body().length, 0)
+    assert.isArray(body)
+    assert.isAbove(body.length, 0)
   })
 
   test('POST /products creates a product', async ({ client, assert }) => {
@@ -34,10 +35,11 @@ test.group('Products CRUD', (group) => {
       name: 'New Product',
       amount: 9990,
     })
+    const body = response.body() as { name: string; amount: number }
 
     response.assertStatus(201)
-    assert.equal(response.body().name, 'New Product')
-    assert.equal(response.body().amount, 9990)
+    assert.equal(body.name, 'New Product')
+    assert.equal(body.amount, 9990)
   })
 
   test('POST /products rejects negative amount', async ({ client }) => {

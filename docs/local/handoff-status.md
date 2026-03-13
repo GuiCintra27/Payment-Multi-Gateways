@@ -20,9 +20,9 @@ O ponto central agora não é mais "começar a implementação", e sim fechar o 
 | F1   | Concluída              | setup, Docker, CI e release automation entregues                                            |
 | F2   | Concluída              | modelagem principal, seeders, auth e RBAC entregues                                         |
 | F3   | Concluída              | core funcional foi refinado e validado com compra, fallback real, transações e refund       |
-| F4   | Parcialmente concluída | suíte cobre os fluxos críticos principais; faltam cenários adicionais e endurecimento       |
+| F4   | Concluída              | suíte cobre os fluxos críticos principais e os cenários adicionais mais relevantes           |
 | F5   | Concluída              | `README.md` e a camada pública em `docs/projects/` foram criados e alinhados ao código      |
-| F6   | Concluída              | `X-Request-Id`, `/metrics` e smoke operacional automatizado foram implementados e validados |
+| F6   | Concluída              | `X-Request-Id`, `/metrics`, smoke operacional e observabilidade opcional foram entregues     |
 
 ## Estado por área
 
@@ -36,14 +36,14 @@ O ponto central agora não é mais "começar a implementação", e sim fechar o 
 | RBAC                                 | Concluído              | `app/middleware/role_middleware.ts`, rotas protegidas em `start/routes.ts`                                               |
 | CRUD de usuários                     | Concluído              | `app/controllers/users_controller.ts`                                                                                    |
 | CRUD de produtos                     | Concluído              | `app/controllers/products_controller.ts`                                                                                 |
-| Clientes e detalhe de compras        | Parcialmente concluído | `app/controllers/clients_controller.ts` existe, mas sem testes dedicados                                                 |
-| Gestão de gateways                   | Parcialmente concluído | listagem, toggle e reorder de prioridade existem; cobertura principal passou, mas ainda cabe ampliar cenários            |
+| Clientes e detalhe de compras        | Concluído              | `app/controllers/clients_controller.ts` implementado e coberto com cenários dedicados de detalhe e ordenação            |
+| Gestão de gateways                   | Concluído              | listagem, toggle e reorder de prioridade implementados e cobertos com cenários de erro e reorder extremo                |
 | Compra pública                       | Concluído              | `app/services/purchase_service.ts` e `POST /purchases` implementados e cobertos no fluxo principal                       |
 | Multi-gateway com fallback           | Concluído              | adapters e factory implementados, alinhados ao contrato real do mock e validados com fallback real                       |
 | Reembolso                            | Concluído              | `app/services/refund_service.ts` e rota implementados e cobertos nos cenários principais                                 |
 | Transações                           | Concluído              | listagem e detalhe implementados, com autorização alinhada para incluir `USER` e cobertura funcional principal           |
 | Documentação pública do projeto      | Concluído              | `README.md` e `docs/projects/` com hub, quick start, arquitetura, dados, fluxos, integrações, infra, segurança e runbook |
-| Bônus de senioridade                 | Concluído              | `X-Request-Id`, `/metrics` e smoke operacional entregues; observabilidade ampliada permanece opcional                    |
+| Bônus de senioridade                 | Concluído              | `X-Request-Id`, `/metrics`, smoke operacional e stack opcional de observabilidade entregues                              |
 
 ## O que já está implementado
 
@@ -71,7 +71,7 @@ O ponto central agora não é mais "começar a implementação", e sim fechar o 
 
 ### Testes já presentes
 
-- Funcionais: auth, RBAC, users, products, gateways, transactions, purchases e refunds.
+- Funcionais: auth, RBAC, users, products, clients, gateways, transactions, purchases, refunds, request id e metrics.
 - Unitários: validators de usuário, validator de purchase, `GatewayFactory`, fallback isolado do `GatewayService` e integração real dos gateways condicionada por ambiente.
 
 ## Resultado do último incremento
@@ -99,23 +99,29 @@ Concluído neste ciclo:
 - testes funcionais de métricas adicionados
 - `scripts/smoke-e2e.sh` implementado para login, produto, compra, transação, refund e métricas
 - job `smoke` da CI passou a executar o smoke operacional
-- suíte verde com `52/52` testes passando
+- cenários adicionais para `purchases`, `refunds`, `gateways`, `transactions` e `clients`
+- `docker-compose.monitoring.yaml` com Prometheus e Grafana
+- `docs/projects/OBSERVABILITY.md` criada e integrada ao hub público
+- espera ativa dos gateway mocks nos testes reais de integração para reduzir flakiness fora da CI
+- validação completa do compose de observabilidade
+- suíte verde com `61/61` testes passando
 
-Continua pendente após este ciclo:
+Permanece fora do escopo deste ciclo:
 
-- cenários adicionais para fortalecer `purchases`, `refunds`, `gateways` e `transactions`
-- observabilidade opcional ampliada, se houver tempo
+- dashboards prontos no Grafana
+- stack de logs centralizados e tracing distribuído
 
 ## Lacunas relevantes
 
 ### Cobertura de testes
 
-Ainda faltam testes para os fluxos que mais importam para o teste técnico:
+Os fluxos críticos do teste técnico estão cobertos.
 
-- cenários mais completos de `POST /purchases`
-- cenários mais completos de `POST /transactions/:id/refund`
-- listagem/detalhe de transações em cenários mais amplos
-- cenários mais completos de gestão de gateways
+Expansões futuras possíveis, mas não necessárias para a entrega atual:
+
+- cenários adicionais de carga e volume
+- smoke dedicado da stack opcional de observabilidade
+- dashboards prontos para demonstração no Grafana
 
 ### Inconsistências entre requisito e código
 
@@ -125,7 +131,8 @@ Ainda faltam testes para os fluxos que mais importam para o teste técnico:
 
 ### Bônus de senioridade ainda ausentes
 
-- compose opcional de observabilidade
+- dashboards provisionados no Grafana
+- stack de logs/tracing além de métricas
 
 ## Validação executada nesta sessão
 
@@ -141,10 +148,27 @@ Resultados registrados:
 - `npm run typecheck` executado com sucesso
 - `npm run lint` executado com sucesso
 - `node ace test` executado com sucesso
-- suíte verde com `52/52` testes passando
+- suíte verde com `61/61` testes passando
 - smoke operacional executado com sucesso contra ambiente isolado da aplicação
+- `docker compose -f docker-compose.yaml -f docker-compose.monitoring.yaml config` executado com sucesso
 
 ## Próximos passos recomendados
 
-1. Ampliar cenários de teste para `purchases`, `refunds`, `gateways` e `transactions`.
-2. Opcionalmente adicionar observabilidade ampliada se sobrar tempo.
+1. Se houver tempo, provisionar dashboards básicos no Grafana para a demonstração.
+2. Se houver interesse em extrapolar o teste, avaliar logs centralizados ou tracing como camada separada.
+
+## Extensão ativa
+
+Incremento opcional aprovado para esta etapa:
+
+- ampliar a cobertura funcional dos fluxos mais sensíveis ainda parcialmente cobertos
+- adicionar uma stack opcional de observabilidade com documentação pública própria
+
+Objetivo deste incremento:
+
+- reduzir lacunas remanescentes da F4
+- transformar a observabilidade ampliada de opcional futura em artefato concreto de apresentação
+
+Status do incremento:
+
+- concluído e validado

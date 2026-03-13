@@ -40,6 +40,12 @@ Esse fluxo:
 docker compose up --build
 ```
 
+## Opcao 3: stack completa com observabilidade opcional
+
+```bash
+docker compose -f docker-compose.yaml -f docker-compose.monitoring.yaml up -d --build
+```
+
 Nesse modo, o container da aplicacao executa:
 
 - `node ace migration:run --force`

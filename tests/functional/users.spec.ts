@@ -32,10 +32,11 @@ test.group('Users CRUD', (group) => {
       password: 'password123',
       role: 'FINANCE',
     })
+    const body = response.body() as { email: string; role: string }
 
     response.assertStatus(201)
-    assert.equal(response.body().email, 'new-user@test.com')
-    assert.equal(response.body().role, 'FINANCE')
+    assert.equal(body.email, 'new-user@test.com')
+    assert.equal(body.role, 'FINANCE')
   })
 
   test('GET /users/:id returns a user', async ({ client, assert }) => {

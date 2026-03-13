@@ -94,4 +94,20 @@ test.group('Transactions', (group) => {
     assert.lengthOf(response.body().products, 1)
     assert.equal(response.body().products[0].name, 'Product One')
   })
+
+  test('GET /transactions/:id returns 404 for non-existent transaction', async ({ client }) => {
+    const user = await User.create({
+      fullName: 'User',
+      email: 'transactions-missing@test.com',
+      password: 'password123',
+      role: 'USER',
+    })
+
+    const response = await client.get('/transactions/99999').loginAs(user)
+
+    response.assertStatus(404)
+    response.assertBodyContains({
+      message: 'Transaction not found',
+    })
+  })
 })

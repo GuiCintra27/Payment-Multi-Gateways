@@ -108,4 +108,58 @@ test.group('Refunds', (group) => {
       message: 'Cannot refund transaction with status: rejected',
     })
   })
+
+  test('POST /transactions/:id/refund returns 422 when transaction is already refunded', async ({
+    client,
+  }) => {
+    const finance = await User.create({
+      fullName: 'Finance',
+      email: 'refund-already@test.com',
+      password: 'password123',
+      role: 'FINANCE',
+    })
+    const txClient = await Client.create({
+      name: 'Refunded Client',
+      email: 'refund-already-client@test.com',
+    })
+    const gateway = await Gateway.create({
+      name: 'gateway-refunded',
+      isActive: true,
+      priority: 1,
+      credentials: '{}',
+    })
+    const transaction = await Transaction.create({
+      clientId: txClient.id,
+      gatewayId: gateway.id,
+      externalId: 'refund-external-3',
+      status: 'refunded',
+      amount: 7500,
+      cardLastNumbers: '1234',
+    })
+
+    const response = await client.post(`/transactions/${transaction.id}/refund`).loginAs(finance)
+
+    response.assertStatus(422)
+    response.assertBodyContains({
+      message: 'Transaction already refunded',
+    })
+  })
+
+  test('POST /transactions/:id/refund returns 404 when transaction does not exist', async ({
+    client,
+  }) => {
+    const finance = await User.create({
+      fullName: 'Finance',
+      email: 'refund-not-found@test.com',
+      password: 'password123',
+      role: 'FINANCE',
+    })
+
+    const response = await client.post('/transactions/99999/refund').loginAs(finance)
+
+    response.assertStatus(404)
+    response.assertBodyContains({
+      message: 'Transaction not found',
+    })
+  })
 })

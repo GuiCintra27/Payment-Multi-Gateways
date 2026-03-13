@@ -35,15 +35,18 @@ O projeto implementa:
 - fallback por prioridade
 - refund pelo gateway original
 
-### Implementado, mas ainda incompleto
+### Implementado e validado
 
 - testes dos fluxos críticos de compra, fallback e refund
-- aprofundamento dos testes dos endpoints de transações e gateways
+- cobertura funcional de clientes, gateways e transações
 - documentação pública em `docs/projects/`
+- `X-Request-Id`, `/metrics` e smoke operacional
+- stack opcional de observabilidade com Prometheus e Grafana
 
 ### Ainda não implementado
 
-- stack opcional de observabilidade
+- dashboards prontos no Grafana
+- stack de logs/tracing mais completa
 
 ## Stack
 
@@ -151,6 +154,7 @@ GatewayStrategy
 - `X-Request-Id` já está implementado e deve ser preservado em mudanças de fluxo HTTP e gateway
 - `/metrics` já está implementado em formato Prometheus e deve ser atualizado se os fluxos instrumentados mudarem
 - `scripts/smoke-e2e.sh` é o smoke operacional oficial e deve acompanhar qualquer mudança de fluxo principal
+- `docker-compose.monitoring.yaml` e `docs/projects/OBSERVABILITY.md` são a referência da observabilidade opcional
 - testes reais dos gateways podem ser condicionados por `RUN_REAL_GATEWAY_TESTS` para não depender sempre de portas/mocks locais
 
 ## Convenções de código

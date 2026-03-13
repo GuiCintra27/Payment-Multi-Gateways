@@ -8,7 +8,48 @@ import env from '#start/env'
 
 const runRealGatewayTests = process.env.RUN_REAL_GATEWAY_TESTS === 'true'
 
+async function waitForGatewayMocks(): Promise<void> {
+  const gateway1Url = env.get('GATEWAY1_URL')
+  const gateway2Url = env.get('GATEWAY2_URL')
+
+  for (let attempt = 1; attempt <= 30; attempt++) {
+    const [gateway1Ready, gateway2Ready] = await Promise.all([
+      fetch(`${gateway1Url}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: env.get('GATEWAY1_EMAIL', ''),
+          token: env.get('GATEWAY1_TOKEN', ''),
+        }),
+      })
+        .then((response) => response.ok)
+        .catch(() => false),
+      fetch(`${gateway2Url}/transacoes`, {
+        headers: {
+          'Gateway-Auth-Token': env.get('GATEWAY2_AUTH_TOKEN', ''),
+          'Gateway-Auth-Secret': env.get('GATEWAY2_AUTH_SECRET', ''),
+        },
+      })
+        .then((response) => response.ok)
+        .catch(() => false),
+    ])
+
+    if (gateway1Ready && gateway2Ready) {
+      return
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+  }
+
+  throw new Error('Gateway mocks did not become ready in time')
+}
+
 test.group('Gateway Integration', (group) => {
+  group.setup(async () => {
+    if (!runRealGatewayTests) return
+    await waitForGatewayMocks()
+  })
+
   group.each.setup(() => testUtils.db().withGlobalTransaction())
 
   test('gateway1 adapter treats created transactions as approved', async ({ assert }) => {

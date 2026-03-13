@@ -41,6 +41,12 @@ npm run lint
 npm run typecheck
 ```
 
+### Subir observabilidade opcional
+
+```bash
+docker compose -f docker-compose.yaml -f docker-compose.monitoring.yaml up -d --build
+```
+
 ## Troubleshooting
 
 ### Porta 3306, 3001, 3002 ou 3333 em uso

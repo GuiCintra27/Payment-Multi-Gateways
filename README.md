@@ -16,7 +16,7 @@ O projeto implementa compra publica com multiplos produtos, calculo do total no 
 - `/metrics` em formato Prometheus para compra, refund e erros de gateway
 - smoke operacional automatizado em `scripts/smoke-e2e.sh`
 - Docker Compose para app, banco e mocks
-- Suite validada com `52/52` testes passando em `node:24`
+- Suite validada com `61/61` testes passando em `node:24`
 
 ## Stack
 
@@ -65,7 +65,8 @@ docker compose up --build
 - [Infra](docs/projects/INFRA.md)
 - [Seguranca](docs/projects/SECURITY.md)
 - [Runbook](docs/projects/RUNBOOK.md)
+- [Observability](docs/projects/OBSERVABILITY.md)
 
 ## Estado atual
 
-O core funcional, a documentacao publica, a instrumentacao operacional leve e a base principal de testes ja estao implementados e validados. Os proximos incrementos naturais sao ampliar cenarios de teste e, se houver tempo, adicionar observabilidade opcional.
+O core funcional, a documentacao publica, a instrumentacao operacional leve, a observabilidade opcional e a base principal de testes ja estao implementados e validados. Os proximos incrementos naturais sao apenas refinamentos opcionais, como dashboards prontos no Grafana ou uma camada adicional de logs/tracing.
