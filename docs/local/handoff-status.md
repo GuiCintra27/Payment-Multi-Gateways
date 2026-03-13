@@ -26,11 +26,11 @@ O ponto central agora não é mais "começar a implementação", e sim fechar o 
 | CRUD de usuários | Concluído | `app/controllers/users_controller.ts` |
 | CRUD de produtos | Concluído | `app/controllers/products_controller.ts` |
 | Clientes e detalhe de compras | Parcialmente concluído | `app/controllers/clients_controller.ts` existe, mas sem testes dedicados |
-| Gestão de gateways | Parcialmente concluído | listagem, toggle e prioridade existem; faltam testes dedicados |
+| Gestão de gateways | Parcialmente concluído | listagem, toggle e reorder de prioridade existem; cobertura ainda parcial |
 | Compra pública | Parcialmente concluído | `app/services/purchase_service.ts` e `POST /purchases` existem; faltam testes E2E do fluxo |
 | Multi-gateway com fallback | Parcialmente concluído | adapters e factory existem; faltam testes integrados com mocks |
 | Reembolso | Parcialmente concluído | `app/services/refund_service.ts` e rota existem; faltam testes dedicados |
-| Transações | Parcialmente concluído | listagem e detalhe existem; há divergência de autorização com o requisito |
+| Transações | Parcialmente concluído | listagem e detalhe existem; autorização foi alinhada para incluir `USER`, mas a cobertura ainda está evoluindo |
 | Documentação pública do projeto | Pendente | `docs/projects/` ainda não existe |
 | Bônus de senioridade | Pendente | request ID, métricas e observabilidade ainda não foram trazidos |
 
@@ -60,7 +60,7 @@ O ponto central agora não é mais "começar a implementação", e sim fechar o 
 
 ### Testes já presentes
 
-- Funcionais: auth, RBAC, users e products.
+- Funcionais: auth, RBAC, users, products, gateways e transactions.
 - Unitários: validators de usuário, validator de purchase e `GatewayFactory`.
 
 ## Lacunas relevantes
@@ -73,12 +73,11 @@ Ainda faltam testes para os fluxos que mais importam para o teste técnico:
 - fallback real entre gateways
 - `POST /transactions/:id/refund`
 - listagem/detalhe de transações
-- gestão de gateways
+- cenários mais completos de gestão de gateways
 - integração com os gateway mocks
 
 ### Inconsistências entre requisito e código
 
-- A documentação de requisitos indica que `USER` pode consultar transações, mas as rotas atuais permitem apenas `ADMIN`, `MANAGER` e `FINANCE`.
 - O handoff antigo dizia que a implementação estava parando antes das migrations, mas isso não corresponde mais ao estado real do repositório.
 - `docs/documentation-patterns.md` e partes do `AGENTS.md` ainda descreviam itens como futuros, embora parte deles já exista.
 - O documento de requisitos ainda mencionava Jest como preferência, mas o projeto está estruturado com Japa.

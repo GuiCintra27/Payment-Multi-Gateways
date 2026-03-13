@@ -38,8 +38,7 @@ O projeto implementa:
 ### Implementado, mas ainda incompleto
 
 - testes dos fluxos críticos de compra, fallback e refund
-- testes dos endpoints de transações e gateways
-- alinhamento final de permissões de `transactions`
+- aprofundamento dos testes dos endpoints de transações e gateways
 - documentação pública em `docs/projects/`
 
 ### Ainda não implementado
@@ -145,7 +144,6 @@ GatewayStrategy
 
 ## Situações que exigem atenção
 
-- a permissão de `transactions` precisa ser confirmada, porque a doc inicial e o código atual divergem
 - o projeto já tem implementação parcial do core; não tratar migrations/models/seeders como trabalho futuro
 - `docs/projects/` ainda não existe, então qualquer mudança relevante precisa também considerar a futura documentação pública
 - request ID é citado em documentos antigos, mas ainda não está implementado

@@ -108,3 +108,9 @@ O projeto pode ser considerado pronto para apresentação quando:
 - a documentação pública existir e bater com o código
 - o `AGENTS.md` refletir o estado real do repositório
 - pelo menos um bônus de senioridade de alto retorno estiver entregue
+
+## Última atualização
+
+- permissões de `transactions` alinhadas para incluir `USER`
+- reorder de prioridade de gateways passou a manter sequência única
+- cobertura funcional de `transactions` e `gateways` foi iniciada

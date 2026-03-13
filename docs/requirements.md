@@ -93,9 +93,9 @@ Observações de domínio:
 | Factory + prioridade | Concluído no código | falta prova integrada do fallback |
 | Fallback automático | Concluído no código | falta teste real do cenário |
 | Compra pública | Parcial | fluxo existe, faltam testes funcionais/integrados |
-| Transações | Parcial | rotas existem, permissão atual diverge do requisito documentado |
+| Transações | Parcial | rotas existem e o acesso de `USER` foi alinhado; faltam mais testes do fluxo |
 | Reembolso | Parcial | fluxo existe, faltam testes dedicados |
-| Gestão de gateways | Parcial | endpoints existem, faltam testes dedicados |
+| Gestão de gateways | Parcial | endpoints existem, incluindo reorder de prioridade; faltam mais testes e validações de cenário |
 | TDD / cobertura dos fluxos críticos | Parcial | base montada, cobertura ainda insuficiente |
 | README detalhado | Pendente | arquivo não existe na raiz |
 | Documentação pública do projeto | Pendente | `docs/projects/` ainda não existe |

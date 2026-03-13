@@ -32,6 +32,12 @@ export default class PurchasesController {
         })
       }
 
+      if (message.includes('No active gateways available')) {
+        return response.serviceUnavailable({
+          message: 'Payment processing is temporarily unavailable.',
+        })
+      }
+
       return response.internalServerError({ message })
     }
   }

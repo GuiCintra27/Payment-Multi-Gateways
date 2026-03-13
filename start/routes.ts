@@ -93,7 +93,7 @@ router
       .use(middleware.role({ roles: ['ADMIN'] }))
 
     /**
-     * Transactions (read-only) — ADMIN, MANAGER, FINANCE
+     * Transactions (read-only) — all authenticated roles
      */
     router
       .group(() => {
@@ -101,7 +101,7 @@ router
         router.get('/:id', [TransactionsController, 'show'])
       })
       .prefix('/transactions')
-      .use(middleware.role({ roles: ['ADMIN', 'MANAGER', 'FINANCE'] }))
+      .use(middleware.role({ roles: ['ADMIN', 'MANAGER', 'FINANCE', 'USER'] }))
 
     /**
      * Refund — ADMIN, FINANCE
