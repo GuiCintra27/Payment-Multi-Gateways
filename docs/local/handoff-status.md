@@ -108,6 +108,7 @@ Concluído neste ciclo:
 - validação completa do compose de observabilidade
 - validação real do Grafana via API confirmando datasource `prometheus` e dashboards provisionados
 - automação do GitHub alinhada para executar em `master`
+- workflows atualizados para actions oficiais compatíveis com Node 24 e teste explícito do `release-please` em Node 24
 - suíte verde com `61/61` testes passando
 
 Permanece fora do escopo deste ciclo:

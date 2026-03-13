@@ -169,6 +169,7 @@ Concluído:
 - dashboards Grafana provisionados para visão executiva e confiabilidade por gateway
 - métricas financeiras e de fallback adicionadas para leitura mais útil do domínio de pagamentos
 - workflows de CI e Release Please alinhados para a branch `master`
+- workflows atualizados para actions oficiais compatíveis com Node 24 e opt-in explícito de runtime Node 24
 
 Validação registrada:
 
