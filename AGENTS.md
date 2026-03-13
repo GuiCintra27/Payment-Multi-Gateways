@@ -151,6 +151,7 @@ GatewayStrategy
 
 - o projeto já tem implementação parcial do core; não tratar migrations/models/seeders como trabalho futuro
 - `docs/projects/` já existe e precisa ser mantido sincronizado com o código
+- a automação deste repositório está configurada para a branch `master`; CI e Release Please devem permanecer alinhados a isso
 - `X-Request-Id` já está implementado e deve ser preservado em mudanças de fluxo HTTP e gateway
 - `/metrics` já está implementado em formato Prometheus e deve ser atualizado se os fluxos instrumentados mudarem
 - `scripts/smoke-e2e.sh` é o smoke operacional oficial e deve acompanhar qualquer mudança de fluxo principal

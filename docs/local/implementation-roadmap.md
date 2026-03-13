@@ -168,6 +168,7 @@ Concluído:
 - `docs/projects/OBSERVABILITY.md` com setup, limites e consultas úteis
 - dashboards Grafana provisionados para visão executiva e confiabilidade por gateway
 - métricas financeiras e de fallback adicionadas para leitura mais útil do domínio de pagamentos
+- workflows de CI e Release Please alinhados para a branch `master`
 
 Validação registrada:
 

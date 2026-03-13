@@ -107,6 +107,7 @@ Concluído neste ciclo:
 - espera ativa dos gateway mocks nos testes reais de integração para reduzir flakiness fora da CI
 - validação completa do compose de observabilidade
 - validação real do Grafana via API confirmando datasource `prometheus` e dashboards provisionados
+- automação do GitHub alinhada para executar em `master`
 - suíte verde com `61/61` testes passando
 
 Permanece fora do escopo deste ciclo:
