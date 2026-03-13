@@ -11,13 +11,29 @@ export class MetricsService {
 
   constructor() {
     this.register('app_purchases_total', 'Total purchases processed by final transaction status')
+    this.register(
+      'app_purchase_amount_cents_total',
+      'Total purchase volume in cents by final transaction status and gateway'
+    )
     this.register('app_refunds_total', 'Total refunds successfully completed')
+    this.register(
+      'app_refund_amount_cents_total',
+      'Total refunded amount in cents by gateway after successful refunds'
+    )
     this.register('app_gateway_charge_attempts_total', 'Total gateway charge attempts')
     this.register('app_gateway_charge_success_total', 'Total successful gateway charges')
     this.register('app_gateway_charge_failures_total', 'Total failed gateway charges')
     this.register('app_gateway_refund_attempts_total', 'Total gateway refund attempts')
     this.register('app_gateway_refund_success_total', 'Total successful gateway refunds')
     this.register('app_gateway_refund_failures_total', 'Total failed gateway refunds')
+    this.register(
+      'app_gateway_fallback_activated_total',
+      'Total purchase attempts that required at least one fallback to another gateway'
+    )
+    this.register(
+      'app_gateway_fallback_recovered_total',
+      'Total purchase attempts recovered successfully after a fallback'
+    )
     this.register('app_gateway_no_active_total', 'Total purchase attempts with no active gateways')
     this.register(
       'app_gateway_all_failed_total',
@@ -52,8 +68,16 @@ export class MetricsService {
     this.increment('app_purchases_total', { status })
   }
 
+  recordPurchaseAmount(amountCents: number, status: string, gateway: string) {
+    this.increment('app_purchase_amount_cents_total', { gateway, status }, amountCents)
+  }
+
   recordRefundSuccess() {
     this.increment('app_refunds_total', { status: 'success' })
+  }
+
+  recordRefundAmount(amountCents: number, gateway: string) {
+    this.increment('app_refund_amount_cents_total', { gateway }, amountCents)
   }
 
   recordGatewayChargeAttempt(gateway: string) {
@@ -78,6 +102,14 @@ export class MetricsService {
 
   recordGatewayRefundFailure(gateway: string) {
     this.increment('app_gateway_refund_failures_total', { gateway })
+  }
+
+  recordFallbackActivated() {
+    this.increment('app_gateway_fallback_activated_total')
+  }
+
+  recordFallbackRecovered() {
+    this.increment('app_gateway_fallback_recovered_total')
   }
 
   recordNoActiveGateways() {

@@ -15,35 +15,35 @@ O ponto central agora não é mais "começar a implementação", e sim fechar o 
 
 ## Status por fase
 
-| Fase | Situação atual         | Resultado resumido                                                                          |
-| ---- | ---------------------- | ------------------------------------------------------------------------------------------- |
-| F1   | Concluída              | setup, Docker, CI e release automation entregues                                            |
-| F2   | Concluída              | modelagem principal, seeders, auth e RBAC entregues                                         |
-| F3   | Concluída              | core funcional foi refinado e validado com compra, fallback real, transações e refund       |
-| F4   | Concluída              | suíte cobre os fluxos críticos principais e os cenários adicionais mais relevantes           |
-| F5   | Concluída              | `README.md` e a camada pública em `docs/projects/` foram criados e alinhados ao código      |
-| F6   | Concluída              | `X-Request-Id`, `/metrics`, smoke operacional e observabilidade opcional foram entregues     |
+| Fase | Situação atual | Resultado resumido                                                                       |
+| ---- | -------------- | ---------------------------------------------------------------------------------------- |
+| F1   | Concluída      | setup, Docker, CI e release automation entregues                                         |
+| F2   | Concluída      | modelagem principal, seeders, auth e RBAC entregues                                      |
+| F3   | Concluída      | core funcional foi refinado e validado com compra, fallback real, transações e refund    |
+| F4   | Concluída      | suíte cobre os fluxos críticos principais e os cenários adicionais mais relevantes       |
+| F5   | Concluída      | `README.md` e a camada pública em `docs/projects/` foram criados e alinhados ao código   |
+| F6   | Concluída      | `X-Request-Id`, `/metrics`, smoke operacional e observabilidade opcional foram entregues |
 
 ## Estado por área
 
-| Área                                 | Status                 | Evidência                                                                                                                |
-| ------------------------------------ | ---------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| Infra local e Docker                 | Concluído              | `docker-compose.yaml`, `Dockerfile`, `scripts/start-dev.sh`                                                              |
-| CI e release automation              | Concluído              | `.github/workflows/ci.yml`, `.github/workflows/release-please.yml`                                                       |
-| Banco de dados e modelagem principal | Concluído              | migrations de `users`, `gateways`, `clients`, `products`, `transactions`, `transaction_products`                         |
-| Seeders iniciais                     | Concluído              | `database/seeders/01_admin_seeder.ts`, `02_gateway_seeder.ts`                                                            |
-| Auth por access token                | Concluído              | `app/controllers/auth_controller.ts`, `config/auth.ts`                                                                   |
-| RBAC                                 | Concluído              | `app/middleware/role_middleware.ts`, rotas protegidas em `start/routes.ts`                                               |
-| CRUD de usuários                     | Concluído              | `app/controllers/users_controller.ts`                                                                                    |
-| CRUD de produtos                     | Concluído              | `app/controllers/products_controller.ts`                                                                                 |
-| Clientes e detalhe de compras        | Concluído              | `app/controllers/clients_controller.ts` implementado e coberto com cenários dedicados de detalhe e ordenação            |
-| Gestão de gateways                   | Concluído              | listagem, toggle e reorder de prioridade implementados e cobertos com cenários de erro e reorder extremo                |
-| Compra pública                       | Concluído              | `app/services/purchase_service.ts` e `POST /purchases` implementados e cobertos no fluxo principal                       |
-| Multi-gateway com fallback           | Concluído              | adapters e factory implementados, alinhados ao contrato real do mock e validados com fallback real                       |
-| Reembolso                            | Concluído              | `app/services/refund_service.ts` e rota implementados e cobertos nos cenários principais                                 |
-| Transações                           | Concluído              | listagem e detalhe implementados, com autorização alinhada para incluir `USER` e cobertura funcional principal           |
-| Documentação pública do projeto      | Concluído              | `README.md` e `docs/projects/` com hub, quick start, arquitetura, dados, fluxos, integrações, infra, segurança e runbook |
-| Bônus de senioridade                 | Concluído              | `X-Request-Id`, `/metrics`, smoke operacional e stack opcional de observabilidade entregues                              |
+| Área                                 | Status    | Evidência                                                                                                                |
+| ------------------------------------ | --------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Infra local e Docker                 | Concluído | `docker-compose.yaml`, `Dockerfile`, `scripts/start-dev.sh`                                                              |
+| CI e release automation              | Concluído | `.github/workflows/ci.yml`, `.github/workflows/release-please.yml`                                                       |
+| Banco de dados e modelagem principal | Concluído | migrations de `users`, `gateways`, `clients`, `products`, `transactions`, `transaction_products`                         |
+| Seeders iniciais                     | Concluído | `database/seeders/01_admin_seeder.ts`, `02_gateway_seeder.ts`                                                            |
+| Auth por access token                | Concluído | `app/controllers/auth_controller.ts`, `config/auth.ts`                                                                   |
+| RBAC                                 | Concluído | `app/middleware/role_middleware.ts`, rotas protegidas em `start/routes.ts`                                               |
+| CRUD de usuários                     | Concluído | `app/controllers/users_controller.ts`                                                                                    |
+| CRUD de produtos                     | Concluído | `app/controllers/products_controller.ts`                                                                                 |
+| Clientes e detalhe de compras        | Concluído | `app/controllers/clients_controller.ts` implementado e coberto com cenários dedicados de detalhe e ordenação             |
+| Gestão de gateways                   | Concluído | listagem, toggle e reorder de prioridade implementados e cobertos com cenários de erro e reorder extremo                 |
+| Compra pública                       | Concluído | `app/services/purchase_service.ts` e `POST /purchases` implementados e cobertos no fluxo principal                       |
+| Multi-gateway com fallback           | Concluído | adapters e factory implementados, alinhados ao contrato real do mock e validados com fallback real                       |
+| Reembolso                            | Concluído | `app/services/refund_service.ts` e rota implementados e cobertos nos cenários principais                                 |
+| Transações                           | Concluído | listagem e detalhe implementados, com autorização alinhada para incluir `USER` e cobertura funcional principal           |
+| Documentação pública do projeto      | Concluído | `README.md` e `docs/projects/` com hub, quick start, arquitetura, dados, fluxos, integrações, infra, segurança e runbook |
+| Bônus de senioridade                 | Concluído | `X-Request-Id`, `/metrics`, smoke operacional e stack opcional de observabilidade entregues                              |
 
 ## O que já está implementado
 
@@ -102,13 +102,16 @@ Concluído neste ciclo:
 - cenários adicionais para `purchases`, `refunds`, `gateways`, `transactions` e `clients`
 - `docker-compose.monitoring.yaml` com Prometheus e Grafana
 - `docs/projects/OBSERVABILITY.md` criada e integrada ao hub público
+- dashboards Grafana provisionados para visão executiva e confiabilidade por gateway
+- métricas financeiras e de fallback refinadas para leitura operacional mais realista
 - espera ativa dos gateway mocks nos testes reais de integração para reduzir flakiness fora da CI
 - validação completa do compose de observabilidade
+- validação real do Grafana via API confirmando datasource `prometheus` e dashboards provisionados
 - suíte verde com `61/61` testes passando
 
 Permanece fora do escopo deste ciclo:
 
-- dashboards prontos no Grafana
+- alertas operacionais
 - stack de logs centralizados e tracing distribuído
 
 ## Lacunas relevantes
@@ -131,7 +134,7 @@ Expansões futuras possíveis, mas não necessárias para a entrega atual:
 
 ### Bônus de senioridade ainda ausentes
 
-- dashboards provisionados no Grafana
+- alertas operacionais
 - stack de logs/tracing além de métricas
 
 ## Validação executada nesta sessão
@@ -151,10 +154,11 @@ Resultados registrados:
 - suíte verde com `61/61` testes passando
 - smoke operacional executado com sucesso contra ambiente isolado da aplicação
 - `docker compose -f docker-compose.yaml -f docker-compose.monitoring.yaml config` executado com sucesso
+- Grafana validado com datasource `prometheus` e dashboards `payment-overview` e `gateway-reliability`
 
 ## Próximos passos recomendados
 
-1. Se houver tempo, provisionar dashboards básicos no Grafana para a demonstração.
+1. Se houver tempo, adicionar alertas básicos para sinais como `all_failed_total` e `no_active_total`.
 2. Se houver interesse em extrapolar o teste, avaliar logs centralizados ou tracing como camada separada.
 
 ## Extensão ativa

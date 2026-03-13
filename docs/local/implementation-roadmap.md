@@ -24,14 +24,14 @@ Se esses quatro itens não estiverem alinhados, o ganho percebido de qualquer b�
 
 ## Fases revisadas
 
-| Fase | Objetivo                                                 | Status                 |
-| ---- | -------------------------------------------------------- | ---------------------- |
-| F1   | Setup, Docker, CI e automação de release                 | Concluída              |
-| F2   | Modelagem, migrations, models, seeders, auth e RBAC      | Concluída              |
-| F3   | Core funcional de compras, gateways, transações e refund | Concluída              |
-| F4   | Testes dos fluxos críticos                               | Concluída              |
-| F5   | Documentação pública do projeto                          | Concluída              |
-| F6   | Bônus de senioridade de alto retorno                     | Concluída              |
+| Fase | Objetivo                                                 | Status    |
+| ---- | -------------------------------------------------------- | --------- |
+| F1   | Setup, Docker, CI e automação de release                 | Concluída |
+| F2   | Modelagem, migrations, models, seeders, auth e RBAC      | Concluída |
+| F3   | Core funcional de compras, gateways, transações e refund | Concluída |
+| F4   | Testes dos fluxos críticos                               | Concluída |
+| F5   | Documentação pública do projeto                          | Concluída |
+| F6   | Bônus de senioridade de alto retorno                     | Concluída |
 
 ## Resultado por fase
 
@@ -166,6 +166,8 @@ Concluído:
 - workflow de smoke da CI passou a executar o fluxo fim a fim
 - `docker-compose.monitoring.yaml` com Prometheus e Grafana
 - `docs/projects/OBSERVABILITY.md` com setup, limites e consultas úteis
+- dashboards Grafana provisionados para visão executiva e confiabilidade por gateway
+- métricas financeiras e de fallback adicionadas para leitura mais útil do domínio de pagamentos
 
 Validação registrada:
 
@@ -175,13 +177,14 @@ Validação registrada:
 - suíte verde com `61/61` testes passando
 - smoke operacional executado com sucesso em ambiente isolado com app, MySQL e gateway mocks
 - `docker compose -f docker-compose.yaml -f docker-compose.monitoring.yaml config`
+- Grafana validado via API com datasource `prometheus` e dashboards provisionados
 
 ## Backlog por prioridade
 
 ### Prioridade 1: reforçar senioridade com baixo custo
 
 - manter o smoke operacional alinhado a qualquer mudança de fluxo principal
-- provisionar dashboards básicos no Grafana, se houver tempo
+- adicionar alertas básicos, se houver tempo
 
 ### Prioridade 2: documentação operacional e evidências
 
@@ -192,11 +195,11 @@ Validação registrada:
 
 Itens recomendados:
 
-- dashboards simples de demonstração no Grafana, apenas se a implementação continuar leve
+- alertas simples de demonstração, apenas se a implementação continuar leve
 
 Itens opcionais, somente se houver tempo:
 
-- provisionamento de dashboards
+- provisionamento de alertas
 - logs centralizados leves
 
 ## Extensão opcional aprovada
@@ -234,7 +237,7 @@ Itens descartados para este teste:
 | Smoke test real com gateways mockados     | Alto                  | Médio      | Recomendado   |
 | README e docs públicos profissionais      | Alto                  | Médio      | Recomendado   |
 | Multi-compose split por responsabilidade  | Médio                 | Baixo      | Opcional      |
-| Grafana com dashboards básicos            | Médio                 | Baixo      | Opcional      |
+| Grafana com dashboards provisionados      | Médio                 | Baixo      | Entregue      |
 | Kafka, outbox, DLQ                        | Baixo para este teste | Alto       | Não adotar    |
 
 ## Critério de pronto
@@ -262,3 +265,4 @@ O projeto pode ser considerado pronto para apresentação quando:
 - validação dockerizada com Node 24 passou com `61/61` testes
 - Fase 5 concluída com `README.md` e documentação pública em `docs/projects/`
 - `X-Request-Id`, `/metrics`, smoke operacional e observabilidade opcional implementados e validados
+- dashboards provisionados e métricas refinadas para leituras de approval, GMV, refunds e fallback

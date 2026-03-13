@@ -41,11 +41,11 @@ O projeto implementa:
 - cobertura funcional de clientes, gateways e transações
 - documentação pública em `docs/projects/`
 - `X-Request-Id`, `/metrics` e smoke operacional
-- stack opcional de observabilidade com Prometheus e Grafana
+- stack opcional de observabilidade com Prometheus, Grafana e dashboards provisionados
 
 ### Ainda não implementado
 
-- dashboards prontos no Grafana
+- alertas operacionais
 - stack de logs/tracing mais completa
 
 ## Stack
@@ -155,6 +155,7 @@ GatewayStrategy
 - `/metrics` já está implementado em formato Prometheus e deve ser atualizado se os fluxos instrumentados mudarem
 - `scripts/smoke-e2e.sh` é o smoke operacional oficial e deve acompanhar qualquer mudança de fluxo principal
 - `docker-compose.monitoring.yaml` e `docs/projects/OBSERVABILITY.md` são a referência da observabilidade opcional
+- dashboards Grafana provisionados devem continuar coerentes com as métricas expostas em `/metrics`
 - testes reais dos gateways podem ser condicionados por `RUN_REAL_GATEWAY_TESTS` para não depender sempre de portas/mocks locais
 
 ## Convenções de código

@@ -27,14 +27,18 @@ export default class GatewayService {
     }
 
     const errors: Array<{ gateway: string; error: string }> = []
+    let fallbackActivated = false
 
-    for (const gw of gateways) {
+    for (const [index, gw] of gateways.entries()) {
       metrics.recordGatewayChargeAttempt(gw.name)
 
       try {
         const adapter = GatewayFactory.create(gw)
         const result = await adapter.createTransaction(data)
         metrics.recordGatewayChargeSuccess(gw.name)
+        if (fallbackActivated) {
+          metrics.recordFallbackRecovered()
+        }
 
         logger.info(
           {
@@ -51,6 +55,10 @@ export default class GatewayService {
         const message = error instanceof Error ? error.message : String(error)
         errors.push({ gateway: gw.name, error: message })
         metrics.recordGatewayChargeFailure(gw.name)
+        if (!fallbackActivated && index < gateways.length - 1) {
+          fallbackActivated = true
+          metrics.recordFallbackActivated()
+        }
 
         logger.warn(
           { gateway: gw.name, error: message, requestId: data.requestId },

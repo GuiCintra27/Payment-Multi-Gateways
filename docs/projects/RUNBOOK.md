@@ -102,6 +102,14 @@ curl http://localhost:3333/metrics
 
 Voce deve ver contadores no formato Prometheus, incluindo metricas de compra, refund e gateway.
 
+### Validar dashboards do Grafana
+
+1. suba a stack com `docker compose -f docker-compose.yaml -f docker-compose.monitoring.yaml up -d --build`
+2. abra `http://localhost:3005`
+3. entre com `admin` / `admin`, salvo override por variavel
+4. abra a pasta `Payment Gateway`
+5. valide os dashboards `Payment Gateway Overview` e `Gateway Reliability`
+
 ### Rodar smoke automatizado
 
 Com a aplicacao de pe:

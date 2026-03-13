@@ -52,6 +52,12 @@ Nesse modo, o container da aplicacao executa:
 - `node ace db:seed`
 - `node bin/server.js`
 
+E a stack de observabilidade sobe com:
+
+- Prometheus em `http://localhost:9090`
+- Grafana em `http://localhost:3005`
+- dashboards provisionados automaticamente na pasta `Payment Gateway`
+
 ## Validacao rapida
 
 ### Health check
@@ -104,6 +110,8 @@ Com a app ja rodando:
 | Gateway Mock 1 | `http://localhost:3001` |
 | Gateway Mock 2 | `http://localhost:3002` |
 | MySQL          | `localhost:3306`        |
+| Prometheus     | `http://localhost:9090` |
+| Grafana        | `http://localhost:3005` |
 
 ## Usuario seed
 

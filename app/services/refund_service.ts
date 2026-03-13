@@ -38,6 +38,7 @@ export default class RefundService {
     transaction.status = 'refunded'
     await transaction.save()
     metrics.recordRefundSuccess()
+    metrics.recordRefundAmount(transaction.amount, transaction.gateway.name)
 
     logger.info(
       {

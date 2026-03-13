@@ -32,6 +32,7 @@ test.group('Metrics', (group) => {
     response.assertStatus(200)
     response.assertHeader('Content-Type', 'text/plain; version=0.0.4; charset=utf-8')
     assert.include(response.text(), '# HELP app_purchases_total')
+    assert.include(response.text(), '# HELP app_purchase_amount_cents_total')
     assert.include(response.text(), '# TYPE app_gateway_charge_failures_total counter')
   })
 
@@ -109,11 +110,18 @@ test.group('Metrics', (group) => {
     const body = metricsResponse.text()
 
     assert.include(body, 'app_purchases_total{status="approved"} 1')
+    assert.include(
+      body,
+      'app_purchase_amount_cents_total{gateway="gateway2",status="approved"} 2500'
+    )
     assert.include(body, 'app_refunds_total{status="success"} 1')
+    assert.include(body, 'app_refund_amount_cents_total{gateway="gateway2"} 2500')
     assert.include(body, 'app_gateway_charge_attempts_total{gateway="gateway1"} 1')
     assert.include(body, 'app_gateway_charge_failures_total{gateway="gateway1"} 1')
     assert.include(body, 'app_gateway_charge_attempts_total{gateway="gateway2"} 1')
     assert.include(body, 'app_gateway_charge_success_total{gateway="gateway2"} 1')
+    assert.include(body, 'app_gateway_fallback_activated_total 1')
+    assert.include(body, 'app_gateway_fallback_recovered_total 1')
     assert.include(body, 'app_gateway_refund_attempts_total{gateway="gateway2"} 1')
     assert.include(body, 'app_gateway_refund_success_total{gateway="gateway2"} 1')
 

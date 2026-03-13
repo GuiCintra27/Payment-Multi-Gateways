@@ -37,6 +37,7 @@ Esta API recebe compras publicas, calcula o total no servidor, tenta cobrar no g
 - Documentacao publica minima: concluida
 - Observabilidade leve: `X-Request-Id` implementado
 - Observabilidade leve: `/metrics` implementado
+- Observabilidade leve: dashboards do Grafana provisionados
 - Operação: smoke automatizado implementado
 - Observabilidade avancada: opcional via compose dedicado
 

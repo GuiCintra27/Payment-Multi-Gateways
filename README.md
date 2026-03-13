@@ -14,6 +14,7 @@ O projeto implementa compra publica com multiplos produtos, calculo do total no 
 - RBAC com `ADMIN`, `MANAGER`, `FINANCE` e `USER`
 - `X-Request-Id` com propagacao basica para os gateways
 - `/metrics` em formato Prometheus para compra, refund e erros de gateway
+- dashboards Grafana provisionados para visao executiva e confiabilidade por gateway
 - smoke operacional automatizado em `scripts/smoke-e2e.sh`
 - Docker Compose para app, banco e mocks
 - Suite validada com `61/61` testes passando em `node:24`
@@ -69,4 +70,4 @@ docker compose up --build
 
 ## Estado atual
 
-O core funcional, a documentacao publica, a instrumentacao operacional leve, a observabilidade opcional e a base principal de testes ja estao implementados e validados. Os proximos incrementos naturais sao apenas refinamentos opcionais, como dashboards prontos no Grafana ou uma camada adicional de logs/tracing.
+O core funcional, a documentacao publica, a instrumentacao operacional leve, a observabilidade opcional com dashboards provisionados e a base principal de testes ja estao implementados e validados. Os proximos incrementos naturais sao apenas refinamentos opcionais, como alertas, logs centralizados ou tracing.

@@ -108,6 +108,7 @@ export default class PurchaseService {
       'Purchase completed'
     )
     metrics.recordPurchase(transaction.status)
+    metrics.recordPurchaseAmount(totalAmount, transaction.status, gateway.name)
 
     // 6. Return summary
     await transaction.load('client')

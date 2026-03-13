@@ -24,6 +24,13 @@ Stack opcional de observabilidade em `docker-compose.monitoring.yaml`:
 | `prometheus` | coleta de metricas | `9090`       |
 | `grafana`    | visualizacao       | `3005`       |
 
+Provisionamento automatico do Grafana:
+
+- datasource `Prometheus`
+- pasta `Payment Gateway`
+- dashboard `Payment Gateway Overview`
+- dashboard `Gateway Reliability`
+
 ## Comportamento do container da app
 
 Ao subir a stack completa, o servico `app` executa:
