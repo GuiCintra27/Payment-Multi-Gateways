@@ -1,36 +1,36 @@
-# Roadmap de Implementacao
+# Roadmap de Implementação
 
-Roadmap revisado em 2026-03-13 com base no estado real do repositorio.
+Roadmap revisado em 2026-03-14 com base no estado real do repositório.
 
 ## Objetivo
 
-Entregar e sustentar uma API multi-gateway para o teste tecnico BeTalent com:
+Entregar e sustentar uma API multi-gateway de pagamentos com:
 
 - corretude funcional de compra, fallback e refund
-- cobertura de testes dos fluxos criticos
-- documentacao profissional e sincronizada
+- cobertura de testes dos fluxos críticos
+- documentação profissional e sincronizada
 - sinais claros de senioridade com baixo acoplamento
 
-## Principio de execucao
+## Princípio de execução
 
 Prioridade sempre em alinhamento entre:
 
 1. requisito
-2. codigo
+2. código
 3. testes
-4. documentacao
+4. documentação
 
 ## Fases
 
 | Fase | Objetivo | Status |
 | ---- | -------- | ------ |
-| F1 | Setup, Docker, CI e release automation | Concluida |
-| F2 | Modelagem, migrations, seeders, auth e RBAC | Concluida |
-| F3 | Core de compra, gateways, transacoes e refund | Concluida |
-| F4 | Testes dos fluxos criticos | Concluida |
-| F5 | Documentacao publica | Concluida |
-| F6 | Bonus de observabilidade leve e operacao | Concluida |
-| F7 | Logs centralizados + tracing leve | Concluida |
+| F1 | Setup, Docker, CI e release automation | Concluída |
+| F2 | Modelagem, migrations, seeders, auth e RBAC | Concluída |
+| F3 | Core de compra, gateways, transações e refund | Concluída |
+| F4 | Testes dos fluxos críticos | Concluída |
+| F5 | Documentação pública | Concluída |
+| F6 | Bônus de observabilidade leve e operação | Concluída |
+| F7 | Logs centralizados + tracing leve | Concluída |
 
 ## Resultado consolidado por fase
 
@@ -44,12 +44,12 @@ Prioridade sempre em alinhamento entre:
 
 ### F3
 
-- compra publica, fallback por prioridade, persistencia de transacoes e refund entregues
+- compra pública, fallback por prioridade, persistência de transações e refund entregues
 
 ### F4
 
-- suite funcional/unitaria cobrindo fluxos criticos entregue
-- validacao com mocks reais habilitada por `RUN_REAL_GATEWAY_TESTS`
+- suíte funcional/unitária cobrindo fluxos críticos entregue
+- validação com mocks reais habilitada por `RUN_REAL_GATEWAY_TESTS`
 
 ### F5
 
@@ -62,13 +62,13 @@ Prioridade sempre em alinhamento entre:
 ### F7
 
 - Loki + Promtail + Tempo no overlay opcional entregues
-- OpenTelemetry com spans manuais minimos entregue
-- correlacao `requestId` + `trace_id` em logs/traces entregue
+- OpenTelemetry com spans manuais mínimos entregue
+- correlação `requestId` + `trace_id` em logs/traces entregue
 - dashboard de triagem de incidente entregue
 - smoke de observabilidade + workflow manual opcional entregue
-- reorganizacao documental em padrao `projects/local/archive` entregue
+- reorganização documental em padrão `projects/local/archive` entregue
 
-## Validacao do ciclo atual
+## Validação do ciclo atual
 
 Executado em 2026-03-13:
 
@@ -80,7 +80,7 @@ Executado em 2026-03-13:
 - `./scripts/smoke-e2e.sh`
 - `./scripts/smoke-observability.sh`
 
-## Backlog real apos F7
+## Backlog real após F7
 
 ### Prioridade 1 (opcional)
 
@@ -88,18 +88,18 @@ Executado em 2026-03-13:
 
 ### Prioridade 2 (opcional)
 
-- evolucao de observabilidade para perfil enterprise:
-  - retention mais longa
-  - politicas de custo/volume
-  - integracao com stack central corporativa
+- evolução de observabilidade para perfil enterprise:
+  - retenção mais longa
+  - políticas de custo/volume
+  - integração com stack central corporativa
 
-### Fora de escopo deste teste
+### Fora de escopo deste ciclo
 
 - mensageria/outbox/DLQ
 - antifraude dedicado
-- arquitetura distribuida completa
+- arquitetura distribuída completa
 
 ## Fase ativa
 
-Sem fase obrigatoria ativa.
-Projeto pronto para apresentacao tecnica, com incrementos futuros opcionais.
+Sem fase obrigatória ativa.
+Projeto pronto para apresentação técnica, com incrementos opcionais futuros.

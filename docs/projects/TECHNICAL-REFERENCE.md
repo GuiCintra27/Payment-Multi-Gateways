@@ -1,8 +1,8 @@
-# Referencia tecnica
+# Referência técnica
 
-Guia de consulta rapida para setup, operacao e avaliacao tecnica.
+Guia de consulta rápida para setup, operação e avaliação técnica.
 
-## Servicos e portas
+## Serviços e portas
 
 - API: `http://localhost:3333`
 - Gateway Mock 1: `http://localhost:3001`
@@ -18,7 +18,7 @@ Stack opcional de observabilidade:
 
 ## Endpoints principais
 
-Publicos:
+Públicos:
 
 - `GET /`
 - `GET /metrics`
@@ -41,14 +41,14 @@ Autenticados:
 
 ## Matriz de acesso (resumo)
 
-- `ADMIN`: usuarios, produtos, clientes, transacoes, gateways, refund
-- `MANAGER`: usuarios, produtos, clientes, transacoes
-- `FINANCE`: produtos, clientes, transacoes, refund
+- `ADMIN`: usuários, produtos, clientes, transações, gateways, refund
+- `MANAGER`: usuários, produtos, clientes, transações
+- `FINANCE`: produtos, clientes, transações, refund
 - `USER`: sem acesso a backoffice (`clients`, `transactions`, `gateways`, `users`)
 
-## Variaveis de ambiente principais
+## Variáveis de ambiente principais
 
-Aplicacao:
+Aplicação:
 
 - `APP_KEY`
 - `LOG_LEVEL`
@@ -67,7 +67,7 @@ Testes:
 
 - `RUN_REAL_GATEWAY_TESTS=true`
 
-## Comandos de validacao
+## Comandos de validação
 
 Base:
 
@@ -92,15 +92,15 @@ Smoke de observabilidade:
 ## CI e release
 
 - CI principal: `.github/workflows/ci.yml` (branch `master`)
-- Smoke observabilidade: `.github/workflows/observability-smoke.yml` (manual)
+- Smoke de observabilidade: `.github/workflows/observability-smoke.yml` (manual)
 - Release Please: `.github/workflows/release-please.yml`
 
 ## Documentos relacionados
 
-- [Inicio rapido](./QUICK-START.md)
+- [Início rápido](./QUICK-START.md)
 - [Arquitetura](./ARCHITECTURE.md)
-- [Integracoes](./INTEGRATIONS.md)
+- [Integrações](./INTEGRATIONS.md)
 - [Infra](./INFRA.md)
-- [Seguranca](./SECURITY.md)
+- [Segurança](./SECURITY.md)
 - [Observabilidade](./OBSERVABILITY.md)
 - [Runbook](./RUNBOOK.md)

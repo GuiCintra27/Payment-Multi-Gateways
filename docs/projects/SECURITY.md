@@ -1,15 +1,15 @@
-# Security
+# Segurança
 
-Resumo das decisoes de seguranca presentes no projeto.
+Resumo das decisões de segurança presentes no projeto.
 
-## Autenticacao
+## Autenticação
 
 - auth baseada em access tokens opaque do AdonisJS
 - login em `POST /login`
 - logout em `POST /logout`
 - header esperado: `Authorization: Bearer <token>`
 
-## Autorizacao
+## Autorização
 
 Roles suportadas:
 
@@ -20,43 +20,43 @@ Roles suportadas:
 
 ## Matriz de acesso
 
-| Recurso    | ADMIN | MANAGER | FINANCE | USER | Publico |
+| Recurso    | ADMIN | MANAGER | FINANCE | USER | Público |
 | ---------- | ----- | ------- | ------- | ---- | ------- |
 | Login      | -     | -       | -       | -    | sim     |
 | Compra     | -     | -       | -       | -    | sim     |
-| Usuarios   | sim   | sim     | nao     | nao  | nao     |
-| Produtos   | sim   | sim     | sim     | nao  | nao     |
-| Clientes   | sim   | sim     | sim     | nao  | nao     |
-| Transacoes | sim   | sim     | sim     | nao  | nao     |
-| Refund     | sim   | nao     | sim     | nao  | nao     |
-| Gateways   | sim   | nao     | nao     | nao  | nao     |
+| Usuários   | sim   | sim     | não     | não  | não     |
+| Produtos   | sim   | sim     | sim     | não  | não     |
+| Clientes   | sim   | sim     | sim     | não  | não     |
+| Transações | sim   | sim     | sim     | não  | não     |
+| Refund     | sim   | não     | sim     | não  | não     |
+| Gateways   | sim   | não     | não     | não  | não     |
 
-## Dados sensiveis
+## Dados sensíveis
 
 Regras atuais:
 
-- nao persistir numero completo do cartao
-- nao persistir CVV
+- não persistir número completo do cartão
+- não persistir CVV
 - persistir somente `card_last_numbers`
-- valores monetarios em centavos para evitar erro de ponto flutuante
-- nao expor `credentials` dos gateways nas respostas da API
+- valores monetários em centavos para evitar erro de ponto flutuante
+- não expor `credentials` dos gateways nas respostas da API
 
 ## Gateways externos
 
 Cada gateway usa um mecanismo diferente:
 
 - gateway 1: login e bearer token
-- gateway 2: headers fixos de autenticacao
+- gateway 2: headers fixos de autenticação
 
-## Correlacao basica
+## Correlação básica
 
-- `X-Request-Id` e aceito na entrada ou gerado automaticamente
-- o header e devolvido na resposta HTTP
-- o valor e propagado para cobranca e refund nos gateways
-- logs de compra, fallback e refund carregam `requestId` quando disponivel
+- `X-Request-Id` é aceito na entrada ou gerado automaticamente
+- o header é devolvido na resposta HTTP
+- o valor é propagado para cobrança e refund nos gateways
+- logs de compra, fallback e refund carregam `requestId` quando disponível
 
 ## Limites atuais
 
-Ainda nao implementado:
+Ainda não implementado:
 
 - rate limiting

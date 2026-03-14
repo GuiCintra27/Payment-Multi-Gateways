@@ -1,6 +1,6 @@
-# Arquivado - Padroes de Documentacao e Estado Atual
+# Arquivado - Padrões de Documentação e Estado Atual
 
-> Documento historico de planejamento. Nao e a fonte de verdade do estado atual.
+> Documento histórico de planejamento. Não é a fonte de verdade do estado atual.
 > Links e status internos podem estar desatualizados.
 
 Documento de referência para organizar a documentação do projeto com base em dois eixos:
@@ -52,7 +52,7 @@ Esse padrão continua sendo adequado aqui.
 
 | Camada           | Objetivo                                               |
 | ---------------- | ------------------------------------------------------ |
-| `README.md`      | visão executiva do projeto para recrutador e avaliador |
+| `README.md`      | visão executiva do projeto para leitores externos       |
 | `AGENTS.md`      | contexto operacional para agentes de IA                |
 | `docs/projects/` | documentação pública, estável e navegável              |
 | `docs/local/`    | status, roadmap e notas de trabalho em andamento       |

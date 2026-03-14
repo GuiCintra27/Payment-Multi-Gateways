@@ -1,10 +1,10 @@
-# AGENTS.md - BeTalent Payment Gateway
+# AGENTS.md - Payment Multi Gateway
 
 Guia operacional para agentes de IA trabalhando neste repositório.
 
 ## Visão geral do projeto
 
-API RESTful multi-gateway de pagamentos construída com AdonisJS 6 e TypeScript para atender ao teste técnico BeTalent.
+API RESTful multi-gateway de pagamentos construída com AdonisJS 6 e TypeScript.
 
 O projeto implementa:
 
@@ -163,7 +163,7 @@ GatewayStrategy
 - `scripts/smoke-observability.sh` valida logs/traces e deve acompanhar mudanças de instrumentação
 - `docker-compose.monitoring.yaml` e `docs/projects/OBSERVABILITY.md` são a referência da observabilidade opcional
 - dashboards Grafana provisionados devem continuar coerentes com métricas, logs e traces expostos
-- `USER` nao deve acessar `clients` nem `transactions`; backoffice fica restrito a `ADMIN`, `MANAGER`, `FINANCE`
+- `USER` não deve acessar `clients` nem `transactions`; backoffice fica restrito a `ADMIN`, `MANAGER`, `FINANCE`
 - respostas da API nunca devem expor `credentials` de gateway
 - testes reais dos gateways podem ser condicionados por `RUN_REAL_GATEWAY_TESTS` para não depender sempre de portas/mocks locais
 
@@ -198,7 +198,7 @@ Usar Conventional Commits:
 ## Estrutura do projeto
 
 ```
-betalent-payment-gateway/
+payment-multi-gateway/
 ├── app/
 │   ├── controllers/
 │   ├── exceptions/

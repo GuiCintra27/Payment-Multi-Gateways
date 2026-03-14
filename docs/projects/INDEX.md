@@ -1,11 +1,11 @@
-# Indice de documentacao
+# Índice de documentação
 
-Ponto de entrada principal para a documentacao publica do projeto.
+Ponto de entrada principal para a documentação pública do projeto.
 
-## Comecando
+## Começando
 
-- [Inicio rapido](./QUICK-START.md)
-- [Referencia tecnica](./TECHNICAL-REFERENCE.md)
+- [Início rápido](./QUICK-START.md)
+- [Referência técnica](./TECHNICAL-REFERENCE.md)
 - [Guia operacional](./RUNBOOK.md)
 
 ## Arquitetura e dados
@@ -13,25 +13,25 @@ Ponto de entrada principal para a documentacao publica do projeto.
 - [Arquitetura](./ARCHITECTURE.md)
 - [Modelo de dados](./DATA-MODEL.md)
 - [Fluxos](./FLOWS.md)
-- [Integracoes](./INTEGRATIONS.md)
+- [Integrações](./INTEGRATIONS.md)
 
-## Plataforma e operacao
+## Plataforma e operação
 
 - [Infra](./INFRA.md)
-- [Seguranca](./SECURITY.md)
+- [Segurança](./SECURITY.md)
 - [Observabilidade](./OBSERVABILITY.md)
 
 ## Escopo coberto
 
-- compra publica com multiplos produtos
-- calculo de total no servidor
-- fallback automatico entre gateways por prioridade
-- refund no gateway original da transacao
+- compra pública com múltiplos produtos
+- cálculo de total no servidor
+- fallback automático entre gateways por prioridade
+- refund no gateway original da transação
 - RBAC (`ADMIN`, `MANAGER`, `FINANCE`, `USER`)
 - logs correlacionados por `requestId` e `trace_id`
-- metricas em `/metrics` e stack opcional com Loki/Tempo
+- métricas em `/metrics` e stack opcional com Loki/Tempo
 
 ## Arquivo
 
 - [Arquivo de docs do projeto](./archive/)
-- [Arquivo historico interno](../archive/)
+- [Arquivo histórico interno](../archive/)

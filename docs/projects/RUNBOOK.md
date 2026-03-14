@@ -1,6 +1,6 @@
 # Runbook
 
-Comandos operacionais e troubleshooting rapido.
+Comandos operacionais e troubleshooting rápido.
 
 ## Comandos principais
 
@@ -55,15 +55,15 @@ docker compose -f docker-compose.yaml -f docker-compose.monitoring.yaml up -d --
 - revise processos locais ocupando as portas
 - rode novamente o compose ou o script de dev
 
-### App nao sobe por falha de banco
+### App não sobe por falha de banco
 
 Verifique:
 
-- `mysql` em estado saudavel
-- variaveis `DB_*`
+- `mysql` em estado saudável
+- variáveis `DB_*`
 - se as migrations rodaram
 
-Comando util:
+Comando útil:
 
 ```bash
 docker compose ps
@@ -73,8 +73,8 @@ docker compose ps
 
 Verifique:
 
-- se `gateway-mock` esta ativo
-- se `GATEWAY1_URL` e `GATEWAY2_URL` estao corretas
+- se `gateway-mock` está ativo
+- se `GATEWAY1_URL` e `GATEWAY2_URL` estão corretas
 - se as credenciais dos gateways conferem com `.env.example`
 - se existe ao menos um gateway ativo na tabela `gateways`
 
@@ -100,7 +100,7 @@ O header deve voltar na resposta com o mesmo valor.
 curl http://localhost:3333/metrics
 ```
 
-Voce deve ver contadores no formato Prometheus, incluindo metricas de compra, refund e gateway.
+Você deve ver contadores no formato Prometheus, incluindo métricas de compra, refund e gateway.
 
 ### Validar Loki
 
@@ -118,13 +118,13 @@ curl -sS http://localhost:3200/ready
 
 1. suba a stack com `docker compose -f docker-compose.yaml -f docker-compose.monitoring.yaml up -d --build`
 2. abra `http://localhost:3005`
-3. entre com `admin` / `admin`, salvo override por variavel
+3. entre com `admin` / `admin`, salvo override por variável
 4. abra a pasta `Payment Gateway`
 5. valide os dashboards `Payment Gateway Overview`, `Gateway Reliability` e `Payment Incident Triage`
 
 ### Rodar smoke automatizado
 
-Com a aplicacao de pe:
+Com a aplicação de pé:
 
 ```bash
 ./scripts/smoke-e2e.sh
@@ -132,7 +132,7 @@ Com a aplicacao de pe:
 
 ### Rodar smoke de observabilidade
 
-Valida logs + traces correlacionados em cenarios de compra, fallback, refund e falha controlada:
+Valida logs + traces correlacionados em cenários de compra, fallback, refund e falha controlada:
 
 ```bash
 ./scripts/smoke-observability.sh

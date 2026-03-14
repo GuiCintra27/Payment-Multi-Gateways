@@ -1,13 +1,13 @@
-# Documentacao local (WIP)
+# Documentação local (WIP)
 
-Esta pasta e para status e planejamento em andamento.
+Esta pasta é para status e planejamento em andamento.
 
 Regras:
 
 - manter apenas documentos de trabalho ativo;
-- atualizar sempre que uma fase avancar;
-- mover material historico para `docs/archive/local/`.
+- atualizar sempre que uma fase avançar;
+- mover material histórico para `docs/archive/local/`.
 
-Documentacao publica para avaliacao/recrutadores:
+Documentação pública principal:
 
 - `docs/projects/INDEX.md`

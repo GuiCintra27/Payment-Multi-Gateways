@@ -27,6 +27,38 @@ test.group('Gateways Management', (group) => {
 
     response.assertStatus(200)
     assert.equal(response.body().isActive, false)
+    assert.notProperty(response.body(), 'credentials')
+  })
+
+  test('ADMIN list does not expose gateway credentials', async ({ client, assert }) => {
+    const admin = await User.create({
+      fullName: 'Admin',
+      email: 'gateway-list@test.com',
+      password: 'password123',
+      role: 'ADMIN',
+    })
+
+    await Gateway.create({
+      name: 'gateway-list-1',
+      isActive: true,
+      priority: 1,
+      credentials: JSON.stringify({ token: 'secret-1' }),
+    })
+
+    await Gateway.create({
+      name: 'gateway-list-2',
+      isActive: true,
+      priority: 2,
+      credentials: JSON.stringify({ token: 'secret-2' }),
+    })
+
+    const response = await client.get('/gateways').loginAs(admin)
+
+    response.assertStatus(200)
+    assert.isArray(response.body())
+    assert.lengthOf(response.body(), 2)
+    assert.notProperty(response.body()[0], 'credentials')
+    assert.notProperty(response.body()[1], 'credentials')
   })
 
   test('priority update keeps gateway ordering unique and sequential', async ({

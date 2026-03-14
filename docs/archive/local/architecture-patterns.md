@@ -1,9 +1,9 @@
-# Arquivado - Padroes Arquiteturais e Sinais de Senioridade
+# Arquivado - Padrões Arquiteturais e Sinais de Senioridade
 
-> Documento historico de planejamento. Nao e a fonte de verdade do estado atual.
+> Documento histórico de planejamento. Não é a fonte de verdade do estado atual.
 > Links e status internos podem estar desatualizados.
 
-Síntese do que foi extraído do projeto de referência `~/Projects/Mine/payment-gateway` e do que faz sentido aplicar neste teste técnico.
+Síntese do que foi extraído do projeto de referência `~/Projects/Mine/payment-gateway` e do que faz sentido aplicar neste projeto.
 
 ## Objetivo
 
@@ -47,7 +47,7 @@ O pipeline atual já cobre:
 - testes
 - smoke com Docker
 
-Para este teste, isso já passa boa maturidade estrutural.
+Para este escopo, isso já passa boa maturidade estrutural.
 
 ### 3. Script de desenvolvimento
 
@@ -85,7 +85,7 @@ Métricas sugeridas:
 
 ### Smoke funcional
 
-Além do smoke atual de subida da aplicação, vale mais para o recrutador um smoke pequeno que prove:
+Além do smoke atual de subida da aplicação, vale mais para leitores técnicos um smoke pequeno que prove:
 
 - app sobe
 - compra pública responde
@@ -103,7 +103,7 @@ Trazer Prometheus/Grafana pode ser positivo, mas só vale a pena se:
 
 ### Multi-compose
 
-Separar `docker-compose.monitoring.yaml` pode ser elegante, mas não é prioridade absoluta para este teste.
+Separar `docker-compose.monitoring.yaml` pode ser elegante, mas não é prioridade absoluta para este escopo.
 
 ## Itens a evitar
 
@@ -128,7 +128,7 @@ No projeto de referência, os documentos mais úteis para inspirar a evolução 
 
 ## Decisão arquitetural recomendada
 
-A melhor estratégia para este teste é:
+A melhor estratégia para este projeto é:
 
 1. fechar o core e a cobertura dos fluxos críticos
 2. criar documentação pública clara

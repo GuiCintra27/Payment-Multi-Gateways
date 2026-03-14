@@ -1,25 +1,25 @@
-# Integrations
+# Integrações
 
 Contratos principais da API e dos gateways externos.
 
-## API da aplicacao
+## API da aplicação
 
 Header transversal:
 
 - `X-Request-Id`: opcional na entrada, sempre retornado na resposta
 
-### Publicos
+### Públicos
 
-| Metodo | Rota         | Descricao           |
+| Método | Rota         | Descrição           |
 | ------ | ------------ | ------------------- |
 | `GET`  | `/`          | health check        |
-| `GET`  | `/metrics`   | metricas Prometheus |
-| `POST` | `/login`     | autentica usuario   |
-| `POST` | `/purchases` | cria compra publica |
+| `GET`  | `/metrics`   | métricas Prometheus |
+| `POST` | `/login`     | autentica usuário   |
+| `POST` | `/purchases` | cria compra pública |
 
 ### Autenticados
 
-| Metodo   | Rota                       | Roles                         |
+| Método   | Rota                       | Roles                         |
 | -------- | -------------------------- | ----------------------------- |
 | `POST`   | `/logout`                  | qualquer autenticado          |
 | `GET`    | `/users`                   | `ADMIN`, `MANAGER`            |
@@ -68,7 +68,7 @@ Header transversal:
 
 ## Produto
 
-### Criacao
+### Criação
 
 ```json
 {
@@ -81,20 +81,20 @@ Header transversal:
 
 Base URL via `GATEWAY1_URL`.
 
-### Autenticacao
+### Autenticação
 
 `POST /login`
 
 ```json
 {
-  "email": "dev@betalent.tech",
+  "email": "dev@example.com",
   "token": "FEC9BB078BF338F464F96B48089EB498"
 }
 ```
 
 Retorna bearer token usado nas demais chamadas.
 
-### Cobranca
+### Cobrança
 
 `POST /transactions`
 
@@ -111,8 +111,8 @@ Retorna bearer token usado nas demais chamadas.
 Comportamento relevante observado no mock:
 
 - sucesso: `201` com corpo contendo `id`
-- erro de negocio: `400`
-- a aplicacao propaga `X-Request-Id` quando disponivel
+- erro de negócio: `400`
+- a aplicação propaga `X-Request-Id` quando disponível
 
 ### Refund
 
@@ -122,12 +122,12 @@ Comportamento relevante observado no mock:
 
 Base URL via `GATEWAY2_URL`.
 
-Autenticacao por header fixo:
+Autenticação por header fixo:
 
 - `Gateway-Auth-Token`
 - `Gateway-Auth-Secret`
 
-### Cobranca
+### Cobrança
 
 `POST /transacoes`
 
@@ -144,8 +144,8 @@ Autenticacao por header fixo:
 Comportamento relevante observado no mock:
 
 - sucesso: `201` com corpo contendo `id`
-- erro de negocio pode vir embutido no body mesmo com resposta HTTP bem-sucedida
-- a aplicacao propaga `X-Request-Id` quando disponivel
+- erro de negócio pode vir embutido no body mesmo com resposta HTTP bem-sucedida
+- a aplicação propaga `X-Request-Id` quando disponível
 
 ### Refund
 
@@ -157,10 +157,10 @@ Comportamento relevante observado no mock:
 }
 ```
 
-## Observacoes de integracao
+## Observações de integração
 
-- os dois gateways possuem schemas e autenticacoes diferentes
-- a aplicacao normaliza o resultado para `approved` ou `rejected`
-- a lista de transacoes dos mocks vem encapsulada em `data`
+- os dois gateways possuem schemas e autenticações diferentes
+- a aplicação normaliza o resultado para `approved` ou `rejected`
+- a lista de transações dos mocks vem encapsulada em `data`
 - `GET /metrics` expõe contadores de compra, refund, tentativas e falhas por gateway
-- respostas operacionais de transacao e gateway omitem credenciais sensiveis do gateway
+- respostas operacionais de transação e gateway omitem credenciais sensíveis do gateway

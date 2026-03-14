@@ -1,8 +1,8 @@
-# Flows
+# Fluxos
 
-Fluxos de negocio principais da aplicacao.
+Fluxos de negócio principais da aplicação.
 
-## Compra publica
+## Compra pública
 
 Endpoint: `POST /purchases`
 
@@ -31,14 +31,14 @@ Endpoint: `POST /purchases`
 
 1. O controller valida o payload com `purchaseValidator`.
 2. `PurchaseService` busca os produtos por ID.
-3. O total e calculado no servidor usando quantidade e preco atual.
-4. O cliente e criado ou reaproveitado por email.
+3. O total é calculado no servidor usando quantidade e preço atual.
+4. O cliente é criado ou reaproveitado por email.
 5. `GatewayService` tenta cobrar no gateway ativo de maior prioridade.
-6. Em erro, o proximo gateway ativo e tentado.
-7. A aplicacao persiste `transactions` e `transaction_products`.
+6. Em erro, o próximo gateway ativo é tentado.
+7. A aplicação persiste `transactions` e `transaction_products`.
 8. A resposta retorna resumo da compra, cliente, gateway e itens.
 
-### Saida de sucesso
+### Saída de sucesso
 
 ```json
 {
@@ -70,7 +70,7 @@ Endpoint: `POST /purchases`
 
 ### Erros relevantes
 
-| Situacao                   | HTTP  | Resposta                                             |
+| Situação                   | HTTP  | Resposta                                             |
 | -------------------------- | ----- | ---------------------------------------------------- |
 | produto inexistente        | `422` | `Products not found: ...`                            |
 | todos os gateways falharam | `503` | `Payment processing failed. Please try again later.` |
@@ -84,13 +84,13 @@ Roles: `ADMIN`, `FINANCE`
 
 ### Passo a passo
 
-1. O controller recebe o ID da transacao.
-2. `RefundService` carrega transacao, gateway e cliente.
-3. O status e validado.
-4. O refund e disparado no gateway original da transacao.
-5. O status local e atualizado para `refunded`.
+1. O controller recebe o ID da transação.
+2. `RefundService` carrega transação, gateway e cliente.
+3. O status é validado.
+4. O refund é disparado no gateway original da transação.
+5. O status local é atualizado para `refunded`.
 
-### Saida de sucesso
+### Saída de sucesso
 
 ```json
 {
@@ -111,11 +111,11 @@ Roles: `ADMIN`, `FINANCE`
 
 ### Erros relevantes
 
-| Situacao                 | HTTP  | Resposta                                     |
+| Situação                 | HTTP  | Resposta                                     |
 | ------------------------ | ----- | -------------------------------------------- |
-| transacao inexistente    | `404` | `Transaction not found`                      |
-| transacao ja reembolsada | `422` | `Transaction already refunded`               |
-| transacao nao aprovada   | `422` | `Cannot refund transaction with status: ...` |
+| transação inexistente    | `404` | `Transaction not found`                      |
+| transação já reembolsada | `422` | `Transaction already refunded`               |
+| transação não aprovada   | `422` | `Cannot refund transaction with status: ...` |
 
 ## Fallback entre gateways
 
@@ -134,5 +134,5 @@ O fallback acontece dentro de `GatewayService`.
 ```text
 gateway1 (priority 1) falha
 -> gateway2 (priority 2) aprova
--> transacao fica vinculada ao gateway2
+-> transação fica vinculada ao gateway2
 ```

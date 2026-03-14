@@ -1,4 +1,5 @@
 import Gateway from '#models/gateway'
+import GatewayTransformer from '#transformers/gateway_transformer'
 import { toggleGatewayValidator, updateGatewayPriorityValidator } from '#validators/gateway'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
@@ -8,7 +9,8 @@ export default class GatewaysController {
    * GET /gateways — list all gateways
    */
   async index({}: HttpContext) {
-    return Gateway.query().orderBy('priority', 'asc')
+    const gateways = await Gateway.query().orderBy('priority', 'asc')
+    return gateways.map((gateway) => GatewayTransformer.transform(gateway))
   }
 
   /**
@@ -24,7 +26,7 @@ export default class GatewaysController {
     gateway.isActive = isActive
     await gateway.save()
 
-    return gateway
+    return GatewayTransformer.transform(gateway)
   }
 
   /**
@@ -60,6 +62,7 @@ export default class GatewaysController {
       return response.notFound({ message: 'Gateway not found' })
     }
 
-    return Gateway.findOrFail(gatewayId)
+    const updatedGateway = await Gateway.findOrFail(gatewayId)
+    return GatewayTransformer.transform(updatedGateway)
   }
 }

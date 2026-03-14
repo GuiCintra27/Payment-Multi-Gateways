@@ -1,13 +1,13 @@
-# Arquivo de documentacao
+# Arquivo de documentação
 
-Este diretorio guarda documentacao historica util para rastreabilidade tecnica.
+Este diretório guarda documentação histórica útil para rastreabilidade técnica.
 
-O conteudo arquivado nao e a fonte de verdade do comportamento atual da aplicacao.
+O conteúdo arquivado não é a fonte de verdade do comportamento atual da aplicação.
 
 Estrutura:
 
-- `docs/archive/local/`: planos antigos, analises e documentos de transicao.
-- `docs/projects/archive/`: versoes antigas de documentos publicos (quando houver).
+- `docs/archive/local/`: planos antigos, análises e documentos de transição.
+- `docs/projects/archive/`: versões antigas de documentos públicos (quando houver).
 
 Fonte de verdade atual:
 

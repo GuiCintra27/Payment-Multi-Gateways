@@ -1,4 +1,4 @@
-# Inicio rapido
+# Início rápido
 
 Como subir e validar o projeto rapidamente.
 
@@ -8,11 +8,11 @@ Como subir e validar o projeto rapidamente.
 - npm
 - Docker com `docker compose`
 
-## Variaveis de ambiente
+## Variáveis de ambiente
 
-Copie `.env.example` para `.env` e ajuste se necessario.
+Copie `.env.example` para `.env` e ajuste se necessário.
 
-Variaveis principais:
+Variáveis principais:
 
 - `APP_KEY`
 - `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_DATABASE`
@@ -20,7 +20,7 @@ Variaveis principais:
 - `GATEWAY1_EMAIL`, `GATEWAY1_TOKEN`
 - `GATEWAY2_AUTH_TOKEN`, `GATEWAY2_AUTH_SECRET`
 
-## Opcao 1: desenvolvimento local (recomendada)
+## Opção 1: desenvolvimento local (recomendada)
 
 ```bash
 ./scripts/start-dev.sh
@@ -29,24 +29,24 @@ Variaveis principais:
 Esse fluxo:
 
 - sobe MySQL e gateway mocks
-- instala dependencias, se necessario
+- instala dependências, se necessário
 - roda migrations
 - roda seeders
 - inicia o servidor AdonisJS com HMR
 
-## Opcao 2: stack completa via Docker
+## Opção 2: stack completa via Docker
 
 ```bash
 docker compose up --build
 ```
 
-## Opcao 3: stack completa com observabilidade opcional
+## Opção 3: stack completa com observabilidade opcional
 
 ```bash
 docker compose -f docker-compose.yaml -f docker-compose.monitoring.yaml up -d --build
 ```
 
-Nesse modo, o container da aplicacao executa:
+Nesse modo, o container da aplicação executa:
 
 - `node ace migration:run --force`
 - `node ace db:seed`
@@ -62,10 +62,10 @@ E a stack de observabilidade sobe com:
 
 ## Credenciais seed
 
-- email: `admin@betalent.tech`
-- senha: `admin123`
+- usuário admin seedado disponível no ambiente local
+- para detalhes, consulte `database/seeders/01_admin_seeder.ts`
 
-## Validacao rapida
+## Validação rápida
 
 ### Health check
 
@@ -103,7 +103,7 @@ npm run typecheck
 
 ### Smoke operacional
 
-Com a app ja rodando:
+Com a app já rodando:
 
 ```bash
 ./scripts/smoke-e2e.sh
@@ -117,7 +117,7 @@ Com a stack de observabilidade ativa:
 ./scripts/smoke-observability.sh
 ```
 
-## Credenciais e portas padrao
+## Credenciais e portas padrão
 
 | Recurso        | URL/porta               |
 | -------------- | ----------------------- |
@@ -130,8 +130,8 @@ Com a stack de observabilidade ativa:
 | Loki           | `http://localhost:3100` |
 | Tempo          | `http://localhost:3200` |
 
-## Proximos docs recomendados
+## Próximos docs recomendados
 
-- [Referencia tecnica](./TECHNICAL-REFERENCE.md)
+- [Referência técnica](./TECHNICAL-REFERENCE.md)
 - [Infra](./INFRA.md)
 - [Runbook](./RUNBOOK.md)

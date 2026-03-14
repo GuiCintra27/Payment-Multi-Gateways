@@ -1,9 +1,9 @@
-# Arquivado - Analise de Requisitos e Aderencia
+# Arquivado - Análise de Requisitos e Aderência
 
-> Documento historico de planejamento. Nao e a fonte de verdade do estado atual.
+> Documento histórico de planejamento. Não é a fonte de verdade do estado atual.
 > Links e status internos podem estar desatualizados.
 
-Leitura consolidada do teste técnico BeTalent e comparação com o estado real da aplicação.
+Leitura consolidada dos requisitos de projeto e comparação com o estado real da aplicação.
 
 ## Visão geral
 
@@ -113,7 +113,7 @@ As rotas de `clients` e `transactions` devem seguir menor privilégio:
 - `MANAGER`
 - `FINANCE`
 
-O perfil `USER` nao deve acessar dados operacionais de clientes ou transacoes.
+O perfil `USER` não deve acessar dados operacionais de clientes ou transações.
 
 ### Test runner
 
@@ -123,7 +123,7 @@ A referência inicial mencionava Jest como preferência e Japa como fallback. O 
 
 O projeto já não está mais apenas na fase de setup. Há uma implementação parcial relevante do core e a documentação precisa tratar isso com precisão.
 
-## Critérios de avaliação mais sensíveis no estado atual
+## Critérios técnicos mais sensíveis no estado atual
 
 Os pontos que mais impactam a percepção do teste hoje são:
 

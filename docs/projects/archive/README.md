@@ -1,5 +1,5 @@
-# Arquivo de docs publicos
+# Arquivo de docs públicos
 
-Esta pasta e reservada para versoes antigas de documentacao publica.
+Esta pasta é reservada para versões antigas de documentação pública.
 
-No momento nao ha versoes publicas arquivadas.
+No momento não há versões públicas arquivadas.

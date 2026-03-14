@@ -1,4 +1,4 @@
-# Data Model
+# Modelo de dados
 
 Resumo do modelo de dados persistido em MySQL.
 
@@ -20,10 +20,10 @@ transaction_products
 | ------------ | --------- | ------------------------------------- |
 | `id`         | integer   | PK                                    |
 | `full_name`  | string    | nullable                              |
-| `email`      | string    | unique, obrigatorio                   |
-| `password`   | string    | obrigatorio                           |
+| `email`      | string    | unique, obrigatório                   |
+| `password`   | string    | obrigatório                           |
 | `role`       | enum      | `ADMIN`, `MANAGER`, `FINANCE`, `USER` |
-| `created_at` | timestamp | obrigatorio                           |
+| `created_at` | timestamp | obrigatório                           |
 | `updated_at` | timestamp | nullable                              |
 
 ## `auth_access_tokens`
@@ -52,7 +52,7 @@ Tabela de tokens opaque do AdonisJS.
 | `is_active`   | boolean   | default `true`                  |
 | `priority`    | integer   | menor numero = maior prioridade |
 | `credentials` | text      | JSON serializado                |
-| `created_at`  | timestamp | obrigatorio                     |
+| `created_at`  | timestamp | obrigatório                     |
 | `updated_at`  | timestamp | nullable                        |
 
 ## `clients`
@@ -60,9 +60,9 @@ Tabela de tokens opaque do AdonisJS.
 | Campo        | Tipo      | Regras      |
 | ------------ | --------- | ----------- |
 | `id`         | integer   | PK          |
-| `name`       | string    | obrigatorio |
+| `name`       | string    | obrigatório |
 | `email`      | string    | unique      |
-| `created_at` | timestamp | obrigatorio |
+| `created_at` | timestamp | obrigatório |
 | `updated_at` | timestamp | nullable    |
 
 ## `products`
@@ -70,9 +70,9 @@ Tabela de tokens opaque do AdonisJS.
 | Campo        | Tipo      | Regras             |
 | ------------ | --------- | ------------------ |
 | `id`         | integer   | PK                 |
-| `name`       | string    | obrigatorio        |
+| `name`       | string    | obrigatório        |
 | `amount`     | integer   | centavos, unsigned |
-| `created_at` | timestamp | obrigatorio        |
+| `created_at` | timestamp | obrigatório        |
 | `updated_at` | timestamp | nullable           |
 
 ## `transactions`
@@ -85,11 +85,11 @@ Tabela de tokens opaque do AdonisJS.
 | `external_id`       | string    | nullable                                               |
 | `status`            | enum      | `pending`, `approved`, `rejected`, `refunded`, `error` |
 | `amount`            | integer   | centavos, unsigned                                     |
-| `card_last_numbers` | string(4) | somente os ultimos 4 digitos                           |
-| `created_at`        | timestamp | obrigatorio                                            |
+| `card_last_numbers` | string(4) | somente os últimos 4 dígitos                           |
+| `created_at`        | timestamp | obrigatório                                            |
 | `updated_at`        | timestamp | nullable                                               |
 
-Indices:
+Índices:
 
 - `idx_transactions_client_id`
 - `idx_transactions_gateway_id`
@@ -97,7 +97,7 @@ Indices:
 
 ## `transaction_products`
 
-Pivot entre transacao e produtos comprados.
+Pivot entre transação e produtos comprados.
 
 | Campo            | Tipo      | Regras                  |
 | ---------------- | --------- | ----------------------- |
@@ -106,15 +106,15 @@ Pivot entre transacao e produtos comprados.
 | `product_id`     | integer   | FK -> `products.id`     |
 | `quantity`       | integer   | unsigned                |
 | `price_at_time`  | integer   | centavos, unsigned      |
-| `created_at`     | timestamp | obrigatorio             |
+| `created_at`     | timestamp | obrigatório             |
 | `updated_at`     | timestamp | nullable                |
 
-Indices:
+Índices:
 
 - `idx_tp_transaction_id`
 - `idx_tp_product_id`
 
-## Relacionamentos de negocio
+## Relacionamentos de negócio
 
 ```text
 Client 1 --- N Transaction
@@ -125,6 +125,6 @@ User 1 --- N AuthAccessToken
 
 ## Regras importantes
 
-- `amount` e `price_at_time` sao sempre armazenados em centavos
-- `price_at_time` preserva o preco historico da compra
-- nunca persistir numero completo do cartao ou CVV
+- `amount` e `price_at_time` são sempre armazenados em centavos
+- `price_at_time` preserva o preço histórico da compra
+- nunca persistir número completo do cartão ou CVV

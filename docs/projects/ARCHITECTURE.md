@@ -1,6 +1,6 @@
-# Architecture
+# Arquitetura
 
-Visao geral da arquitetura atual do sistema.
+Visão geral da arquitetura atual do sistema.
 
 ## Stack
 
@@ -16,13 +16,13 @@ Visao geral da arquitetura atual do sistema.
 | Camada                  | Responsabilidade                              |
 | ----------------------- | --------------------------------------------- |
 | `app/controllers/`      | HTTP concerns: validar, delegar, responder    |
-| `app/services/`         | regra de negocio                              |
-| `app/services/gateway/` | adapters, factory e orquestracao dos gateways |
+| `app/services/`         | regra de negócio                              |
+| `app/services/gateway/` | adapters, factory e orquestração dos gateways |
 | `app/models/`           | models e relacionamentos Lucid                |
-| `app/validators/`       | validacao de entrada                          |
+| `app/validators/`       | validação de entrada                          |
 | `app/middleware/`       | auth e RBAC                                   |
 | `database/`             | migrations, seeders e schema gerado           |
-| `tests/`                | unitarios e funcionais                        |
+| `tests/`                | unitários e funcionais                        |
 
 ## Fluxo principal
 
@@ -34,34 +34,34 @@ HTTP Request
   -> GatewayService
   -> GatewayFactory
   -> Gateway Adapter
-  -> Persistencia no MySQL
+  -> Persistência no MySQL
   -> HTTP Response
 ```
 
 ## Multi-gateway
 
-O projeto usa Strategy + Factory para isolar diferencas entre gateways.
+O projeto usa Strategy + Factory para isolar diferenças entre gateways.
 
 ```text
 GatewayService
   -> consulta gateways ativos por prioridade
   -> GatewayFactory.create(gateway)
   -> Gateway1Adapter ou Gateway2Adapter
-  -> tentativa de cobranca
+  -> tentativa de cobrança
   -> fallback em caso de falha
 ```
 
-## Decisoes principais
+## Decisões principais
 
 - total da compra calculado no servidor
-- valores monetarios armazenados em centavos
-- apenas os 4 ultimos digitos do cartao sao persistidos
-- refund sempre usa o gateway da transacao original
-- controllers finos e regra de negocio em services
+- valores monetários armazenados em centavos
+- apenas os 4 últimos dígitos do cartão são persistidos
+- refund sempre usa o gateway da transação original
+- controllers finos e regra de negócio em services
 - `X-Request-Id` gerado ou reaproveitado no middleware global
-- `X-Request-Id` propagado para cobranca e refund nos gateways
-- metricas em memoria expostas em `/metrics` no formato Prometheus
-- spans manuais com OpenTelemetry em compra, orquestracao/fallback e refund
+- `X-Request-Id` propagado para cobrança e refund nos gateways
+- métricas em memória expostas em `/metrics` no formato Prometheus
+- spans manuais com OpenTelemetry em compra, orquestração/fallback e refund
 - contexto de logs padronizado com `requestId` e `trace_id`
 
 ## Componentes centrais
@@ -78,19 +78,19 @@ GatewayService
 
 - consulta gateways ativos por prioridade
 - tenta cobrar em ordem crescente de prioridade
-- registra falhas e tenta o proximo gateway
+- registra falhas e tenta o próximo gateway
 - interrompe com erro quando todos falham
 
 ### `RefundService`
 
-- carrega a transacao com gateway e cliente
-- valida se a transacao pode ser reembolsada
+- carrega a transação com gateway e cliente
+- valida se a transação pode ser reembolsada
 - executa refund no gateway original
 - atualiza o status para `refunded`
 
 ## Limites atuais
 
-Itens ainda nao implementados:
+Itens ainda não implementados:
 
 - alertas operacionais
 - pipeline enterprise de logs/tracing
