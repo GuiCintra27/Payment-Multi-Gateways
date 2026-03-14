@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0](https://github.com/GuiCintra27/Payment-Multi-Gateways/compare/v0.2.0...v0.3.0) (2026-03-14)
+
+
+### Features
+
+* add Loki/Tempo observability stack and documentation overhaul ([91635a9](https://github.com/GuiCintra27/Payment-Multi-Gateways/commit/91635a9f991e1b9c815ad2b6be3343544d2cb7f8))
+
+
+### Bug Fixes
+
+* sanitize gateway payloads and align documentation ([c520d9d](https://github.com/GuiCintra27/Payment-Multi-Gateways/commit/c520d9d014e326d03c12021a4f00ab8491e2fd9d))
+
 ## [0.2.0](https://github.com/GuiCintra27/Payment-Multi-Gateways/compare/v0.1.0...v0.2.0) (2026-03-13)
 
 
